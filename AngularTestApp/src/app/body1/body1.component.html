@@ -1,14 +1,9 @@
 <app-carousel></app-carousel>
 
-
-
-<div class="container my-5 ">
-
-  <div class="row " *ngFor="let card of [1, 2, 3]" >
-    <div class="col p-1" *ngFor="let card of [1, 2, 3]">
+<div class="container my-5">
+  <div class="row" *ngFor="let card of [1, 2, 3]">
+    <div class="col-12 col-lg-4 my-3" *ngFor="let card of [1, 2, 3]">
       <app-card></app-card>
     </div>
-
   </div>
 </div>
-

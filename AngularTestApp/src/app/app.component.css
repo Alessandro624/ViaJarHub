@@ -1,3 +1,7 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
 .bg-transparent {
   background-color: transparent !important;
   transition: background-color 0.3s ease;
@@ -10,7 +14,4 @@
 
 .navbar {
   z-index: 1000;
-}
-*{
-  font-family: 'Roboto', sans-serif;
 }
