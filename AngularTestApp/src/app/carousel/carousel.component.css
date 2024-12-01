@@ -1,0 +1,110 @@
+.carousel {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  z-index: 10; /* Assicurati che sia sopra le immagini */
+  width: 100%; /* Assicurati che l'overlay sia largo quanto il carosello */
+  height: 100%; /* Assicurati che l'overlay copra l'intera altezza del carosello */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 15px; /* Aggiungi padding per dispositivi mobili */
+}
+
+.text-container {
+  display: inline-block;
+  margin-bottom: 1rem; /* Aggiungi margine per separare il testo dalla barra di ricerca */
+}
+
+.search-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap; /* Mantieni il form in una singola riga */
+}
+
+.search-input {
+  width: 100%; /* Rendi la barra di ricerca larga il 100% su dispositivi mobili */
+  max-width: 300px; /* Limita la larghezza massima su schermi più grandi */
+}
+
+.search-button {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-icon {
+  width: 20px;
+  height: 20px;
+  fill: white; /* Colore di default */
+  transition: fill 0.3s ease; /* Transizione per l'effetto hover */
+}
+
+.search-button:hover .search-icon {
+  fill: black; /* Colore al passaggio del mouse */
+}
+
+#animatedText {
+  font-size: 3rem; /* Dimensione del font per il testo animato */
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: .15em solid white; /* Effetto cursore */
+  animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: white; }
+}
+
+/* Aggiungi media query per rendere il testo e il form responsive */
+@media (max-width: 768px) {
+  .overlay {
+    padding: 0 10px; /* Riduci il padding su schermi più piccoli */
+  }
+
+  #animatedText {
+    font-size: 2rem; /* Riduci la dimensione del font su schermi più piccoli */
+  }
+
+  .search-input {
+    max-width: 200px; /* Riduci la larghezza massima della barra di ricerca su schermi più piccoli */
+  }
+
+  .search-button {
+    padding: 0.25rem; /* Riduci il padding del pulsante su schermi più piccoli */
+  }
+}
+
+@media (max-width: 576px) {
+  .overlay {
+    padding: 0 5px; /* Riduci ulteriormente il padding su schermi molto piccoli */
+  }
+
+  #animatedText {
+    font-size: 1.5rem; /* Riduci ulteriormente la dimensione del font su schermi molto piccoli */
+  }
+
+  .search-input {
+    max-width: 150px; /* Riduci ulteriormente la larghezza massima della barra di ricerca su schermi molto piccoli */
+  }
+
+  .search-button {
+    padding: 0.2rem; /* Riduci ulteriormente il padding del pulsante su schermi molto piccoli */
+  }
+}

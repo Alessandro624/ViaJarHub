@@ -1,0 +1,16 @@
+<div class="d-flex flex-column min-vh-100">
+  <header [ngClass]="{'bg-white': isHeaderWhite, 'bg-transparent': !isHeaderWhite}" class="navbar sticky-top">
+    <div class="container">
+      <a routerLink="/body1" class="navbar-brand">Body 1</a>
+      <a routerLink="/body2" class="navbar-brand">Body 2</a>
+    </div>
+  </header>
+
+  <main class="flex-grow-1 mt-1">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="bg-dark text-white text-center py-3 mt-4">
+    <p>Footer</p>
+  </footer>
+</div>

@@ -1,0 +1,20 @@
+.star {
+  color: #ffcc00;
+}
+.card-date {
+  color: #6c757d; /* Colore disabilitato */
+  font-size: 0.9em;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+.card-body {
+  position: relative;
+  padding-bottom: 40px; /* Spazio per la data */
+}
+.card {
+  transition: transform 0.3s ease; /* Transizione per l'effetto hover */
+}
+.card:hover {
+  transform: scale(1.05); /* Aumenta la dimensione della card al passaggio del mouse */
+}
