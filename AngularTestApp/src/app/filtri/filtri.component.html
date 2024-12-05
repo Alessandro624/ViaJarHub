@@ -1,0 +1,82 @@
+<!--<div class="container mt-3 p-4 shadow-sm bg-light mb-3">
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label for="datePicker" class="form-label">Seleziona una data:</label>
+      <input id="datePicker" class="form-control" type="date" [min]="minDate | date:'yyyy-MM-dd'" (change)="onDateChange($event)">
+    </div>
+    <div class="col-md-4">
+      <label for="priceRange" class="form-label">Seleziona il prezzo:</label>
+      <input type="range" id="priceRange" min="1" max="1000" value="50" class="slider" [(ngModel)]="price">
+
+      <div class="d-flex justify-content-between">
+        <span>0</span>
+        <span>{{price}}</span>
+        <span>1000</span>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <label for="category" class="form-label">Categoria:</label>
+      <select id="category" class="form-select" [(ngModel)]="category">
+        <option value="exploration">Esplorazione</option>
+        <option value="culture">Cultura</option>
+      </select>
+    </div>
+  </div>
+</div>
+-->
+<div class="filter-bar bg-light p-3 border rounded d-flex align-items-center justify-content-between">
+  <!-- Valori dei filtri -->
+  <div class="filters d-flex align-items-center">
+    <span class="me-3"><strong>Data:</strong> {{ filters.date | date: 'shortDate' }}</span>
+    <span class="me-3"><strong>Prezzo:</strong> {{ filters.priceRange.min }} - {{ filters.priceRange.max }} €</span>
+    <span class="me-3"><strong>Tipo:</strong> {{ filters.type || 'Nessuno' }}</span>
+  </div>
+
+  <!-- Pulsante per estendere -->
+  <button class="btn btn-primary" (click)="toggleFilters()">
+    <div *ngIf="!isExpanded">Mostra Filtri</div>
+    <div *ngIf="isExpanded">Chiudi</div>
+  </button>
+</div>
+
+<!-- Pannello di modifica filtri -->
+<div class="filter-panel mt-3 border p-3 rounded bg-light" *ngIf="isExpanded">
+  <!-- Data Range Picker -->
+  <div class="mb-3">
+    <label for="dateRange" class="form-label"><strong>Data</strong></label>
+    <input
+      type="date"
+      class="form-control"
+      [(ngModel)]="filters.date"
+      id="dateRange"
+    />
+  </div>
+
+  <!-- Range Slider -->
+  <div class="mb-3">
+    <ngx-slider
+      [(value)]="minValue"
+      [(highValue)]="maxValue"
+      [options]="options"
+      (userChangeEnd)="onUserChangeEnd($event)">
+    </ngx-slider>
+  </div>
+
+  <!-- Chooser -->
+  <div class="mb-3">
+    <label for="typeChooser" class="form-label"><strong>Tipo</strong></label>
+    <select
+      id="typeChooser"
+      class="form-select"
+      [(ngModel)]="filters.type"
+    >
+      <option value="">Seleziona un tipo</option>
+      <option value="A">Tipo A</option>
+      <option value="B">Tipo B</option>
+      <option value="C">Tipo C</option>
+    </select>
+  </div>
+
+  <!-- Pulsante di conferma -->
+  <button class="btn btn-success" (click)="applyFilters()">Applica</button>
+</div>
