@@ -6,6 +6,7 @@ import {MatSliderModule} from '@angular/material/slider';
 import {ChangeContext, LabelType, NgxSliderModule, Options} from '@angular-slider/ngx-slider';
 
 
+
 @Component({
   selector: 'app-filtri',
   standalone: true,
@@ -20,7 +21,7 @@ import {ChangeContext, LabelType, NgxSliderModule, Options} from '@angular-slide
   templateUrl: './filtri.component.html',
   styleUrl: './filtri.component.css'
 })
-export class FiltriComponent {
+export class FiltriComponent  {
 
   isExpanded: boolean = false; // Proprietà per mostrare/nascondere il pannello
   minValue: number = 100; // Valore minimo iniziale
@@ -43,6 +44,42 @@ export class FiltriComponent {
       }
     }
   };
+  today: Date = new Date(); // Data di oggi
+  minDate: string = this.formatDate(this.today); // Formatta la data in "YYYY-MM-DD"
+  startDate: string = this.formatDate(this.today); // Valore per il primo date picker
+  endDate: string = this.formatDate(this.today); // Valore per il secondo date picker
+  endDateMin: string = this.minDate; // Valore minimo per il secondo date picker
+
+  // Aggiorna la data minima per il secondo date picker e controlla il valore
+  onStartDateChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const selectedStartDate = input.value;
+
+    if (selectedStartDate) {
+      this.endDateMin = selectedStartDate; // La data minima diventa la data iniziale
+
+      // Controlla se la data finale è precedente alla data iniziale
+      if (this.endDate && new Date(this.endDate) < new Date(selectedStartDate)) {
+        this.endDate = selectedStartDate; // Aggiorna automaticamente la data finale
+      }
+    } else {
+      this.endDateMin = this.minDate; // Ritorna alla data di oggi se il valore è nullo
+    }
+  }
+
+
+  // Utility per formattare la data in "YYYY-MM-DD" per HTML5
+   formatDate(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mesi da 0 a 11
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+  }
+
+  changeFormat(string: string): string {
+    const [year, month, day] = string.split('-');
+    return `${day}-${month}-${year}`;
+  }
 
   // Verifica e corregge i valori quando l'utente termina l'interazione
   onUserChangeEnd(changeContext: ChangeContext): void {
