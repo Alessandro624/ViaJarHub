@@ -27,8 +27,8 @@
 <div class="filter-bar bg-light p-3 border rounded d-flex align-items-center justify-content-between">
   <!-- Valori dei filtri -->
   <div class="filters d-flex align-items-center">
-    <span class="me-3"><strong>Data partenza:</strong> {{ changeFormat(startDate)  }}</span>
-    <span class="me-3"><strong>Data ritorno:</strong> {{changeFormat( endDate ) }}</span>
+    <span class="me-3"><strong>Data partenza:</strong> {{ changeFormat(startDate) }}</span>
+    <span class="me-3"><strong>Data ritorno:</strong> {{ changeFormat(endDate) }}</span>
     <span class="me-3"><strong>Prezzo:</strong> {{ minValue }} - {{ maxValue }} €</span>
     <span class="me-3"><strong>Tipo:</strong> {{ filters.type || 'Nessuno' }}</span>
   </div>
@@ -46,43 +46,42 @@
   <div class="container mt-3">
     <!-- Primo Date Picker -->
     <div class="row">
-    <div class="col-6 mb-3">
-      <label for="startDate" class="me-2">Data partenza:</label>
-      <input
-        type="date"
-        id="startDate"
-        class="form-control"
-        [min]="minDate"
-        [(ngModel)]="startDate"
-        (change)="onStartDateChange($event)"
-        name="startDate"
-      />
+      <div class="col-6 mb-3">
+        <label for="startDate" class="me-2">Data partenza:</label>
+        <input
+          type="date"
+          id="startDate"
+          class="form-control"
+          [min]="minDate"
+          [(ngModel)]="startDate"
+          (change)="onStartDateChange($event)"
+          name="startDate"
+        />
+      </div>
+
+      <!-- Secondo Date Picker -->
+      <div class="col-6 mb-3">
+        <label for="endDate" class="me-2">Data ritorno:</label>
+        <input
+          type="date"
+          id="endDate"
+          class="form-control"
+          [min]="endDateMin"
+          [(ngModel)]="endDate"
+          name="endDate"
+        />
+      </div>
+
+      <!-- Valori Selezionati -->
+
     </div>
-
-    <!-- Secondo Date Picker -->
-    <div class="col-6 mb-3">
-      <label for="endDate" class="me-2">Data ritorno:</label>
-      <input
-        type="date"
-        id="endDate"
-        class="form-control"
-        [min]="endDateMin"
-        [(ngModel)]="endDate"
-        name="endDate"
-      />
-    </div>
-
-    <!-- Valori Selezionati -->
-
-  </div>
   </div>
   <!-- Range Slider -->
   <div class="mb-3">
     <ngx-slider
       [(value)]="minValue"
       [(highValue)]="maxValue"
-      [options]="options"
-      (userChangeEnd)="onUserChangeEnd($event)">
+      [options]="options">
     </ngx-slider>
   </div>
 
