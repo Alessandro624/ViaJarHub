@@ -116,3 +116,14 @@
     padding: 0.2rem; /* Riduci ulteriormente il padding del pulsante su schermi molto piccoli */
   }
 }
+
+/* Classe per nascondere gli elementi */
+.d-none {
+  display: none !important;
+}
+
+/* Classe per mostrare i pulsanti */
+.visible {
+  display: block !important;
+}
+
