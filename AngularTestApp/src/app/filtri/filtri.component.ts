@@ -32,11 +32,9 @@ export class FiltriComponent {
       return 'black'
     },
     getPointerColor: (value: number) => {
-      return 'red'
+      return 'black'
     },
-    getTickColor: (value: number) => {
-      return 'green'
-    },
+
     translate: (value: number, label: LabelType): string => {
       switch (label) {
         case LabelType.Low:
@@ -100,6 +98,10 @@ export class FiltriComponent {
     console.log('Stato corrente:', this.isExpanded); // Aggiungi un log per verificare
 
     this.isExpanded = !this.isExpanded; // Cambia lo stato tra true e false
+  }
+  selectType(type: string): void {
+    this.filters.type = type;
+    console.log('Tipo selezionato:', this.filters.type); // Log per verificare
   }
 
 // Per testare l'applicazione dei filtri
