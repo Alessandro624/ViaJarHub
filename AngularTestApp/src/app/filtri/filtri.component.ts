@@ -26,8 +26,8 @@ export class FiltriComponent {
     ceil: 500,
     noSwitching: true,
     showTicksValues: true,
-    tickStep: 50,
-    tickValueStep: 50,
+    tickStep: 100,
+    tickValueStep: 100,
     getSelectionBarColor: (value: number) => {
       return 'black'
     },

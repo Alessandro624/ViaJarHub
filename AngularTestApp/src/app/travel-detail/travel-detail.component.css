@@ -19,3 +19,11 @@
 .review-card .card-text {
   font-size: 1rem;
 }
+
+.star {
+  color: #ffcc00;
+}
+
+a{
+  text-decoration: none;
+}
