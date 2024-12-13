@@ -27,39 +27,15 @@ export class AppComponent implements OnInit {
   @ViewChild('carousel', {static: false}) carousel!: ElementRef;
 
   constructor(private _router: Router, @Inject(PLATFORM_ID) private _platformId: object) {
-    this._router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.handleRouteChange(event.url);
-      }
-    });
+
   }
 
   ngOnInit() {
     if (isPlatformBrowser(this._platformId)) {
-      this.updateScrollThreshold();
       this.typeWriterEffect();
     }
   }
 
-  @HostListener('window:scroll', [])
-  onScroll() {
-    if (this.isBrowser() && this._router.url === '/body1') {
-      this.isHeaderWhite = window.scrollY > this.scrollThreshold;
-    }
-  }
-
-  @HostListener('window:resize', [])
-  onResize() {
-    if (this.isBrowser()) {
-      this.updateScrollThreshold();
-    }
-  }
-
-  updateScrollThreshold() {
-    if (this.carousel && this.isBrowser()) {
-      this.scrollThreshold = this.carousel.nativeElement.offsetHeight || 100;
-    }
-  }
 
   public typeWriterEffect() {
     const textElement = document.getElementById('animatedText');
@@ -79,16 +55,5 @@ export class AppComponent implements OnInit {
     type();
   }
 
-  private isBrowser() {
-    return isPlatformBrowser(this._platformId);
-  }
 
-  private handleRouteChange(url: string): void {
-    if (url === '/body2') {
-      this.isHeaderWhite = true;
-    } else if (this.isBrowser()) {
-      this.updateScrollThreshold();
-      this.isHeaderWhite = window.scrollY > this.scrollThreshold;
-    }
-  }
 }
