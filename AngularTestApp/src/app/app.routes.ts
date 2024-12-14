@@ -4,6 +4,7 @@ import {TravelDetailComponent} from './travel-detail/travel-detail.component';
 import {CarouselComponent} from './carousel/carousel.component';
 import {InfotravelComponent} from './travel-detail/infotravel/infotravel.component';
 import {ClientComponent} from './profile/client/client.component';
+import {AdminComponent} from './profile/admin/admin.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'body1', pathMatch: 'full'},
@@ -15,6 +16,6 @@ export const routes: Routes = [
       {path: '', redirectTo: 'info', pathMatch: 'full'}
     ]
   },
-  {path: 'client', component: ClientComponent}
-
+  {path: 'client', component: ClientComponent},
+  {path: 'admin', component: AdminComponent}
 ];
