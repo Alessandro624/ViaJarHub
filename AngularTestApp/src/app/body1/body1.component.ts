@@ -1,9 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
 import {CarouselComponent} from '../carousel/carousel.component';
 import {CardComponent} from '../card/card.component';
-import {AppComponent} from '../app.component';
 import {FiltriComponent} from '../filtri/filtri.component';
 
 @Component({
@@ -14,11 +13,7 @@ import {FiltriComponent} from '../filtri/filtri.component';
   styleUrls: ['./body1.component.css']
 })
 
-export class Body1Component implements OnInit {
-  constructor(private _appComponent: AppComponent) {
-  }
-
-  ngOnInit(): void {
-    this._appComponent.typeWriterEffect();
+export class Body1Component {
+  constructor() {
   }
 }

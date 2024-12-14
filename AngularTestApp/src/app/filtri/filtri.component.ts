@@ -1,9 +1,8 @@
 import {Component} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {CommonModule, NgIf} from '@angular/common';
+import {CommonModule} from '@angular/common';
 
 import {LabelType, NgxSliderModule, Options} from '@angular-slider/ngx-slider';
-
 
 @Component({
   selector: 'app-filtri',
@@ -11,7 +10,6 @@ import {LabelType, NgxSliderModule, Options} from '@angular-slider/ngx-slider';
   imports: [
     CommonModule,
     FormsModule,
-    NgIf,
     NgxSliderModule
   ],
   templateUrl: './filtri.component.html',
@@ -28,13 +26,12 @@ export class FiltriComponent {
     showTicksValues: true,
     tickStep: 100,
     tickValueStep: 100,
-    getSelectionBarColor: (value: number) => {
+    getSelectionBarColor: () => {
       return 'black'
     },
-    getPointerColor: (value: number) => {
+    getPointerColor: () => {
       return 'black'
     },
-
     translate: (value: number, label: LabelType): string => {
       switch (label) {
         case LabelType.Low:
@@ -83,6 +80,8 @@ export class FiltriComponent {
     return `${day}-${month}-${year}`;
   }
 
+  /*TODO da rivedere l'ottenimento dei filtri relativi al tipo*/
+
   filters = {
     date: new Date(),
     priceRange: {
@@ -92,13 +91,13 @@ export class FiltriComponent {
     type: ''
   };
 
-
   // Funzione per alternare lo stato di apertura
   toggleFilters(): void {
     console.log('Stato corrente:', this.isExpanded); // Aggiungi un log per verificare
 
     this.isExpanded = !this.isExpanded; // Cambia lo stato tra true e false
   }
+
   selectType(type: string): void {
     this.filters.type = type;
     console.log('Tipo selezionato:', this.filters.type); // Log per verificare

@@ -43,17 +43,6 @@
   justify-content: center;
 }
 
-.search-icon {
-  width: 20px;
-  height: 20px;
-  fill: white; /* Colore di default */
-  transition: fill 0.3s ease; /* Transizione per l'effetto hover */
-}
-
-.search-button:hover .search-icon {
-  fill: black; /* Colore al passaggio del mouse */
-}
-
 #animatedText {
   font-size: 3rem; /* Dimensione del font per il testo animato */
   white-space: nowrap;
@@ -79,6 +68,8 @@
     border-color: white;
   }
 }
+
+/*TODO forse usando bootstrap non servono queste*/
 
 /* Aggiungi media query per rendere il testo e il form responsive */
 @media (max-width: 768px) {
@@ -115,15 +106,5 @@
   .search-button {
     padding: 0.2rem; /* Riduci ulteriormente il padding del pulsante su schermi molto piccoli */
   }
-}
-
-/* Classe per nascondere gli elementi */
-.d-none {
-  display: none !important;
-}
-
-/* Classe per mostrare i pulsanti */
-.visible {
-  display: block !important;
 }
 

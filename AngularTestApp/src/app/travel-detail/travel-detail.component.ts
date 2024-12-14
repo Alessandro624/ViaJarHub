@@ -1,12 +1,10 @@
-import { Component } from '@angular/core';
-import {CarouselComponent} from '../carousel/carousel.component';
+import {Component} from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'app-travel-detail',
   standalone: true,
   imports: [
-    CarouselComponent,
     RouterLink,
     RouterOutlet,
     RouterLinkActive
@@ -16,7 +14,6 @@ import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 })
 export class TravelDetailComponent {
   // Qui puoi aggiungere logica personalizzata e dati per popolare dinamicamente il componente
-
 
 
 }
