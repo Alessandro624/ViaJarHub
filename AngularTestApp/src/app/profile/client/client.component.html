@@ -4,9 +4,12 @@
   <!-- Colonna Profilo -->
   <div class="card p-4 ">
     <div class="row justify-content-between">
-      <div class="col-6 d-flex align-items-center"> <!-- Profile Image --> <img src="4646289.jpg" alt="Profile Picture"
-                                                                                class="rounded-circle me-4" width="100"
-                                                                                height="100"/> <!-- User Info -->
+      <div class="col-6 d-flex align-items-center">
+        <!-- Profile Image -->
+        <img src="4646289.jpg" alt="Profile Picture"
+             class="rounded-circle me-4" width="100"
+             height="100"/>
+        <!-- User Info -->
         <div class="d-flex flex-column">
           <div class="d-flex align-items-center"><h4 class="mb-1 me-2">Abdul Hakim</h4>
             <button class="btn btn-sm btn-primary edit-btn">modifica</button>
@@ -15,15 +18,13 @@
       </div>
       <div class="col-lg-6 col-12">
         <div class="row">
-          <div class="col-5 m-3 card-data "><h2><strong>Viaggi effettuati:</strong></h2>
+          <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Viaggi effettuati:</h5>
             <p class="fs-4">120</p></div>
-          <div class="col-5 m-3 card-data"><h5 class="mt-2"><strong>Recensioni effettuate:</strong></h5>
+          <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Recensioni effettuate:</h5>
             <p class="fs-4">20</p></div>
         </div>
       </div>
-
     </div>
-
   </div>
 
   <!-- Skills and Stats Section -->
@@ -31,34 +32,29 @@
     <!-- Skills -->
     <div class="col-12">
       <div class="card  p-3 shadow-sm">
-        <h5><strong>La tua lista dei desideri!</strong></h5>
+        <h5 class="fw-bold">La tua lista dei desideri!</h5>
         <div class="card-data m-3" *ngFor="let card of [1, 2, 3]">
           <div class="row">
             <div class="col ms-2">
-              <h5 class="card-title  mt-2 mb-0 "><strong>Nome del Prodotto</strong></h5>
-
-
+              <h5 class="card-title  mt-2 mb-0 fw-bold">Nome del Prodotto</h5>
               <span class="star">&#9733;</span>
               <span class="star">&#9733;</span>
               <span class="star">&#9733;</span>
               <span class="star">&#9733;</span>
               <span class="star">&#9734;</span>
               <span class="card-date ms-3 no-wrap">01 dicembre</span>
-
-
             </div>
-            <div class="col-2 d-flex align-items-center  ">
-              <button class="btn btn-remove border-danger">
-                <img src="trash-bin-outline-svgrepo-com.svg" alt="" class="img-fluid trashicon">
+            <div class="col-2 d-flex align-items-center">
+              <button class="btn btn-outline-danger">
+                <i class="fa-solid fa-trash"></i>
+                <!--img src="trash-bin-outline-svgrepo-com.svg" alt="" class="img-fluid trashicon"-->
                 <!-- Codice Unicode per il cestino -->
               </button>
             </div>
           </div>
         </div>
       </div>
-
     </div>
-
   </div>
 
   <!-- Favorite Food and Hobby -->
@@ -66,90 +62,88 @@
     <!-- Favorite Food -->
     <div class="col-md-6 mb-4">
       <div class="card p-3 shadow-sm">
-        <h5><strong>Ultime recensioni</strong></h5>
+        <h5 class="fw-bold">Ultime recensioni</h5>
         <div class="card-data m-3" *ngFor="let card of [1, 2, 3]">
-          <h5 class="card-title ms-2 mt-2 mb-0"><strong>Nome del Viaggio recensito</strong></h5>
-
-
+          <h5 class="card-title ms-2 mt-2 mb-0 fw-bold">Nome del Viaggio recensito</h5>
           <div class="card-rating ms-2 ">
             <span class="star">&#9733;</span>
             <span class="star">&#9733;</span>
             <span class="star">&#9733;</span>
             <span class="star">&#9733;</span>
             <span class="star">&#9734;</span>
-
           </div>
           <p class="card-text mb-1 ms-2">Questa è una breve descrizione del prodotto. È un ottimo prodotto che vale la
             pena
             provare!</p>
-
-
         </div>
-
       </div>
     </div>
     <!-- Hobby Activity -->
     <div class="col-md-6">
       <div class="card p-3 shadow-sm container-fluid">
-        <h5><strong>Ami i viaggi di tipo: Famiglia!</strong></h5>
-        <div class="row justify-content-center"> <!-- Cultura -->
-          <div class="mt-3 col-lg-3 col-6 ">
-            <div class="d-inline-block position-relative">
-              <svg height="100" width="100">
-                <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
-                <circle class="prova" cx="50" cy="50" r="45" stroke="#F5F5F5" stroke-width="10"
-                        [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
-              </svg>
-              <div class="position-absolute top-50 start-50 translate-middle"><strong>Cultura</strong></div>
-            </div>
-          </div> <!-- Relax -->
-          <div class="mt-3 col-lg-3 col-6">
+        <h5 class="fw-bold">Ami i viaggi di tipo: Famiglia!</h5>
+        <div class="row g-3 justify-content-center">
+          <!-- Cultura -->
+          <div class="col-6 text-center">
             <div class="d-inline-block position-relative">
               <svg height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
                 <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
               </svg>
-              <div class="position-absolute top-50 start-50 translate-middle"><strong>Relax</strong></div>
+              <div class="position-absolute top-50 start-50 translate-middle fw-bold">Cultura</div>
             </div>
-          </div> <!-- Natura -->
-          <div class="mt-3 col-lg-3 col-6 ">
+          </div>
+          <!-- Relax -->
+          <div class="col-6 text-center">
             <div class="d-inline-block position-relative">
               <svg height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
                 <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
               </svg>
-              <div class="position-absolute top-50 start-50 translate-middle"><strong>Natura</strong></div>
+              <div class="position-absolute top-50 start-50 translate-middle fw-bold">Relax</div>
             </div>
           </div>
         </div>
-        <div class="row justify-content-center"> <!-- Romantico -->
-          <div class="mt-3 col-lg-3 col-6 ">
+        <div class="row g-3 justify-content-center">
+          <!-- Natura -->
+          <div class="col-12 text-center">
             <div class="d-inline-block position-relative">
               <svg height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
                 <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
               </svg>
-              <div class="position-absolute top-50 start-50 translate-middle"><strong>Romantico</strong></div>
-            </div>
-          </div> <!-- Famiglia -->
-          <div class="mt-3 col-lg-3 col-6 ">
-            <div class="d-inline-block position-relative">
-              <svg height="100" width="100">
-                <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
-                <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
-                        [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
-              </svg>
-              <div class="position-absolute top-50 start-50 translate-middle"><strong>Famiglia</strong></div>
+              <div class="position-absolute top-50 start-50 translate-middle fw-bold">Natura</div>
             </div>
           </div>
         </div>
-
-
+        <div class="row g-3 justify-content-center">
+          <!-- Romantico -->
+          <div class="col-6 text-center">
+            <div class="d-inline-block position-relative">
+              <svg height="100" width="100">
+                <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
+                <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                        [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
+              </svg>
+              <div class="position-absolute top-50 start-50 translate-middle fw-bold">Romantico</div>
+            </div>
+          </div>
+          <!-- Famiglia -->
+          <div class="col-6 text-center">
+            <div class="d-inline-block position-relative">
+              <svg height="100" width="100">
+                <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
+                <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                        [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
+              </svg>
+              <div class="position-absolute top-50 start-50 translate-middle fw-bold">Famiglia</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-

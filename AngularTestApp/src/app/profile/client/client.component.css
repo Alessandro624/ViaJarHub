@@ -28,10 +28,11 @@
   transition: width 0.5s ease;
 }
 
+/*
 svg {
   transform: rotate(-90deg);
 }
-
+*/
 .card-data {
   border: 1px solid #E9E9E9;
   background-color: #F5F5F5;
@@ -61,10 +62,10 @@ svg {
   visibility: visible;
 }
 
-
+/*
 .btn-remove {
   background-color: transparent;
-  border-color: var(--bs-danger); /* Bootstrap danger color */
+  border-color: var(--bs-danger); /* Bootstrap danger color
   color: var(--bs-danger);
   display: flex;
   align-items: center;
@@ -77,18 +78,20 @@ svg {
 }
 
 .btn-remove:hover {
-  background-color: var(--bs-danger); /* Bootstrap danger color */
+  background-color: var(--bs-danger); /* Bootstrap danger color
   color: white;
 }
 
 .btn-remove:hover .trashicon {
-  filter: invert(1); /* Change the icon color to white */
+  filter: invert(1); /* Change the icon color to white
 }
+*/
 
 .prova {
   transition: stroke-dasharray 0.3s ease-in-out;
 }
 
+/*
 .position-relative {
   text-align: center;
 }
@@ -97,8 +100,4 @@ svg {
   display: block;
   margin: auto;
 }
-
-strong {
-  font-size: 1rem;
-  color: #333;
-}
+*/

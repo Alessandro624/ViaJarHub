@@ -69,8 +69,6 @@
   }
 }
 
-/*TODO forse usando bootstrap non servono queste*/
-
 /* Aggiungi media query per rendere il testo e il form responsive */
 @media (max-width: 768px) {
   .overlay {

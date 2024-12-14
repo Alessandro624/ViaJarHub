@@ -80,8 +80,6 @@ export class FiltriComponent {
     return `${day}-${month}-${year}`;
   }
 
-  /*TODO da rivedere l'ottenimento dei filtri relativi al tipo*/
-
   filters = {
     date: new Date(),
     priceRange: {
