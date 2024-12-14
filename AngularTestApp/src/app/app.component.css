@@ -11,3 +11,28 @@
   width: 35%; /* Imposta la larghezza desiderata */
   height: auto; /* Mantiene le proporzioni */
 }
+
+.dropdown-menu {
+  width: 300px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+footer {
+  background: #343a40;
+  color: #f8f9fa;
+}
+
+footer p {
+  margin: 0;
+}

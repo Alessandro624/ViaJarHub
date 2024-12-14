@@ -1,1 +1,171 @@
-<p>login works!</p>
+<!--TODO close dropdown after login/register (facile con reload dell'header dovuto al cambio dell'user con backend)-->
+
+@if (currentForm === 'login') {
+  <form id="loginForm" (ngSubmit)="onLogin()" method="POST">
+    <h3 class="mb-3">Accedi</h3>
+    <div class="mb-3">
+      <label for="loginEmail" class="form-label">Email</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+        <input id="loginEmail" type="email" class="form-control" [(ngModel)]="email" name="email" required
+               (input)="emailError = ''"
+               [class.is-invalid]="emailError">
+        @if (emailError) {
+          <div class="invalid-feedback">{{ emailError }}</div>
+        }
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="loginPassword" class="form-label">Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+        <input id="loginPassword" type="password" class="form-control" [(ngModel)]="password" name="password" required
+               (input)="passwordError = ''"
+               [class.is-invalid]="passwordError">
+        @if (passwordError) {
+          <div class="invalid-feedback">{{ passwordError }}</div>
+        }
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Accedi</button>
+    <!--TODO login con google-->
+  </form>
+  <div class="text-center mt-2">
+    <a href="#" id="registerLink" (click)="preventClose($event); changeForm('register')">Registrati</a> |
+    <a href="#" id="forgotPasswordLink" (click)="preventClose($event); changeForm('forgotPasswordEmail')">Password
+      dimenticata?</a>
+  </div>
+} @else if (currentForm === 'register') {
+  <form id="registerForm" (ngSubmit)="onRegister()" method="POST">
+    <h3 class="mb-3">Registrati</h3>
+    <div class="mb-3">
+      <label for="registerEmail" class="form-label">Email</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+        <input
+          id="registerEmail"
+          type="email"
+          class="form-control"
+          [(ngModel)]="email"
+          name="email"
+          required
+          (input)="emailError = ''"
+          [class.is-invalid]="emailError">
+        @if (emailError) {
+          <div class="invalid-feedback">{{ emailError }}</div>
+        }
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="registerPassword" class="form-label">Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+        <input
+          id="registerPassword"
+          type="password"
+          class="form-control"
+          [(ngModel)]="password"
+          name="password"
+          required
+          (input)="passwordError = ''"
+          [class.is-invalid]="passwordError">
+        @if (passwordError) {
+          <div class="invalid-feedback">{{ passwordError }}</div>
+        }
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="confirmPassword" class="form-label">Conferma Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+        <input
+          id="confirmPassword"
+          type="password"
+          class="form-control"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          required
+          (input)="confirmPasswordError = ''"
+          [class.is-invalid]="confirmPasswordError">
+        @if (confirmPasswordError) {
+          <div class="invalid-feedback">{{ confirmPasswordError }}</div>
+        }
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success w-100">Registrati</button>
+    <!--TODO login con google-->
+  </form>
+  <div class="text-center mt-3">
+    <a href="#" (click)="preventClose($event); changeForm('login')">Hai già un account? Accedi</a>
+  </div>
+} @else if (currentForm === 'forgotPasswordEmail') {
+  <form id="forgotPasswordEmailForm" (ngSubmit)="onForgotPasswordEmail()" method="POST">
+    <h3 class="mb-3">Recupera Password</h3>
+    <div class="mb-3">
+      <label for="forgotPasswordEmail" class="form-label">Email</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+        <input
+          id="forgotPasswordEmail"
+          type="email"
+          class="form-control"
+          [(ngModel)]="email"
+          name="email"
+          required
+          (input)="emailError = ''"
+          [class.is-invalid]="emailError">
+        @if (emailError) {
+          <div class="invalid-feedback">{{ emailError }}</div>
+        }
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Invia</button>
+  </form>
+  <div class="text-center mt-3">
+    <a href="#" (click)="preventClose($event); changeForm('login')">Torna all'accesso</a>
+  </div>
+} @else if (currentForm === 'resetPassword') {
+  <form id="resetPasswordForm" (ngSubmit)="onResetPassword()" method="POST">
+    <h3 class="mb-3">Nuova Password</h3>
+    <div class="mb-3">
+      <label for="resetPassword" class="form-label">Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+        <input
+          id="resetPassword"
+          type="password"
+          class="form-control"
+          [(ngModel)]="password"
+          name="password"
+          required
+          (input)="passwordError = ''"
+          [class.is-invalid]="passwordError">
+        @if (passwordError) {
+          <div class="invalid-feedback">{{ passwordError }}</div>
+        }
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="confirmResetPassword" class="form-label">Conferma Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+        <input
+          id="confirmResetPassword"
+          type="password"
+          class="form-control"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          required
+          (input)="confirmPasswordError = ''"
+          [class.is-invalid]="confirmPasswordError">
+        @if (confirmPasswordError) {
+          <div class="invalid-feedback">{{ confirmPasswordError }}</div>
+        }
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success w-100">Imposta Password</button>
+  </form>
+  <div class="text-center mt-3">
+    <a href="#" (click)="preventClose($event); changeForm('login')">Torna all'accesso</a>
+  </div>
+}
