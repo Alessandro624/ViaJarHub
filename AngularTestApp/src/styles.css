@@ -1,0 +1,30 @@
+/* Modifica per btn-primary */
+.btn-primary {
+  background-color: white; /* Sfondo bianco */
+  color: var(--bs-primary); /* Testo del colore primary */
+  border: 2px solid var(--bs-primary); /* Bordo primary */
+  transition: all 0.3s ease; /* Transizione fluida */
+  outline: none; /* Rimuove il bordo blu */
+}
+
+/* Effetto hover */
+.btn-primary:hover {
+  background-color: var(--bs-primary); /* Riempie il bottone */
+  color: white; /* Testo bianco */
+  border-color: var(--bs-primary); /* Mantiene il bordo primary */
+}
+
+/* Focus state (opzionale) */
+.btn-primary:focus {
+  outline: none; /* Rimuove il bordo focus blu */
+  box-shadow: none; /* Rimuove anche l'ombra focus */
+}
+
+/* Active state */
+.btn-primary:active {
+  background-color: var(--bs-primary); /* Colore di sfondo primary */
+  color: white; /* Testo bianco */
+  border-color: var(--bs-primary); /* Mantiene il bordo primary */
+  outline: none; /* Rimuove il bordo focus */
+  box-shadow: none; /* Rimuove ombre focus */
+}
