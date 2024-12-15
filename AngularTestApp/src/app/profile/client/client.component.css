@@ -28,11 +28,11 @@
   transition: width 0.5s ease;
 }
 
-/*
-svg {
+
+.torta {
   transform: rotate(-90deg);
 }
-*/
+
 .card-data {
   border: 1px solid #E9E9E9;
   background-color: #F5F5F5;

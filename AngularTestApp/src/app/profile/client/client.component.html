@@ -12,7 +12,9 @@
         <!-- User Info -->
         <div class="d-flex flex-column">
           <div class="d-flex align-items-center"><h4 class="mb-1 me-2">Abdul Hakim</h4>
-            <button class="btn btn-sm btn-primary edit-btn">modifica</button>
+            <button class="btn btn-sm btn-primary edit-btn" (click)="openPopup()">modifica</button>
+
+
           </div>
           <p class="text-muted mb-0">Cliente</p> <small class="text-muted">Join at 20 09 2019</small></div>
       </div>
@@ -26,7 +28,21 @@
       </div>
     </div>
   </div>
-
+  <div class="modal fade" [ngClass]="{'show': isPopupVisible}"
+       [ngStyle]="{'display': isPopupVisible ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifica profilo</h5>
+          <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body shadow-lg ">
+          <!-- Contenuto del modale -->
+          <app-update-user (closeModal)="closePopup()"></app-update-user>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Skills and Stats Section -->
   <div class="row mt-4 mb-3">
     <!-- Skills -->
@@ -37,18 +53,16 @@
           <div class="row">
             <div class="col ms-2">
               <h5 class="card-title  mt-2 mb-0 fw-bold">Nome del Prodotto</h5>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9734;</span>
+              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+              <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
               <span class="card-date ms-3 no-wrap">01 dicembre</span>
             </div>
             <div class="col-2 d-flex align-items-center">
               <button class="btn btn-outline-danger">
                 <i class="fa-solid fa-trash"></i>
-                <!--img src="trash-bin-outline-svgrepo-com.svg" alt="" class="img-fluid trashicon"-->
-                <!-- Codice Unicode per il cestino -->
               </button>
             </div>
           </div>
@@ -66,11 +80,11 @@
         <div class="card-data m-3" *ngFor="let card of [1, 2, 3]">
           <h5 class="card-title ms-2 mt-2 mb-0 fw-bold">Nome del Viaggio recensito</h5>
           <div class="card-rating ms-2 ">
-            <span class="star">&#9733;</span>
-            <span class="star">&#9733;</span>
-            <span class="star">&#9733;</span>
-            <span class="star">&#9733;</span>
-            <span class="star">&#9734;</span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
           </div>
           <p class="card-text mb-1 ms-2">Questa è una breve descrizione del prodotto. È un ottimo prodotto che vale la
             pena
@@ -81,14 +95,14 @@
     <!-- Hobby Activity -->
     <div class="col-md-6">
       <div class="card p-3 shadow-sm container-fluid">
-        <h5 class="fw-bold">Ami i viaggi di tipo: Famiglia!</h5>
+        <h5 class="fw-bold mb-3">Ami i viaggi di tipo: Famiglia!</h5>
         <div class="row g-3 justify-content-center">
           <!-- Cultura -->
           <div class="col-6 text-center">
             <div class="d-inline-block position-relative">
-              <svg height="100" width="100">
+              <svg class="torta" height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
-                <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                <circle class="prova" cx="50" cy="50" r="45" stroke="#F5F5F5" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
               </svg>
               <div class="position-absolute top-50 start-50 translate-middle fw-bold">Cultura</div>
@@ -97,7 +111,7 @@
           <!-- Relax -->
           <div class="col-6 text-center">
             <div class="d-inline-block position-relative">
-              <svg height="100" width="100">
+              <svg class="torta" height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
                 <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
@@ -110,7 +124,7 @@
           <!-- Natura -->
           <div class="col-12 text-center">
             <div class="d-inline-block position-relative">
-              <svg height="100" width="100">
+              <svg class="torta" height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
                 <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
@@ -123,7 +137,7 @@
           <!-- Romantico -->
           <div class="col-6 text-center">
             <div class="d-inline-block position-relative">
-              <svg height="100" width="100">
+              <svg class="torta" height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
                 <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
@@ -134,7 +148,7 @@
           <!-- Famiglia -->
           <div class="col-6 text-center">
             <div class="d-inline-block position-relative">
-              <svg height="100" width="100">
+              <svg class="torta" height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
                 <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>

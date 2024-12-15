@@ -1,16 +1,23 @@
-import {Component, OnInit} from '@angular/core';
-import {NgForOf} from "@angular/common";
+import {Component, contentChildren, OnInit, ViewChild} from '@angular/core';
+import {NgClass, NgForOf, NgStyle} from "@angular/common";
+import {FormsModule} from '@angular/forms';
+import {AddTravelComponent} from '../../add-travel/add-travel.component';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    FormsModule,
+    AddTravelComponent,
+    NgClass,
+    NgStyle
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
 export class AdminComponent implements OnInit {
+  @ViewChild(AddTravelComponent) addTravelComponent: AddTravelComponent | undefined;
   // Valori finali
   finalDailyIncome = 102;
   finalMonthlyIncome = 102;
@@ -44,6 +51,17 @@ export class AdminComponent implements OnInit {
     this.initializeAnimation();
     this.animateValues();
 
+  }
+
+  isPopupVisible = false;
+
+  openPopup() {
+    this.isPopupVisible = true;
+  }
+
+  closePopup() {
+    this.isPopupVisible = false;
+    this.addTravelComponent?.resetData();
   }
 
   // Metodo per inizializzare l'animazione

@@ -17,7 +17,9 @@
           <p class="text-muted mb-0">Admin</p> <small class="text-muted">Join at 20 09 2019</small></div>
       </div>
       <div class="col-2 mt-5">
-        <button class="btn btn-primary">Add</button>
+        <button class="btn btn-primary" (click)="openPopup()">
+          Add
+        </button>
       </div>
       <div class="col-lg-6 col-12">
         <div class="row">
@@ -30,21 +32,38 @@
     </div>
   </div>
 
+  <!--Pop up page-->
+  <div class="modal fade" [ngClass]="{'show': isPopupVisible}"
+       [ngStyle]="{'display': isPopupVisible ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Aggiungi un viaggio</h5>
+          <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body shadow-lg">
+          <!-- Contenuto del modale -->
+          <app-add-travel (closeModal)="closePopup()"></app-add-travel>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Skills and Stats Section -->
   <div class="row mt-4 mb-3">
     <!-- Skills -->
     <div class="col-lg-6 mb-4">
-      <div class="card p-3 shadow-sm">
-        <h5 class="fw-bold">Viaggi più votati</h5>
-        <div class="card-data m-3" *ngFor="let card of [1, 2, 3]">
+      <div class="card p-3 mb-2 shadow-sm">
+        <h5 class="fw-bold  mb-4">Viaggi più votati</h5>
+        <div class="card-data  m-3" *ngFor="let card of [1, 2, 3]">
           <div class="row">
             <div class="col mx-2">
               <h5 class="card-title  mt-2 mb-0 fw-bold">Nome del Prodotto</h5>
-              <span class="star"><i class="fa-solid fa-star"></i></span>
-              <span class="star"><i class="fa-solid fa-star"></i></span>
-              <span class="star"><i class="fa-solid fa-star"></i></span>
-              <span class="star"><i class="fa-solid fa-star"></i></span>
-              <span class="star"><i class="fa-solid fa-star-half"></i></span>
+              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+              <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
             </div>
           </div>
         </div>
@@ -87,11 +106,11 @@
         <div class="card-data m-3" *ngFor="let card of [1, 2, 3]">
           <h5 class="card-title ms-2 mt-2 mb-0 fw-bold">Nome del Viaggio recensito</h5>
           <div class="card-rating ms-2 ">
-            <span class="star"><i class="fa-solid fa-star"></i></span>
-            <span class="star"><i class="fa-solid fa-star"></i></span>
-            <span class="star"><i class="fa-solid fa-star"></i></span>
-            <span class="star"><i class="fa-solid fa-star"></i></span>
-            <span class="star"><i class="fa-regular fa-star"></i></span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-regular fa-star fa-xs"></i></span>
           </div>
           <p class="card-text mb-1 ms-2">Questa è una breve descrizione del prodotto. È un ottimo prodotto che vale la
             pena

@@ -1,0 +1,118 @@
+<div>
+  <form (ngSubmit)="onSubmit()" #form="ngForm">
+    <!-- Campo di testo: Titolo -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Titolo</label>
+      <input
+        type="text"
+        id="title"
+        class="form-control"
+        [(ngModel)]="formData.title"
+        name="title"
+        required
+      />
+    </div>
+
+    <!-- Date Picker: Data di Inizio -->
+    <div class="mb-3">
+      <label for="startDate" class="form-label">Data di Partenza</label>
+      <input
+        type="date"
+        id="startDate"
+        class="form-control"
+        [(ngModel)]="formData.startDate"
+        name="startDate"
+        (change)="validateDates()"
+        [min]="today"
+        required
+      />
+      <div *ngIf="dateErrors.startDateInvalid" class="text-danger">
+        La data di partenza non può essere minore di oggi.
+      </div>
+    </div>
+
+    <!-- Date Picker: Data di Fine -->
+    <div class="mb-3">
+      <label for="endDate" class="form-label">Data di Ritorno</label>
+      <input
+        type="date"
+        id="endDate"
+        class="form-control"
+        [(ngModel)]="formData.endDate"
+        name="endDate"
+        (change)="validateDates()"
+        [min]="formData.startDate || today"
+        required
+      />
+      <div *ngIf="dateErrors.endDateInvalid" class="text-danger">
+        La data di ritorno non può essere minore della data di partenza.
+      </div>
+    </div>
+
+    <!-- Campo di testo: Prezzo -->
+    <div class="mb-3"><label for="price" class="form-label">Prezzo</label> <input type="text" id="price"
+                                                                                  class="form-control"
+                                                                                  [(ngModel)]="formData.price"
+                                                                                  name="price"
+                                                                                  (input)="validateAndFormatPrice($event)"
+                                                                                  required/>
+    </div>
+
+    <div class="mb-3"><label for="seats" class="form-label">Numero Posti</label> <input type="number" id="seats"
+                                                                                        class="form-control"
+                                                                                        [(ngModel)]="formData.seats"
+                                                                                        name="seats" min="1" required/>
+    </div>
+    <!-- Textarea: Descrizione -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Descrizione</label>
+      <textarea
+        id="description"
+        class="form-control"
+        [(ngModel)]="formData.description"
+        name="description"
+        rows="4"
+        required
+      ></textarea>
+    </div>
+
+    <!-- Drop area per immagini -->
+    <div class="mb-3">
+      <label for="images" class="form-label">Carica Immagini</label>
+      <div
+        class="drop-area border border-primary p-3 text-center"
+        (click)="triggerFileInput()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+      >
+        <p>Trascina qui le immagini o clicca per selezionarle</p>
+        <!-- Input file nascosto -->
+        <input
+          #fileInput
+          type="file"
+          id="images"
+          class="d-none"
+          (change)="onFileSelect($event)"
+          multiple
+        />
+      </div>
+      <ul class="mt-2">
+        <li class="mb-2" *ngFor="let image of selectedImages; let i = index">
+          {{ image.name }}
+          <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
+        </li>
+      </ul>
+      <p class="mt-2">Numero di immagini caricate: <strong>{{ selectedImages.length }}</strong></p>
+    </div>
+
+    <!-- Pulsante di invio -->
+    <button
+      type="submit"
+      class="btn btn-success"
+      [disabled]="form.invalid || selectedImages.length === 0 || hasDateErrors()"
+    >
+      Invia
+    </button>
+  </form>
+</div>

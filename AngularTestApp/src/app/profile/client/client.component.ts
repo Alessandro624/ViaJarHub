@@ -1,11 +1,17 @@
 import {Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
-import {isPlatformBrowser, NgForOf} from "@angular/common";
+import {isPlatformBrowser, NgClass, NgForOf, NgStyle} from "@angular/common";
+import {AddTravelComponent} from '../../add-travel/add-travel.component';
+import {UpdateUserComponent} from '../../update-user/update-user.component';
 
 @Component({
   selector: 'app-client',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    AddTravelComponent,
+    NgClass,
+    NgStyle,
+    UpdateUserComponent
   ],
   templateUrl: './client.component.html',
   styleUrl: './client.component.css'
@@ -22,13 +28,11 @@ export class ClientComponent implements OnInit {
   }
 
   animateStrokeDashArray() {
-    if (isPlatformBrowser(this.platformId)) {
-      const circles = document.querySelectorAll<SVGCircleElement>('.prova');
-      circles.forEach((circle, index) => {
-        const endValue = this.strokeDashArrayEnd[index];
-        this.animateValue(circle, this.strokeDashArrayStart, endValue);
-      });
-    }
+    const circles = document.querySelectorAll<SVGCircleElement>('.prova');
+    circles.forEach((circle, index) => {
+      const endValue = this.strokeDashArrayEnd[index];
+      this.animateValue(circle, this.strokeDashArrayStart, endValue);
+    });
   }
 
   animateValue(element: SVGCircleElement, from: string, to: string) {
@@ -48,5 +52,15 @@ export class ClientComponent implements OnInit {
     animation();
   }
 
+  isPopupVisible = false;
+
+  openPopup() {
+    this.isPopupVisible = true;
+  }
+
+  closePopup() {
+    this.isPopupVisible = false;
+
+  }
 
 }

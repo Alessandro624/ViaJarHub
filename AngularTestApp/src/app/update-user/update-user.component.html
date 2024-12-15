@@ -1,0 +1,69 @@
+<div>
+  <form (ngSubmit)="onSubmit()" #form="ngForm">
+    <!-- Campo di testo: Titolo -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Nome</label>
+      <input
+        type="text"
+        id="title"
+        class="form-control"
+        [(ngModel)]="formData.nome"
+        name="title"
+        pattern="^[a-zA-Zà-üÀ-Ü\s]*$"
+        required
+      />
+    </div>
+
+    <!-- Date Picker: Data di Inizio -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Cognome</label>
+      <input
+        type="text"
+        id="Cognome"
+        class="form-control"
+        [(ngModel)]="formData.cognome"
+        name="title"
+        pattern="^[a-zA-Zà-üÀ-Ü\s]*$"
+        required
+      />
+    </div>
+
+
+    <!-- Drop area per immagini -->
+    <div class="mb-3">
+      <label for="images" class="form-label">Carica Immagini</label>
+      <div
+        class="drop-area border border-primary p-3 text-center"
+        (click)="triggerFileInput()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+      >
+        <p>Trascina qui le immagini o clicca per selezionarle</p>
+        <!-- Input file nascosto -->
+        <input
+          #fileInput
+          type="file"
+          id="images"
+          class="d-none"
+          (change)="onFileSelect($event)"
+        />
+      </div>
+      <div class="mt-2">
+        @if (formData.image != null) {
+          <p>{{ formData.image.name }}</p>
+        }
+      </div>
+    </div>
+
+    <!-- Pulsante di invio -->
+    <button
+      type="submit"
+      class="btn btn-success"
+      [disabled]="form.invalid || formData.image==null || hasDateErrors()"
+    >
+      Modifica
+    </button>
+
+  </form>
+</div>
