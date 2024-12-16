@@ -1,5 +1,5 @@
 import {OnInit, OnDestroy, Component, ElementRef, PLATFORM_ID, Inject} from '@angular/core';
-import {isPlatformBrowser} from '@angular/common';
+import {isPlatformBrowser, NgForOf} from '@angular/common';
 import {TravelService} from '../travel.service';
 import {ActivatedRoute} from '@angular/router';
 import {Travel} from '../models/travel/travel.module';
@@ -8,7 +8,9 @@ import {Travel} from '../models/travel/travel.module';
   selector: 'app-carousel',
   standalone: true,
   templateUrl: './carousel.component.html',
-  imports: [],
+  imports: [
+    NgForOf
+  ],
   styleUrls: ['./carousel.component.css']
 })
 

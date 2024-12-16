@@ -47,12 +47,83 @@
     <!--TODO login con google-->
   </form>
   <div class="text-center mt-2">
-    <a href="#" id="registerLink" (click)="preventClose($event); changeForm('register')">Registrati</a> |
+    <a href="#" id="registerLink" (click)="preventClose($event); changeForm('registerStep1')">Registrati</a> |
     <a href="#" id="forgotPasswordLink" (click)="preventClose($event); changeForm('forgotPasswordEmail')">Password
       dimenticata?</a>
   </div>
-} @else if (currentForm === 'register') {
-  <form id="registerForm" (ngSubmit)="onRegister()" method="POST">
+} @else if (currentForm === 'registerStep1') {
+  <form id="registerStep1Form" (ngSubmit)="onRegisterStep1()" method="POST">
+    <h3 class="mb-3">Registrati</h3>
+    <div class="input-group" [class.is-invalid-container]="firstNameError">
+      <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+      <div class="form-floating flex-grow-1">
+        <input
+          id="registerFirstName"
+          type="text"
+          class="form-control"
+          [(ngModel)]="firstName"
+          name="firstName"
+          required
+          (input)="firstNameError = ''"
+          [class.is-invalid]="firstNameError"
+          placeholder="Nome">
+        <label for="registerFirstName">Nome</label>
+      </div>
+    </div>
+    @if (firstNameError) {
+      <div class="invalid-feedback d-block">{{ firstNameError }}</div>
+    }
+    <div class="input-group mt-3" [class.is-invalid-container]="lastNameError">
+      <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+      <div class="form-floating flex-grow-1">
+        <input
+          id="registerLastName"
+          type="text"
+          class="form-control"
+          [(ngModel)]="lastName"
+          name="lastName"
+          required
+          (input)="lastNameError = ''"
+          [class.is-invalid]="lastNameError"
+          placeholder="Cognome">
+        <label for="registerLastName">Cognome</label>
+      </div>
+    </div>
+    @if (lastNameError) {
+      <div class="invalid-feedback d-block">{{ lastNameError }}</div>
+    }
+    <div class="input-group mt-3" [class.is-invalid-container]="telephoneError">
+      <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+      <div class="form-floating flex-grow-1">
+        <input
+          id="registerTelephone"
+          type="tel"
+          class="form-control"
+          [(ngModel)]="telephone"
+          name="telephone"
+          required
+          (input)="telephoneError = ''"
+          [class.is-invalid]="telephoneError"
+          placeholder="Numero di Telefono">
+        <label for="registerTelephone">Numero di Telefono</label>
+      </div>
+    </div>
+    @if (telephoneError) {
+      <div class="invalid-feedback d-block">{{ telephoneError }}</div>
+    }
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary w-100">Prosegui</button>
+    </div>
+  </form>
+  <div class="text-center mt-3">
+    <a href="#" (click)="preventClose($event); changeForm('login')">Hai già un account? Accedi</a>
+  </div>
+  <!--TODO login con google-->
+} @else if (currentForm === 'registerStep2') {
+  <form id="registerStep2Form" (ngSubmit)="onRegisterStep2()" method="POST">
+    <button type="button" class="btn btn-outline-secondary mb-3" (click)="changeForm('registerStep1')">
+      <i class="fa-solid fa-arrow-left"></i> Indietro
+    </button>
     <h3 class="mb-3">Registrati</h3>
     <div class="input-group" [class.is-invalid-container]="emailError">
       <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
@@ -170,6 +241,9 @@
   </div>
 } @else if (currentForm === 'resetPassword') {
   <form id="resetPasswordForm" (ngSubmit)="onResetPassword()" method="POST">
+    <button type="button" class="btn btn-outline-secondary mb-3" (click)="changeForm('forgotPasswordEmail')">
+      <i class="fa-solid fa-arrow-left"></i> Indietro
+    </button>
     <h3 class="mb-3">Nuova Password</h3>
     <div class="input-group" [class.is-invalid-container]="passwordError">
       <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
