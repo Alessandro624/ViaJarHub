@@ -20,6 +20,8 @@ export class LoginComponent implements OnInit {
   passwordError: string = '';
   confirmPasswordError: string = '';
   currentForm: 'login' | 'register' | 'forgotPasswordEmail' | 'resetPassword' = 'login';
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
 
   constructor(private _router: Router) {
   }
@@ -98,6 +100,8 @@ export class LoginComponent implements OnInit {
     this.recoveryEmail = '';
     this.password = '';
     this.confirmPassword = '';
+    this.showPassword = false;
+    this.showConfirmPassword = false;
   }
 
   private resetErrorLabels() {
@@ -124,6 +128,14 @@ export class LoginComponent implements OnInit {
     } else if (!this.validatePassword(this.confirmPassword)) {
       this.confirmPasswordError = 'La password deve contenere almeno 8 caratteri, un numero, una maiuscola e un carattere speciale.';
     }
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   preventClose($event: MouseEvent) {
