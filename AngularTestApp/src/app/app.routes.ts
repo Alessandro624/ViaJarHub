@@ -11,7 +11,7 @@ export const routes: Routes = [
   {path: '', redirectTo: 'body1', pathMatch: 'full'},
   {path: 'body1', component: Body1Component},
   {
-    path: 'prova', component: TravelDetailComponent, children: [
+    path: 'body1/:id', component: TravelDetailComponent, children: [
       {path: 'img', component: CarouselComponent},
       {path: 'info', component: InfotravelComponent},
       {path: '', redirectTo: 'info', pathMatch: 'full'}

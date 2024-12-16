@@ -2,6 +2,7 @@
 import {Component, Output, EventEmitter, ElementRef, ViewChild} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
+import {Travel} from '../models/travel/travel.module';
 
 @Component({
   selector: 'app-add-travel',
@@ -17,22 +18,42 @@ export class AddTravelComponent {
   @Output() closeModal = new EventEmitter<void>();
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   today: string = new Date().toISOString().split('T')[0];
-  formData = {title: '', startDate: '', endDate: '', description: '', price: null, seats: null};
-  selectedImages: File[] = [];
+  travel: Travel = {
+    id: 0,
+    destinazione: '',
+    dataPartenza: '',
+    dataRitorno: '',
+    descrizione: '',
+    prezzo: 0,
+    postiDisponibile: 0,
+    tipo: '',
+    numeroStelle: 0,
+    immagini: []
+  };
   dateErrors = {startDateInvalid: false, endDateInvalid: false};
 
   resetData() {
-    this.formData = {title: '', startDate: '', endDate: '', description: '', price: null, seats: null};
-    this.selectedImages = [];
+    this.travel = {
+      id: 0,
+      destinazione: '',
+      dataPartenza: '',
+      dataRitorno: '',
+      descrizione: '',
+      prezzo: 0,
+      postiDisponibile: 0,
+      tipo: '',
+      numeroStelle: 0,
+      immagini: []
+    };
     this.dateErrors = {startDateInvalid: false, endDateInvalid: false};
   }
 
   onSubmit() {
-    console.log('Dati del form:', this.formData);
-    console.log('Immagini caricate:', this.selectedImages);
+    console.log('Dati del form:', this.travel);
+    console.log('Immagini caricate:', this.travel.immagini);
 
     // Mostra conferma e chiudi il modale
-    alert(`Form inviato con successo!\nTitolo: ${this.formData.title}\nData di Partenza: ${this.formData.startDate}\nData di Ritorno: ${this.formData.endDate}\nDescrizione: ${this.formData.description}\nNumero di immagini: ${this.selectedImages.length}`);
+    alert(`Form inviato con successo!\nDestinazione: ${this.travel.destinazione}\nData di Partenza: ${this.travel.dataPartenza}\nData di Ritorno: ${this.travel.dataRitorno}\nDescrizione: ${this.travel.descrizione}\nNumero di immagini: ${this.travel.immagini.length}`);
     this.closeModal.emit();
     this.resetData();
   }
@@ -43,7 +64,7 @@ export class AddTravelComponent {
     if (!pricePattern.test(input)) {
       event.target.value = input.slice(0, -1);
     } else {
-      this.formData.price = input;
+      this.travel.prezzo = input;
     }
   }
 
@@ -77,9 +98,9 @@ export class AddTravelComponent {
 
   validateDates() {
     const today = new Date();
-    const startDate = new Date(this.formData.startDate);
-    const endDate = new Date(this.formData.endDate); // Controlla se la data di partenza è minore di oggi (solo se una data di partenza è stata inserita) if (this.formData.startDate) { this.dateErrors.startDateInvalid = startDate < today.setHours(0, 0, 0, 0); } else { this.dateErrors.startDateInvalid = false; } // Controlla se la data di ritorno è minore della data di partenza (solo se entrambe le date sono state inserite)
-    if (this.formData.startDate && this.formData.endDate) {
+    const startDate = new Date(this.travel.dataPartenza);
+    const endDate = new Date(this.travel.dataRitorno); // Controlla se la data di partenza è minore di oggi (solo se una data di partenza è stata inserita) if (this.formData.startDate) { this.dateErrors.startDateInvalid = startDate < today.setHours(0, 0, 0, 0); } else { this.dateErrors.startDateInvalid = false; } // Controlla se la data di ritorno è minore della data di partenza (solo se entrambe le date sono state inserite)
+    if (this.travel.dataPartenza && this.travel.dataRitorno) {
       this.dateErrors.endDateInvalid = endDate < startDate;
     } else {
       this.dateErrors.endDateInvalid = false;
@@ -92,12 +113,12 @@ export class AddTravelComponent {
 
   private addFiles(files: FileList) {
     for (let i = 0; i < files.length; i++) {
-      this.selectedImages.push(files[i]);
+      this.travel.immagini.push(files[i]);
     }
   }
 
   removeImage(index: number) {
-    this.selectedImages.splice(index, 1);
+    this.travel.immagini.splice(index, 1);
   }
 
 }

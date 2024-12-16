@@ -28,11 +28,7 @@
   transition: width 0.5s ease;
 }
 
-/*
-svg {
-  transform: rotate(-90deg);
-}
-*/
+
 .card-data {
   border: 1px solid #E9E9E9;
   background-color: #F5F5F5;
@@ -107,4 +103,9 @@ small {
     max-width: 30px; /* Barre più strette su schermi piccoli */
     height: 180px; /* Altezza del contenitore ridotta */
   }
+}
+
+.modal-body {
+  overflow-y: auto;
+  height: 500px; /*soluzione scroll bar*/
 }

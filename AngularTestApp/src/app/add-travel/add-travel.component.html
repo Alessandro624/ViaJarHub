@@ -2,12 +2,12 @@
   <form (ngSubmit)="onSubmit()" #form="ngForm">
     <!-- Campo di testo: Titolo -->
     <div class="mb-3">
-      <label for="title" class="form-label">Titolo</label>
+      <label for="title" class="form-label">Destinazione</label>
       <input
         type="text"
         id="title"
         class="form-control"
-        [(ngModel)]="formData.title"
+        [(ngModel)]="travel.destinazione"
         name="title"
         required
       />
@@ -20,15 +20,13 @@
         type="date"
         id="startDate"
         class="form-control"
-        [(ngModel)]="formData.startDate"
+        [(ngModel)]="travel.dataPartenza"
         name="startDate"
         (change)="validateDates()"
         [min]="today"
         required
       />
-      <div *ngIf="dateErrors.startDateInvalid" class="text-danger">
-        La data di partenza non può essere minore di oggi.
-      </div>
+
     </div>
 
     <!-- Date Picker: Data di Fine -->
@@ -38,21 +36,19 @@
         type="date"
         id="endDate"
         class="form-control"
-        [(ngModel)]="formData.endDate"
+        [(ngModel)]="travel.dataRitorno"
         name="endDate"
         (change)="validateDates()"
-        [min]="formData.startDate || today"
+        [min]="travel.dataPartenza || today"
         required
       />
-      <div *ngIf="dateErrors.endDateInvalid" class="text-danger">
-        La data di ritorno non può essere minore della data di partenza.
-      </div>
+
     </div>
 
     <!-- Campo di testo: Prezzo -->
     <div class="mb-3"><label for="price" class="form-label">Prezzo</label> <input type="text" id="price"
                                                                                   class="form-control"
-                                                                                  [(ngModel)]="formData.price"
+                                                                                  [(ngModel)]="travel.prezzo"
                                                                                   name="price"
                                                                                   (input)="validateAndFormatPrice($event)"
                                                                                   required/>
@@ -60,7 +56,7 @@
 
     <div class="mb-3"><label for="seats" class="form-label">Numero Posti</label> <input type="number" id="seats"
                                                                                         class="form-control"
-                                                                                        [(ngModel)]="formData.seats"
+                                                                                        [(ngModel)]="travel.postiDisponibile"
                                                                                         name="seats" min="1" required/>
     </div>
     <!-- Textarea: Descrizione -->
@@ -69,7 +65,7 @@
       <textarea
         id="description"
         class="form-control"
-        [(ngModel)]="formData.description"
+        [(ngModel)]="travel.descrizione"
         name="description"
         rows="4"
         required
@@ -98,19 +94,19 @@
         />
       </div>
       <ul class="mt-2">
-        <li class="mb-2" *ngFor="let image of selectedImages; let i = index">
+        <li class="mb-2" *ngFor="let image of travel.immagini; let i = index">
           {{ image.name }}
           <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
         </li>
       </ul>
-      <p class="mt-2">Numero di immagini caricate: <strong>{{ selectedImages.length }}</strong></p>
+      <p class="mt-2">Numero di immagini caricate: <strong>{{ travel.immagini.length }}</strong></p>
     </div>
 
     <!-- Pulsante di invio -->
     <button
       type="submit"
       class="btn btn-success"
-      [disabled]="form.invalid || selectedImages.length === 0 || hasDateErrors()"
+      [disabled]="form.invalid || travel.immagini.length === 0 || hasDateErrors()"
     >
       Invia
     </button>

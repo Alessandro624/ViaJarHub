@@ -1,8 +1,8 @@
-<a href="/prova">
+<a routerLink="{{travel.id}}">
   <div class="card">
     <img src="R.jpg" class="card-img-top" alt="Immagine della card">
     <div class="card-body">
-      <h5 class="card-title">Nome del Prodotto</h5>
+      <h5 class="card-title">{{ travel.destinazione }}</h5>
       <div class="card-rating mb-2">
         <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
         <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
@@ -11,9 +11,8 @@
         <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
 
       </div>
-      <p class="card-text mb-1">Questa è una breve descrizione del prodotto. È un ottimo prodotto che vale la pena
-        provare!</p>
-      <div class="card-date text-body-secondary">01 dicembre</div>
+      <p class="card-text mb-1">{{ travel.descrizione }}</p>
+      <div class="card-date text-body-secondary">{{ travel.dataPartenza }} - {{ travel.dataRitorno }}</div>
     </div>
   </div>
 </a>

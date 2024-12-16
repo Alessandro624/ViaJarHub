@@ -1,5 +1,7 @@
-import {Component} from '@angular/core';
-import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {Travel} from '../models/travel/travel.module';
+import {TravelService} from '../travel.service';
 
 @Component({
   selector: 'app-travel-detail',
@@ -12,8 +14,21 @@ import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
   templateUrl: './travel-detail.component.html',
   styleUrl: './travel-detail.component.css'
 })
-export class TravelDetailComponent {
-  // Qui puoi aggiungere logica personalizzata e dati per popolare dinamicamente il componente
+export class TravelDetailComponent implements OnInit {
+  travel!: Travel | undefined;
+
+  constructor(private travelservice: TravelService, private _activatedRoute: ActivatedRoute) {
+  }
+
+  ngOnInit() {
+    const id = Number(this._activatedRoute.snapshot.paramMap.get('id'));
+    if (id == null) {
+      throw new Error("Viaggio non trovato");
+
+    }
+    this.travel = this.travelservice.getTravelById(id);
+
+  }
 
 
 }

@@ -1,5 +1,8 @@
 import {OnInit, OnDestroy, Component, ElementRef, PLATFORM_ID, Inject} from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
+import {TravelService} from '../travel.service';
+import {ActivatedRoute} from '@angular/router';
+import {Travel} from '../models/travel/travel.module';
 
 @Component({
   selector: 'app-carousel',
@@ -11,8 +14,9 @@ import {isPlatformBrowser} from '@angular/common';
 
 export class CarouselComponent implements OnInit, OnDestroy {
   inBody: boolean = false; // Stato per indicare se è in Body1
+  travel!: Travel | undefined;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private travelservice: TravelService, private _activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -27,6 +31,14 @@ export class CarouselComponent implements OnInit, OnDestroy {
     if (this.inBody) {
       this.typeWriterEffect();
     }
+
+    const id = Number(this._activatedRoute.snapshot.paramMap.get('id'));
+    if (id == null) {
+      throw new Error("Viaggio non trovato");
+
+    }
+    this.travel = this.travelservice.getTravelById(id);
+
   }
 
   ngOnDestroy(): void {

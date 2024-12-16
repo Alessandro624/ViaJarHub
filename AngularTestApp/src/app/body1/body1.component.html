@@ -2,9 +2,13 @@
 
 <div class="container my-5">
   <app-filtri></app-filtri>
-  <div class="row" *ngFor="let card of [1, 2, 3]">
-    <div class="col-12 col-lg-4 my-3" *ngFor="let card of [1, 2, 3]">
-      <app-card></app-card>
+  <div class="row" *ngFor="let travelRow of travelsMatrix">
+    <div class="col-12 col-lg-4 my-3" *ngFor="let travel of travelRow">
+      <app-card *ngIf="travel" [travel]="travel"></app-card>
     </div>
   </div>
+  
+  @if (index < elementiTot) {
+    <button class="btn btn-primary " (click)="loadTravels()">View More</button>
+  }
 </div>
