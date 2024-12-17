@@ -77,20 +77,30 @@
     <div class="col-md-6 mb-4">
       <div class="card p-3 shadow-sm">
         <h5 class="fw-bold">Ultime recensioni</h5>
-        <div class="card-data m-3" *ngFor="let card of [1, 2, 3]">
-          <h5 class="card-title ms-2 mt-2 mb-0 fw-bold">Nome del Viaggio recensito</h5>
-          <div class="card-rating ms-2 ">
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
-          </div>
-          <p class="card-text mb-1 ms-2">Questa è una breve descrizione del prodotto. È un ottimo prodotto che vale la
-            pena
-            provare!</p>
+        <div *ngFor="let card of [1, 2, 3]">
+          <app-review></app-review>
         </div>
-        <button class="btn btn-primary w-50 ">aggiungi recensione</button>
+        <div class="row justify-content-center">
+          <div class="col-4">
+            <button class="btn btn-primary mt-2  " (click)="openPopup2()">aggiungi recensione</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal fade" [ngClass]="{'show': isPopupVisible2}"
+         [ngStyle]="{'display': isPopupVisible2 ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modifica profilo</h5>
+            <button type="button" class="btn-close" (click)="closePopup2()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body shadow-lg ">
+            <!-- Contenuto del modale -->
+            <app-add-review (closeModal)="closePopup2()"></app-add-review>
+          </div>
+        </div>
       </div>
     </div>
     <!-- Hobby Activity -->

@@ -39,3 +39,11 @@ footer {
 footer p {
   margin: 0;
 }
+
+.dropdown-item {
+  cursor: pointer;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+  background-color: #0D6EFD !important;
+}

@@ -129,7 +129,7 @@ export class AddTravelComponent {
   }
 
   addTravel() {
-    //aggiungere logica per modificare le date prima di inviarle
+    // TODO aggiungere logica per modificare le date prima di inviarle nel formato dd/mm/yyyy
     this.travelService.addTravel(this.travel);
 
   }

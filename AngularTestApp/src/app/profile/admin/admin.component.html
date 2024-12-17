@@ -108,18 +108,8 @@
     <div class="col-xl-6 mt-2 mb-4">
       <div class="card p-3 shadow-sm">
         <h5 class="fw-bold">Ultime recensioni</h5>
-        <div class="card-data m-3" *ngFor="let card of [1, 2, 3]">
-          <h5 class="card-title ms-2 mt-2 mb-0 fw-bold">Nome del Viaggio recensito</h5>
-          <div class="card-rating ms-2 ">
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-regular fa-star fa-xs"></i></span>
-          </div>
-          <p class="card-text mb-1 ms-2">Questa è una breve descrizione del prodotto. È un ottimo prodotto che vale la
-            pena
-            provare!</p>
+        <div *ngFor="let card of [1, 2, 3]">
+          <app-review></app-review>
         </div>
       </div>
     </div>

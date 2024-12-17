@@ -18,5 +18,6 @@
 }
 
 .dropdown-item:focus, .dropdown-item:hover {
-  background-color: white !important;
+  background-color: #0D6EFD !important;
 }
+

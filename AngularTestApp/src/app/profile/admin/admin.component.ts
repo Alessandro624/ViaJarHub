@@ -2,6 +2,7 @@ import {Component, contentChildren, OnInit, ViewChild} from '@angular/core';
 import {NgClass, NgForOf, NgStyle} from "@angular/common";
 import {FormsModule} from '@angular/forms';
 import {AddTravelComponent} from '../../add-travel/add-travel.component';
+import {ReviewComponent} from '../../review/review.component';
 
 @Component({
   selector: 'app-admin',
@@ -11,7 +12,8 @@ import {AddTravelComponent} from '../../add-travel/add-travel.component';
     FormsModule,
     AddTravelComponent,
     NgClass,
-    NgStyle
+    NgStyle,
+    ReviewComponent
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'

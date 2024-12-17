@@ -2,6 +2,8 @@ import {Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser, NgClass, NgForOf, NgStyle} from "@angular/common";
 import {AddTravelComponent} from '../../add-travel/add-travel.component';
 import {UpdateUserComponent} from '../../update-user/update-user.component';
+import {ReviewComponent} from '../../review/review.component';
+import {AddReviewComponent} from '../../add-review/add-review.component';
 
 @Component({
   selector: 'app-client',
@@ -11,7 +13,9 @@ import {UpdateUserComponent} from '../../update-user/update-user.component';
     AddTravelComponent,
     NgClass,
     NgStyle,
-    UpdateUserComponent
+    UpdateUserComponent,
+    ReviewComponent,
+    AddReviewComponent
   ],
   templateUrl: './client.component.html',
   styleUrl: './client.component.css'
@@ -62,5 +66,17 @@ export class ClientComponent implements OnInit {
     this.isPopupVisible = false;
 
   }
+
+  isPopupVisible2 = false;
+
+  openPopup2() {
+    this.isPopupVisible2 = true;
+  }
+
+  closePopup2() {
+    this.isPopupVisible2 = false;
+
+  }
+
 
 }

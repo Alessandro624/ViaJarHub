@@ -1,0 +1,20 @@
+.card-data {
+  border: 1px solid #E9E9E9;
+  background-color: #F5F5F5;
+  border-radius: 15px;
+}
+
+.data {
+  font-size: 0.9rem !important;
+}
+
+.star {
+  color: #ffcc00;
+}
+
+.card-date {
+  font-size: 0.9em;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}

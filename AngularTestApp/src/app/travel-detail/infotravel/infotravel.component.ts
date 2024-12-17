@@ -2,11 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {Travel} from '../../models/travel/travel.module';
 import {TravelService} from '../../travel.service';
 import {ActivatedRoute} from '@angular/router';
+import {ReviewComponent} from '../../review/review.component';
 
 @Component({
   selector: 'app-infotravel',
   standalone: true,
-  imports: [],
+  imports: [
+    ReviewComponent
+  ],
   templateUrl: './infotravel.component.html',
   styleUrl: './infotravel.component.css'
 })

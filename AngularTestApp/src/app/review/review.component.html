@@ -1,0 +1,63 @@
+<div class="card-data m-2 mb-3">
+  <div class="row mt-3 ms-1">
+    @if (inDetails) {
+      <div class="col-1 mt-1">
+        <i class="fa-solid fa-circle-user fa-2xl "></i>
+      </div>
+      <div class="col ms-2 ms-lg-2 ms-xl-0">
+        <h5 class="card-title mb-0 fw-bold">Nome del cliente</h5>
+        <div>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
+        </div>
+      </div>
+    } @else if (inClient) {
+      <div class="col-1">
+        <i class="fa-solid fa-circle-user fa-2xl "></i>
+      </div>
+      <div class="col ms-md-2 ms-lg-0">
+        <h6 class="card-title mb-0  fw-bold">Nome del viaggio</h6>
+        <div>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
+        </div>
+      </div>
+    } @else {
+      <div class="col-1 mt-2 ms-lg-2">
+        <i class="fa-solid fa-circle-user mt-1 fa-2xl "></i>
+      </div>
+      <div class="col ms-0">
+        <h5 class="card-title mb-0 fw-bold">Nome del viaggio</h5>
+        <h6 class="card-title mb-0 ">Nome del cliente</h6>
+        <div>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+          <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
+        </div>
+      </div>
+    }
+
+
+    <p class="card-text mb-1 ms-1 pe-3 ">Lorem ipsum odor amet, consectetuer adipiscing elit. Natoque porta ipsum
+      hendrerit id libero eleifend tempor odio. Ahac quisque, blandit cursus porttitor vitae feugiat cubilia. Eros
+      tempus mauris ac curabitur magnis lectus nascetur. Netus ut nam ante dolor lacinia semper nunc ligula. Aliquet
+      vestibulum velit parturient consequat aptent fringilla pharetra montes.</p>
+
+    <div class="row justify-content-end">
+      <div class="col-5">
+        <p class="text-body-secondary text-end data">01/01/2025</p>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

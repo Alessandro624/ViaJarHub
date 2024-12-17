@@ -1,0 +1,66 @@
+<div class="container mt-4">
+  <form>
+    <!-- Dropdown -->
+    <div class="mb-3">
+      <div class="mb-3 dropdown">
+        <button
+          class="btn border  dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          {{ selectedOption || 'Seleziona un tipo' }}
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li *ngFor="let option of dropdownOptions">
+            <a class="dropdown-item" (click)="selectType(option)">{{ option }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Selezione stelle -->
+    <div class="mb-3">
+      <label class="form-label fw-bold">Voto: {{ rating }}</label>
+      <div class="rating">
+  <span class="star" [ngClass]="{'filled': rating >= 1}" (click)="rate(1)">
+    <i class="fa-solid fa-star"></i>
+  </span>
+        <span class="star" [ngClass]="{'filled': rating >= 2}" (click)="rate(2)">
+    <i class="fa-solid fa-star"></i>
+  </span>
+        <span class="star" [ngClass]="{'filled': rating >= 3}" (click)="rate(3)">
+    <i class="fa-solid fa-star"></i>
+  </span>
+        <span class="star" [ngClass]="{'filled': rating >= 4}" (click)="rate(4)">
+    <i class="fa-solid fa-star"></i>
+  </span>
+        <span class="star" [ngClass]="{'filled': rating >= 5}" (click)="rate(5)">
+    <i class="fa-solid fa-star"></i>
+  </span>
+      </div>
+
+
+    </div>
+
+    <!-- Textarea -->
+    <div class="mb-3">
+      <label for="comment" class="form-label fw-bold">Commento</label>
+      <textarea
+        id="comment"
+        class="form-control"
+        rows="4"
+        placeholder="Scrivi un commento..."
+        [(ngModel)]="comment"
+        name="comment"
+        required
+      ></textarea>
+    </div>
+
+    <!-- Pulsante di invio -->
+    <button type="submit" class="btn btn-success" (click)="submitForm()" [disabled]="comment==''|| selectedOption=='' ">
+      Invia
+    </button>
+  </form>
+</div>
