@@ -1,4 +1,4 @@
-package it.unical.demacs.informatica.viajarhubbackend;
+package it.unical.demacs.informatica.viajarhubbackend.config.cors;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

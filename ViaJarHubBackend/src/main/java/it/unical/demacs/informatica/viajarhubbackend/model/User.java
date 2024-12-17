@@ -21,6 +21,8 @@ public class User implements UserDetails {
     private String password;
     private UserRole role;
     private AuthProvider authProvider;
+    private boolean enabled;
+    private String verificationToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -49,6 +51,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }
