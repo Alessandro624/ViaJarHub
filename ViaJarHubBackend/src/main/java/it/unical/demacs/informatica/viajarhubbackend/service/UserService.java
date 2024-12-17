@@ -1,5 +1,8 @@
 package it.unical.demacs.informatica.viajarhubbackend.service;
 
+import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.UserAlreadyExistsException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.UserNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.AuthProvider;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
 import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
@@ -13,7 +16,9 @@ import java.util.UUID;
 
 @Service
 public class UserService implements IUserService {
-    // TODO exception specifiche, password and email regex, gestione migliore creazione e update (casi di update dati e casi di update password dovuti a recovery request)
+    // TODO gestione migliore creazione e update (casi di update dati e casi di update password dovuti a recovery request)
+    // TODO eliminazione utente se non conferma l'email o se la conferma dell'email non viene inviata e magari dà errore
+    // TODO possibilità di reinvio mail nei termini di 15 minuti
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
     private final IEmailService emailService;
@@ -27,7 +32,7 @@ public class UserService implements IUserService {
     @Override
     public Optional<User> findByEmail(String email, AuthProvider provider) {
         User user = userDAO.findByEmail(email);
-        if (user == null || user.getAuthProvider() == provider) {
+        if (user == null || user.getAuthProvider() != provider) {
             return Optional.empty();
         }
         return Optional.of(user);
@@ -43,7 +48,7 @@ public class UserService implements IUserService {
         String token = UUID.randomUUID().toString();
         userDAO.save(new User(firstName, lastName, telephoneNumber, email, passwordEncoder.encode(password), role, provider, isEnabled, token));
         Optional<User> savedUser = findByEmail(email, provider);
-        if (provider != AuthProvider.LOCAL && savedUser.isPresent()) {
+        if (provider == AuthProvider.LOCAL && savedUser.isPresent()) {
             String confirmationURL = "http://localhost:8080/api/open/v1/verify-email?token=" + savedUser.get().getVerificationToken();
             emailService.sendEmail(savedUser.get().getEmail(), "ViaJarHub Verifica Email", "Clicca il link per verificare la tua email: " + confirmationURL);
         }
@@ -53,7 +58,7 @@ public class UserService implements IUserService {
     @Override
     public User updateUser(String email, User user) {
         if (user == null) {
-            throw new IllegalArgumentException("User cannot be null");
+            throw new InvalidInputException("User cannot be null");
         }
         checkNotNullFields(user.getFirstName(), user.getLastName(), user.getTelephoneNumber(), email, user.getPassword(), user.getRole(), user.getAuthProvider());
         checkUserExistence(email);
@@ -75,49 +80,49 @@ public class UserService implements IUserService {
 
     private void checkNotNullFields(String firstName, String lastName, String telephoneNumber, String email, String password, UserRole role, AuthProvider provider) {
         if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("Email cannot be null");
+            throw new InvalidInputException("Email cannot be null");
         }
         if (password == null || password.isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be null");
+            throw new InvalidInputException("Password cannot be null");
         }
         if (provider == null) {
-            throw new IllegalArgumentException("Provider cannot be null");
+            throw new InvalidInputException("Provider cannot be null");
         }
         if (role == null) {
-            throw new IllegalArgumentException("Role cannot be null");
+            throw new InvalidInputException("Role cannot be null");
         }
         if (firstName == null || firstName.isEmpty()) {
-            throw new IllegalArgumentException("First name cannot be null");
+            throw new InvalidInputException("First name cannot be null");
         }
         if (lastName == null || lastName.isEmpty()) {
-            throw new IllegalArgumentException("Last name cannot be null");
+            throw new InvalidInputException("Last name cannot be null");
         }
         if (telephoneNumber == null || telephoneNumber.isEmpty()) {
-            throw new IllegalArgumentException("Telephone number cannot be null");
+            throw new InvalidInputException("Telephone number cannot be null");
         }
     }
 
     private void checkPasswordValidity(String password, AuthProvider provider) {
         if (provider == AuthProvider.LOCAL && !isPasswordComplex(password)) {
-            throw new IllegalArgumentException("Password does not meet complexity requirements");
+            throw new InvalidInputException("Password does not meet complexity requirements");
         }
     }
 
     private void checkEmailValidity(String email, AuthProvider provider) {
         if (provider == AuthProvider.LOCAL && !isValidEmail(email)) {
-            throw new IllegalArgumentException("Incorrect email format");
+            throw new InvalidInputException("Incorrect email format");
         }
     }
 
     private void checkNotDuplicate(String email) {
         if (userDAO.findByEmail(email) != null) {
-            throw new IllegalArgumentException("User already exists");
+            throw new UserAlreadyExistsException("User already exists");
         }
     }
 
     private void checkUserExistence(String email) {
         if (userDAO.findByEmail(email) == null) {
-            throw new IllegalArgumentException("User not found");
+            throw new UserNotFoundException("User not found");
         }
     }
 
@@ -125,10 +130,11 @@ public class UserService implements IUserService {
         return password.length() >= 8 &&
                 password.chars().anyMatch(Character::isUpperCase) &&
                 password.chars().anyMatch(Character::isLowerCase) &&
-                password.chars().anyMatch(Character::isDigit);
+                password.chars().anyMatch(Character::isDigit) &&
+                password.matches(".*[!@#$%^&*(),.?\":{}|<>].*");
     }
 
     private boolean isValidEmail(String email) {
-        return true;
+        return email.matches("^[A-z0-9.+_-]+@[A-z0-9._-]+\\.[A-z]{2,6}$");
     }
 }

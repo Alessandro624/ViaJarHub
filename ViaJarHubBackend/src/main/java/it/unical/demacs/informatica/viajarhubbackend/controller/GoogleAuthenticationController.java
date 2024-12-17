@@ -10,6 +10,7 @@ import it.unical.demacs.informatica.viajarhubbackend.model.User;
 import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
 import it.unical.demacs.informatica.viajarhubbackend.service.IUserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -30,30 +32,38 @@ public class GoogleAuthenticationController {
     }
 
     @RequestMapping(value = "/google-login", method = RequestMethod.POST)
-    public ResponseEntity<Void> verifyGoogleToken(@RequestBody GoogleTokenRequest googleTokenRequest, HttpSession session) {
+    public ResponseEntity<String> verifyGoogleToken(@RequestBody GoogleTokenRequest googleTokenRequest, HttpSession session) {
         try {
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance())
                     .setAudience(Collections.singletonList(System.getenv("GOOGLE_CLIENT_ID_VIAJARHUB")))
                     .build();
             GoogleIdToken token = verifier.verify(googleTokenRequest.getToken());
-            if (token != null) {
-                GoogleIdToken.Payload payload = token.getPayload();
-                String email = payload.getEmail();
-                User user = userService.findByEmail(email, AuthProvider.GOOGLE).orElseGet(() -> {
-                    String firstName = (String) payload.get("first_name");
-                    String lastName = (String) payload.get("last_name");
-                    String telephoneNumber = (String) payload.get("telephone_number");
-                    return userService.createUser(firstName, lastName, telephoneNumber, email, UUID.randomUUID().toString(), UserRole.ROLE_USER, AuthProvider.GOOGLE);
-                });
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(), null, user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.status(401).build();
+            if (token == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
+            GoogleIdToken.Payload payload = token.getPayload();
+            String email = payload.getEmail();
+            User user = fetchOrCreateUser(payload, email);
+            authenticateUser(user, session);
+            return ResponseEntity.ok("User logged in successfully");
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.internalServerError().build();
         }
+    }
+
+    private User fetchOrCreateUser(GoogleIdToken.Payload payload, String email) {
+        Optional<User> user = userService.findByEmail(email, AuthProvider.GOOGLE);
+        return user.orElseGet(() -> {
+            String firstName = (String) payload.get("first_name");
+            String lastName = (String) payload.get("last_name");
+            String telephoneNumber = (String) payload.getOrDefault("telephone_number", "N/A");
+            return userService.createUser(firstName, lastName, telephoneNumber, email, UUID.randomUUID().toString(), UserRole.ROLE_USER, AuthProvider.GOOGLE);
+        });
+    }
+
+    private void authenticateUser(User user, HttpSession session) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(), null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
     }
 }

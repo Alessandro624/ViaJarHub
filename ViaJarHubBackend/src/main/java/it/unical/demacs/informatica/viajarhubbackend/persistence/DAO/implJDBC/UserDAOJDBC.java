@@ -20,19 +20,19 @@ public class UserDAOJDBC implements UserDAO {
 
     @Override
     public User findByEmail(String email) {
-        String query = "SELECT email, password, role, provider, firstname, lastname, telephone, enabled, token FROM user WHERE email = ?";
+        String query = "SELECT email, password, role, provider, firstname, lastname, telephone, enabled, token FROM \"user\" WHERE email = ?";
         return getUser(email, query);
     }
 
     @Override
     public User findByToken(String token) {
-        String query = "SELECT email, password, role, provider, firstname, lastname, telephone, enabled, token FROM user WHERE token = ?";
+        String query = "SELECT email, password, role, provider, firstname, lastname, telephone, enabled, token FROM \"user\" WHERE token = ?";
         return getUser(token, query);
     }
 
     @Override
     public void save(User user) {
-        String query = "INSERT INTO user (email, password, role, provider, firstname, lastname, telephone, enabled, token) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) "
+        String query = "INSERT INTO \"user\" (email, password, role, provider, firstname, lastname, telephone, enabled, token) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) "
                 + "ON CONFLICT (email) DO UPDATE SET password = EXCLUDED.password, role = EXCLUDED.role, enabled = EXCLUDED.enabled, token = EXCLUDED.token";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, user.getEmail());
@@ -44,14 +44,15 @@ public class UserDAOJDBC implements UserDAO {
             statement.setString(7, user.getTelephoneNumber());
             statement.setBoolean(8, user.isEnabled());
             statement.setString(9, user.getVerificationToken());
+            statement.executeUpdate();
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
     }
 
-    private User getUser(String token, String query) {
+    private User getUser(String key, String query) {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, token);
+            statement.setString(1, key);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new User(resultSet.getString("firstname"),
