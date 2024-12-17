@@ -12,8 +12,11 @@
   height: auto; /* Mantiene le proporzioni */
 }
 
+.dropdown-item:hover, .dropdown-item:focus, .dropdown-item:active {
+  border-radius: 0.375rem !important;
+}
+
 .dropdown-menu {
-  width: 300px;
   animation: fadeIn 0.2s ease-in-out;
 }
 

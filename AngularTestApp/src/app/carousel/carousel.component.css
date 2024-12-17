@@ -105,6 +105,8 @@
   }
 }
 
+/*TODO se togli questi si risolve il problema dell'icona di ricerca*/
+
 /* Aggiungi media query per rendere il testo e il form responsive */
 @media (max-width: 768px) {
   .overlay {

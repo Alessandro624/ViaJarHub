@@ -11,15 +11,24 @@ import {Router} from '@angular/router';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
+
 export class LoginComponent implements OnInit {
+  firstName: string = '';
+  lastName: string = '';
+  telephone: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
+  firstNameError: string = '';
+  lastNameError: string = '';
+  telephoneError: string = '';
   emailError: string = '';
   recoveryEmail: string = '';
   passwordError: string = '';
   confirmPasswordError: string = '';
-  currentForm: 'login' | 'register' | 'forgotPasswordEmail' | 'resetPassword' = 'login';
+  currentForm: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail' | 'resetPassword' = 'login';
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
 
   constructor(private _router: Router) {
   }
@@ -46,6 +55,14 @@ export class LoginComponent implements OnInit {
     );
   };
 
+  validateName(name: string) {
+    return /[a-zA-Z]+$/.test(name);
+  }
+
+  validatePhone(phone: string) {
+    return /^((00|\+)39[. ]??)??3\d{2}[. ]??\d{6,7}$/.test(phone);
+  }
+
   onLogin() {
     this.resetErrorLabels();
     this.checkEmail();
@@ -56,7 +73,23 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onRegister() {
+  onRegisterStep1() {
+    this.resetErrorLabels();
+    this.checkFirstName();
+    this.checkLastName();
+    this.checkTelephone();
+    if (!this.firstNameError && !this.lastNameError && !this.telephoneError) {
+      console.log('Step 1 of register successful:', {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        telephone: this.telephone
+      });
+      this.changeForm('registerStep2');
+    }
+
+  }
+
+  onRegisterStep2() {
     this.resetErrorLabels();
     this.checkEmail();
     this.checkPassword();
@@ -87,43 +120,91 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  changeForm(nextForm: "login" | "register" | "forgotPasswordEmail" | "resetPassword") {
+  changeForm(nextForm: typeof this.currentForm) {
     this.resetFields();
     this.resetErrorLabels();
     this.currentForm = nextForm;
   }
 
   resetFields() {
-    this.email = '';
+    // TODO tranne le password, gli campi posso essere usati come 'auto-completamento'
+    // this.firstName = '';
+    // this.lastName = '';
+    // this.telephone = '';
+    // this.email = '';
     this.recoveryEmail = '';
     this.password = '';
     this.confirmPassword = '';
+    this.showPassword = false;
+    this.showConfirmPassword = false;
   }
 
   private resetErrorLabels() {
+    this.firstNameError = '';
+    this.lastNameError = '';
+    this.telephoneError = '';
     this.emailError = '';
     this.passwordError = '';
     this.confirmPasswordError = '';
   }
 
   private checkEmail() {
-    if (!this.validateEmail(this.email)) {
+    if (!this.email) {
+      this.emailError = 'Email obbligatoria';
+    } else if (!this.validateEmail(this.email)) {
       this.emailError = 'Formato email non valido.';
     }
   }
 
   private checkPassword() {
-    if (!this.validatePassword(this.password)) {
+    if (!this.password) {
+      this.passwordError = 'Password obbligatoria';
+    } else if (!this.validatePassword(this.password)) {
       this.passwordError = 'La password deve contenere almeno 8 caratteri, un numero, una maiuscola e un carattere speciale.';
     }
   }
 
   private checkConfirmPassword() {
-    if (this.password !== this.confirmPassword) {
+    if (!this.confirmPassword) {
+      this.confirmPasswordError = 'Conferma password obbligatoria';
+    } else if (this.password !== this.confirmPassword) {
       this.confirmPasswordError = 'La password e la conferma della password non coincidono.';
     } else if (!this.validatePassword(this.confirmPassword)) {
       this.confirmPasswordError = 'La password deve contenere almeno 8 caratteri, un numero, una maiuscola e un carattere speciale.';
     }
+  }
+
+  private checkFirstName() {
+    if (!this.firstName) {
+      this.firstNameError = 'Nome obbligatorio';
+    } else if (!this.validateName(this.firstName)) {
+      this.firstNameError = 'Il nome deve contenere solo lettere';
+    }
+  }
+
+  private checkLastName() {
+    if (!this.lastName) {
+      this.lastNameError = 'Cognome obbligatorio';
+    } else if (!this.validateName(this.lastName)) {
+      this.lastNameError = 'Il cognome deve contenere solo lettere';
+    }
+
+  }
+
+  private checkTelephone() {
+    if (!this.telephone) {
+      this.telephoneError = 'Numero di telefono obbligatorio';
+    } else if (!this.validatePhone(this.telephone)) {
+      this.telephoneError = 'Formato numero di telefono non valido.';
+    }
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   preventClose($event: MouseEvent) {

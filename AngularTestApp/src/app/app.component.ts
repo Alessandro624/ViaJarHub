@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {RouterModule} from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import {LoginComponent} from './login/login.component';
 
 @Component({
@@ -12,6 +12,11 @@ import {LoginComponent} from './login/login.component';
 })
 
 export class AppComponent {
-  constructor() {
+  constructor(private _router: Router) {
+  }
+
+  onLogout() {
+    // TODO logout with service
+    this._router.navigate(['/']).then();
   }
 }
