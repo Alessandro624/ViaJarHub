@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @Configuration
@@ -27,16 +26,16 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                        .accessDeniedHandler(new AccessDeniedHandlerImpl())
+                        .accessDeniedHandler((req, res, auth) -> res.setStatus(HttpStatus.FORBIDDEN.value()))
                 )
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/login")
-                        .successHandler((req, res, auth) -> res.setStatus(200))
-                        .failureHandler((req, res, auth) -> res.setStatus(401))
+                        .successHandler((req, res, auth) -> res.setStatus(HttpStatus.OK.value()))
+                        .failureHandler((req, res, auth) -> res.setStatus(HttpStatus.UNAUTHORIZED.value()))
                 )
                 .logout(logout -> logout
                         .logoutUrl("/api/logout")
-                        .logoutSuccessHandler((req, res, auth) -> res.setStatus(200)));
+                        .logoutSuccessHandler((req, res, auth) -> res.setStatus(HttpStatus.OK.value())));
         return http.build();
     }
 

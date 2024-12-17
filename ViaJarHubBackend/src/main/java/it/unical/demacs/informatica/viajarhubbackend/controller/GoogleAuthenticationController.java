@@ -14,16 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/open/google-login")
+@RequestMapping("/api/open/v1")
 public class GoogleAuthenticationController {
     // TODO check real key of payload and existence of telephone number
     private final IUserService userService;
@@ -32,8 +29,8 @@ public class GoogleAuthenticationController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public ResponseEntity<String> verifyGoogleToken(@RequestBody GoogleTokenRequest googleTokenRequest, HttpSession session) {
+    @RequestMapping(value = "/google-login", method = RequestMethod.POST)
+    public ResponseEntity<Void> verifyGoogleToken(@RequestBody GoogleTokenRequest googleTokenRequest, HttpSession session) {
         try {
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance())
                     .setAudience(Collections.singletonList(System.getenv("GOOGLE_CLIENT_ID_VIAJARHUB")))

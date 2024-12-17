@@ -44,7 +44,7 @@ public class UserService implements IUserService {
         userDAO.save(new User(firstName, lastName, telephoneNumber, email, passwordEncoder.encode(password), role, provider, isEnabled, token));
         Optional<User> savedUser = findByEmail(email, provider);
         if (provider != AuthProvider.LOCAL && savedUser.isPresent()) {
-            String confirmationURL = "http://localhost:8080/verify-email?token=" + savedUser.get().getVerificationToken();
+            String confirmationURL = "http://localhost:8080/api/open/v1/verify-email?token=" + savedUser.get().getVerificationToken();
             emailService.sendEmail(savedUser.get().getEmail(), "ViaJarHub Verifica Email", "Clicca il link per verificare la tua email: " + confirmationURL);
         }
         return savedUser.orElse(null);
