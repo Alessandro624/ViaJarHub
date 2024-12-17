@@ -24,24 +24,60 @@
   margin-bottom: 1rem; /* Aggiungi margine per separare il testo dalla barra di ricerca */
 }
 
-.search-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: nowrap; /* Mantieni il form in una singola riga */
-}
-
-.search-input {
-  width: 100%; /* Rendi la barra di ricerca larga il 100% su dispositivi mobili */
-  max-width: 300px; /* Limita la larghezza massima su schermi più grandi */
-}
-
-.search-button {
-  padding: 0.5rem;
+.search-bar {
+  width: 200px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  background-color: white;
 }
+
+/* Stato espanso */
+.search-bar.focused {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Effetto illuminato */
+  width: 400px; /* Aumenta larghezza */
+}
+
+/* Input nella search bar */
+.search-bar input {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  transition: background-color 0.3s ease;
+}
+
+/* Rimuove bordo input */
+.search-bar input:focus {
+  box-shadow: none;
+}
+
+/* Pulsante nella search bar */
+.search-bar button {
+  border: none;
+  transition: transform 0.3s ease;
+  color: black;
+}
+
+.search-bar button:hover {
+  color: black;
+}
+
+.search-bar button:hover i {
+  transform: scale(1.5);
+}
+
+
+/* Icona nella search bar */
+.search-bar .fa-search {
+  transition: transform 0.3s ease, color 0.3s ease;
+  color: black; /* Colore dell'icona di default */
+}
+
+/* Icona ingrandita con hover */
+
 
 #animatedText {
   font-size: 3rem; /* Dimensione del font per il testo animato */

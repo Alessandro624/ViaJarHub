@@ -211,6 +211,10 @@ export class TravelService {
     return this.travels.length;
   }
 
+  addTravel(travel: Travel): void {
+    this.travels.push(travel);
+  }
+
   getTravelById(id: number): Travel | undefined {
     return this.travels.find(travel => travel.id === id);
   }

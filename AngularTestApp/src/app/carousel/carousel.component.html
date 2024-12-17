@@ -19,20 +19,40 @@
         <h5 id="animatedText" class="display-4">Scritta sopra</h5>
       </div>
       <form class="d-flex mt-2 search-form">
-        <input class="form-control me-2 search-input" type="search" placeholder="Cerca" aria-label="Search">
-        <button class="btn btn-outline-light search-button" type="submit">
-          <span><i class="fa-solid  fa-search"></i></span>
+        <div class="d-flex align-items-center">
 
-        </button>
+          <!-- Search Bar -->
+          <div class="input-group search-bar" [ngClass]="{ 'focused': isFocused }">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Cerca..."
+              [(ngModel)]="searchQuery"
+              name="searchQuery"
+              (focus)="expandSearchBar()"
+              (blur)="collapseSearchBar()"
+            />
+            <button
+              class="btn "
+              type="button"
+              *ngIf="isExpanded"
+              (click)="onSearch()"
+            >
+              <i class="fa-solid  fa-search"></i>
+            </button>
+          </div>
+        </div>
+
+
       </form>
     </div>
   } @else {
     <div class="carousel-inner">
 
-      <div class="carousel-item active" *ngFor="let img of travel?.immagini">
-        <img src="img" class="d-block w-100" alt="Slide 1">
+      <div class="carousel-item active" *ngFor="let imgURL of immaginiURLs; let i = index" [class.active]="i === 0">
+        <img [src]="imgURL" class="d-block w-100" alt="Slide {{ i + 1 }}">
       </div>
-      
+
     </div>
     <!--Pulsanti avanti e indietro carosello-->
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">

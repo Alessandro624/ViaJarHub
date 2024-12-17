@@ -1,8 +1,8 @@
-//TODO scroll bar direttamente sul modulo
 import {Component, Output, EventEmitter, ElementRef, ViewChild} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {Travel} from '../models/travel/travel.module';
+import {TravelService} from '../travel.service';
 
 @Component({
   selector: 'app-add-travel',
@@ -31,6 +31,9 @@ export class AddTravelComponent {
     immagini: []
   };
   dateErrors = {startDateInvalid: false, endDateInvalid: false};
+
+  constructor(private travelService: TravelService) {
+  }
 
   resetData() {
     this.travel = {
@@ -121,4 +124,13 @@ export class AddTravelComponent {
     this.travel.immagini.splice(index, 1);
   }
 
+  selectType(tipo: string) {
+    this.travel.tipo = tipo;
+  }
+
+  addTravel() {
+    //aggiungere logica per modificare le date prima di inviarle
+    this.travelService.addTravel(this.travel);
+
+  }
 }

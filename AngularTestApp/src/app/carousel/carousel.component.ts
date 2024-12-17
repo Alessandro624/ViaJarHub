@@ -1,20 +1,31 @@
 import {OnInit, OnDestroy, Component, ElementRef, PLATFORM_ID, Inject} from '@angular/core';
-import {isPlatformBrowser} from '@angular/common';
+import {isPlatformBrowser, NgClass, NgIf} from '@angular/common';
 import {TravelService} from '../travel.service';
 import {ActivatedRoute} from '@angular/router';
 import {Travel} from '../models/travel/travel.module';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-carousel',
   standalone: true,
   templateUrl: './carousel.component.html',
-  imports: [],
+  imports: [
+    NgClass,
+    NgIf,
+    FormsModule,
+
+  ],
   styleUrls: ['./carousel.component.css']
 })
 
 export class CarouselComponent implements OnInit, OnDestroy {
   inBody: boolean = false; // Stato per indicare se è in Body1
+  isFocused: boolean = false; // Controlla se la barra è illuminata
+
   travel!: Travel | undefined;
+  immaginiURLs: string[] = [];
+  isExpanded: boolean = false;
+  searchQuery: string = '';
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private travelservice: TravelService, private _activatedRoute: ActivatedRoute) {
   }
@@ -38,6 +49,11 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
     }
     this.travel = this.travelservice.getTravelById(id);
+    if (this.travel?.immagini) {
+      this.immaginiURLs = this.travel.immagini.map((file: File) =>
+        URL.createObjectURL(file)
+      );
+    }
 
   }
 
@@ -51,6 +67,9 @@ export class CarouselComponent implements OnInit, OnDestroy {
         carouselInstance.dispose();
       }
     }
+
+    this.immaginiURLs.forEach(url => URL.revokeObjectURL(url));
+
   }
 
   typeWriterEffect() {
@@ -97,5 +116,23 @@ export class CarouselComponent implements OnInit, OnDestroy {
         });
       }
     }
+  }
+
+
+  expandSearchBar(): void {
+    this.isExpanded = true;
+    this.isFocused = true;
+  }
+
+  collapseSearchBar(): void {
+    if (!this.searchQuery) {
+      this.isExpanded = false;
+      this.isFocused = false;
+
+    }
+  }
+
+  onSearch(): void {
+    console.log('Search Query:', this.searchQuery);
   }
 }

@@ -49,6 +49,7 @@ a {
 
 .nav {
   border-color: var(--bs-primary);
+
 }
 
 /* Stile per i link non attivi */
@@ -57,13 +58,20 @@ a {
   background-color: transparent; /* Sfondo trasparente */
   border: none; /* Nessun bordo */
   transition: all 0.3s ease; /* Transizione fluida */
+  transform: translateY(3px); /* Abbassa di 5px */
+
 }
+
 
 /* Hover sui link non attivi */
 .nav-link:not(.active):hover {
   color: white; /* Testo bianco */
   background-color: var(--bs-primary); /* Sfondo primary */
   text-decoration: none; /* Nessuna sottolineatura */
+  transform: translateY(3px); /* Abbassa di 5px */
+  transition: transform 0.2s ease-in-out; /* Aggiunge un'animazione fluida */
+
+
 }
 
 /* Stile per il link attivo */
@@ -71,7 +79,7 @@ a {
   color: var(--bs-primary); /* Testo bianco */
   background-color: transparent; /* Sfondo trasparente */
   border: 2px solid var(--bs-primary); /* Bordo primary */
-  transition: all 0.3s ease; /* Transizione fluida */
+  transition: all 0.1s ease; /* Transizione fluida */
 }
 
 /* Hover sul link attivo */
