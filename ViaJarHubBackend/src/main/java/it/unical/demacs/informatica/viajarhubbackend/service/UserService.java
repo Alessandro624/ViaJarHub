@@ -8,19 +8,16 @@ import it.unical.demacs.informatica.viajarhubbackend.model.User;
 import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.UserDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class UserService implements IUserService {
-    // TODO gestione migliore creazione e update (casi di update dati e casi di update password dovuti a recovery request)
-    // TODO eliminazione utente se non conferma l'email o se la conferma dell'email non viene inviata e magari dà errore
     // TODO possibilità di reinvio mail nei termini di 15 minuti
+    // TODO sostituire link email con link frontend che poi richiamerà endpoint del backend
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
     private final IEmailService emailService;
