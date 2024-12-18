@@ -6,6 +6,8 @@ import {InfotravelComponent} from './travel-detail/infotravel/infotravel.compone
 import {ClientComponent} from './profile/client/client.component';
 import {AdminComponent} from './profile/admin/admin.component';
 import {LoginComponent} from './login/login.component';
+import {authenticationGuard} from './login/authentication.guard';
+import {UserRole} from './models/user/user-role.enum';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'body1', pathMatch: 'full'},
@@ -17,7 +19,7 @@ export const routes: Routes = [
       {path: '', redirectTo: 'info', pathMatch: 'full'}
     ]
   },
-  {path: 'client', component: ClientComponent},
-  {path: 'admin', component: AdminComponent},
+  {path: 'client', component: ClientComponent, canActivate: [authenticationGuard]},
+  {path: 'admin', component: AdminComponent, canActivate: [authenticationGuard], data: {requiredRoles: UserRole.ADMIN}},
   {path: 'login', component: LoginComponent}
 ];

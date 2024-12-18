@@ -1,40 +1,46 @@
 <div class="d-flex flex-column min-vh-100">
+  <!--TODO problemi visivi di switch tra accedi e icona-->
   <header class="navbar sticky-top bg-white border-bottom shadow-sm">
     <nav class="navbar navbar-expand navbar-light w-100">
       <div class="container-fluid d-flex justify-content-between align-items-center">
         <a routerLink="/body1" class="navbar-brand">
           <img class="img-fluid custom-width" src="ViaJar-Hub.png" alt="Home">
         </a>
-        <!--TODO if user mostra logout e navigazione varia, if not user mostra accedi/registrati-->
         <ul class="navbar-nav d-flex flex-row ms-auto gap-3">
-          <li class="nav-item dropdown">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                    aria-expanded="false" data-bs-auto-close="outside">
-              Accedi
-            </button>
-            <div class="dropdown-menu dropdown-menu-end p-4 shadow-sm rounded" style="width: 350px;">
-              <app-login></app-login>
-            </div>
-          </li>
-          <li class="nav-item dropdown">
-            <button type="button" class="btn btn-link rounded dropdown-toggle" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-              <!--TODO sostituire con immagine profilo utente se presente, altrimenti mostrare icona-->
-              <i class="fa-solid fa-circle-user fa-xl"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded p-1" style="width: 200px;">
-              <li class="mb-1"><a class="dropdown-item fw-bold " routerLink="/admin">Admin</a>
-              </li>
-              <li class="mb-1"><a class="dropdown-item fw-bold " routerLink="/client">Client</a>
-              </li>
-              <li class="mb-1">
-                <button type="button"
-                        class="btn btn-outline-danger w-100 d-flex justify-content-between align-items-center fw-bold"
-                        (click)="onLogout()">
-                  Logout<i class="fa-solid fa-right-from-bracket"></i></button>
-              </li>
-            </ul>
-          </li>
+          @if (!user) {
+            <li class="nav-item dropdown">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                      aria-expanded="false" data-bs-auto-close="outside">
+                Accedi
+              </button>
+              <div class="dropdown-menu dropdown-menu-end p-4 shadow-sm rounded" style="width: 350px;">
+                <app-login></app-login>
+              </div>
+            </li>
+          } @else {
+            <li class="nav-item dropdown">
+              <button type="button" class="btn btn-link rounded dropdown-toggle" data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                <!--TODO sostituire con immagine profilo utente se presente, altrimenti mostrare icona-->
+                <i class="fa-solid fa-circle-user fa-xl"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded p-1" style="width: 200px;">
+                @if (user.userRole === UserRole.ADMIN) {
+                  <li class="mb-1"><a class="dropdown-item fw-bold " routerLink="/admin">Admin</a>
+                  </li>
+                } @else {
+                  <li class="mb-1"><a class="dropdown-item fw-bold " routerLink="/client">Client</a>
+                  </li>
+                }
+                <li class="mb-1">
+                  <button type="button"
+                          class="btn btn-outline-danger w-100 d-flex justify-content-between align-items-center fw-bold"
+                          (click)="onLogout()">
+                    Logout<i class="fa-solid fa-right-from-bracket"></i></button>
+                </li>
+              </ul>
+            </li>
+          }
         </ul>
       </div>
     </nav>

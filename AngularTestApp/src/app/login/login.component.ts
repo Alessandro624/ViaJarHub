@@ -1,6 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
+import {AuthenticationService} from './authentication.service';
+import {isPlatformBrowser} from '@angular/common';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +16,8 @@ import {Router} from '@angular/router';
 })
 
 export class LoginComponent implements OnInit {
+  // TODO aggiungere logica registrazione e attivazione degli alert/messaggi di insuccesso/successo delle operazioni
+
   firstName: string = '';
   lastName: string = '';
   telephone: string = '';
@@ -23,18 +28,21 @@ export class LoginComponent implements OnInit {
   lastNameError: string = '';
   telephoneError: string = '';
   emailError: string = '';
-  recoveryEmail: string = '';
   passwordError: string = '';
   confirmPasswordError: string = '';
   currentForm: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail' | 'resetPassword' = 'login';
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
 
-  constructor(private _router: Router) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
   }
 
   ngOnInit(): void {
     this.changeForm('login');
+    if (isPlatformBrowser(this.platformId)) {
+      this.initGoogleButton();
+      this.renderGoogleButton();
+    }
   }
 
   validateEmail(email: string) {
@@ -68,8 +76,13 @@ export class LoginComponent implements OnInit {
     this.checkEmail();
     this.checkPassword();
     if (!this.emailError && !this.passwordError) {
-      console.log('Login successful:', {email: this.email, password: this.password});
-      this._router.navigate(['client']).then();
+      this._authenticationService.onLogin(this.email, this.password).subscribe(
+        () => {
+          console.log('Login successful:', {email: this.email, password: this.password});
+          this._router.navigate(['/']).then();
+        }, error => {
+          console.log(error);
+        });
     }
   }
 
@@ -86,7 +99,6 @@ export class LoginComponent implements OnInit {
       });
       this.changeForm('registerStep2');
     }
-
   }
 
   onRegisterStep2() {
@@ -104,10 +116,8 @@ export class LoginComponent implements OnInit {
     this.resetErrorLabels();
     this.checkEmail();
     if (!this.emailError) {
-      const tempEmail = this.email;
       console.log('First step of password reset successful:', {email: this.email, password: this.confirmPassword});
       this.changeForm('resetPassword');
-      this.recoveryEmail = tempEmail;
     }
   }
 
@@ -115,7 +125,7 @@ export class LoginComponent implements OnInit {
     this.checkPassword();
     this.checkConfirmPassword();
     if (!this.passwordError && !this.confirmPasswordError) {
-      console.log('Password reset successful:', {email: this.recoveryEmail, password: this.confirmPassword});
+      console.log('Password reset successful:', {email: this.email, password: this.confirmPassword});
       this._router.navigate(['client']).then();
     }
   }
@@ -127,12 +137,11 @@ export class LoginComponent implements OnInit {
   }
 
   resetFields() {
-    // TODO tranne le password, gli campi posso essere usati come 'auto-completamento'
+    // tranne le password, gli altri campi posso essere usati come 'auto-completamento'
     // this.firstName = '';
     // this.lastName = '';
     // this.telephone = '';
     // this.email = '';
-    this.recoveryEmail = '';
     this.password = '';
     this.confirmPassword = '';
     this.showPassword = false;
@@ -209,5 +218,60 @@ export class LoginComponent implements OnInit {
 
   preventClose($event: MouseEvent) {
     $event.preventDefault();
+  }
+
+  private initGoogleButton() {
+    (globalThis as any).google.accounts.id.initialize({
+      client_id: environment.googleClientId,
+      callback: this.handleGoogleLogin.bind(this),
+      ux_mode: "popup",
+      auto_prompt: "false"
+    });
+  }
+
+  private renderGoogleButton() {
+    (globalThis as any).google.accounts.id.renderButton(
+      document.getElementById("google-signin-button"),
+      {
+        type: 'standard',
+        theme: "outline",
+        size: "large",
+        text: "signin_with",
+        shape: "pill",
+        locale: "it",
+        logo_alignment: "left",
+        // width: "200"
+      }
+    );
+  }
+
+  handleGoogleLogin(response: any) {
+    const userInfo = this.decodeJwtResponse(response.credential);
+    console.log('Informazioni utente: ', userInfo);
+    this.sendTokenToBackend(response.credential);
+  }
+
+  decodeJwtResponse(token: string) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  }
+
+  sendTokenToBackend(token: string) {
+    this._authenticationService.onGoogleLogin(token).subscribe(
+      () => {
+        console.log('Google login completato.');
+        this._router.navigate(['/']).then(() => this._authenticationService.getUser().subscribe());
+      },
+      (error) => {
+        console.error('Errore nel Google login:', error);
+      }
+    );
   }
 }
