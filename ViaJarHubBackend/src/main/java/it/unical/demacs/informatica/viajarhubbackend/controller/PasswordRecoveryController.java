@@ -19,7 +19,7 @@ public class PasswordRecoveryController {
         try {
             userService.forgotPassword(email);
             return ResponseEntity.ok().build();
-        } catch (IllegalStateException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -34,7 +34,7 @@ public class PasswordRecoveryController {
                 return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.ok().build();
-        } catch (IllegalStateException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
