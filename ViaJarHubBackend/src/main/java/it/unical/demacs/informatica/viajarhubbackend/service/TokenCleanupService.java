@@ -18,7 +18,6 @@ public class TokenCleanupService {
 
     @Scheduled(fixedRate = 60000)
     public void deleteUnverifiedUsers() {
-        System.out.println("deleteUnverifiedUsers");
         List<User> unverifiedUsers = userDAO.findUnverifiedUsers(15);
         for (User user : unverifiedUsers) {
             userDAO.delete(user.getEmail());
@@ -27,7 +26,6 @@ public class TokenCleanupService {
 
     @Scheduled(fixedRate = 60000)
     public void cleanupExpiredPasswordResetTokens() {
-        System.out.println("cleanupExpiredPasswordResetTokens");
         userDAO.removeExpiredPasswordResetTokens(15);
     }
 }

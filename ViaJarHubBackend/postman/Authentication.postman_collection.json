@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"firstName\": \"name\",\r\n    \"lastName\": \"surname\",\r\n    \"telephoneNumber\": \"1231234567\",\r\n    \"email\": \"example@gmail.com\",\r\n    \"password\": \"Example1-\"\r\n}",
+					"raw": "{\r\n    \"firstName\": \"name\",\r\n    \"lastName\": \"surname\",\r\n    \"telephoneNumber\": \"1231234567\",\r\n    \"email\": \"example@gmail.com\",\r\n    \"password\": \"Example1@\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -52,7 +52,7 @@
 						},
 						{
 							"key": "password",
-							"value": "Example1-",
+							"value": "Example11@",
 							"type": "text"
 						}
 					]
@@ -109,6 +109,76 @@
 						"auth",
 						"v1",
 						"check-user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ForgotPassword",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "example@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/open/v1/forgot-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"open",
+						"v1",
+						"forgot-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ResetPassword",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "newPassword",
+							"value": "Example11@",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/open/v1/reset-password?token=d287135c-8458-4cab-9033-143be9e59bf3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"open",
+						"v1",
+						"reset-password"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "d287135c-8458-4cab-9033-143be9e59bf3"
+						}
 					]
 				}
 			},

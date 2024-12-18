@@ -56,8 +56,8 @@ public class UserDAOJDBC implements UserDAO {
 
     @Override
     public void save(User user) {
-        String query = "INSERT INTO \"user\" (email, password, role, provider, firstname, lastname, telephone, enabled, verification_token, password_reset_token) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) "
-                + "ON CONFLICT (email) DO UPDATE SET password = EXCLUDED.password, role = EXCLUDED.role, enabled = EXCLUDED.enabled, verification_token = EXCLUDED.token, password_reset_token = EXCLUDED.password_reset_token";
+        String query = "INSERT INTO \"user\" (email, password, role, provider, firstname, lastname, telephone, enabled, verification_token, password_reset_token) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+                + "ON CONFLICT (email) DO UPDATE SET password = EXCLUDED.password, role = EXCLUDED.role, enabled = EXCLUDED.enabled, verification_token = EXCLUDED.verification_token, password_reset_token = EXCLUDED.password_reset_token";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, user.getEmail());
             statement.setString(2, user.getPassword());
@@ -68,6 +68,7 @@ public class UserDAOJDBC implements UserDAO {
             statement.setString(7, user.getTelephoneNumber());
             statement.setBoolean(8, user.isEnabled());
             statement.setString(9, user.getVerificationToken());
+            statement.setString(10, user.getPasswordResetToken());
             statement.executeUpdate();
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);

@@ -33,11 +33,11 @@ public class RegistrationController {
     }
 
     @RequestMapping(value = "/verify-email", method = RequestMethod.GET)
-    public ResponseEntity<String> verifyEmail(@RequestParam("token") String token) {
+    public ResponseEntity<Void> verifyEmail(@RequestParam("token") String token) {
         boolean result = userService.validateVerificationToken(token);
         if (result) {
-            return ResponseEntity.ok("Email verified successfully");
+            return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().body("Invalid or expired token");
+        return ResponseEntity.badRequest().build();
     }
 }
