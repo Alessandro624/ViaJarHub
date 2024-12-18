@@ -10,6 +10,7 @@
 .custom-width {
   width: 35%; /* Imposta la larghezza desiderata */
   height: auto; /* Mantiene le proporzioni */
+  min-width: 100px;
 }
 
 .dropdown-item:hover, .dropdown-item:focus, .dropdown-item:active {
