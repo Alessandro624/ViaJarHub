@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +24,9 @@ public class User implements UserDetails {
     private AuthProvider authProvider;
     private boolean enabled;
     private String verificationToken;
+    private LocalDateTime verificationTokenCreationTime;
     private String passwordResetToken;
+    private LocalDateTime passwordResetTokenCreationTime;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

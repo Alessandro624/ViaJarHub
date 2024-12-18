@@ -15,9 +15,9 @@ public class PasswordRecoveryController {
     }
 
     @RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
-    public ResponseEntity<Void> sendPasswordResetEmail(@RequestParam String email) {
+    public ResponseEntity<Void> forgotPassword(@RequestParam String email) {
         try {
-            userService.sendPasswordResetEmail(email);
+            userService.forgotPassword(email);
             return ResponseEntity.ok().build();
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().build();

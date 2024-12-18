@@ -11,6 +11,7 @@ import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +22,8 @@ public class UserService implements IUserService {
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
     private final IEmailService emailService;
+    private static final int TOKEN_EXPIRATION_MINUTES = 15;
+    private static final String FRONTEND_URL = "http://localhost:8080/api/open/v1";
 
     public UserService(PasswordEncoder passwordEncoder, IEmailService emailService) {
         this.userDAO = DBManager.getInstance().getUserDAO();
@@ -45,11 +48,10 @@ public class UserService implements IUserService {
         checkNotDuplicate(email);
         boolean isEnabled = provider != AuthProvider.LOCAL;
         String token = generateVerificationToken();
-        userDAO.save(new User(firstName, lastName, telephoneNumber, email, passwordEncoder.encode(password), role, provider, isEnabled, token, null));
+        userDAO.save(new User(firstName, lastName, telephoneNumber, email, passwordEncoder.encode(password), role, provider, isEnabled, token, LocalDateTime.now(), null, null));
         Optional<User> savedUser = findByEmail(email, provider);
         if (provider == AuthProvider.LOCAL && savedUser.isPresent()) {
-            String confirmationURL = "http://localhost:8080/api/open/v1/verify-email?token=" + savedUser.get().getVerificationToken();
-            emailService.sendEmail(savedUser.get().getEmail(), "ViaJarHub Verifica Email", "Clicca il link per verificare la tua email: " + confirmationURL);
+            sendVerificationEmail(savedUser.get());
         }
         return savedUser.orElse(null);
     }
@@ -67,7 +69,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void sendPasswordResetEmail(String email) {
+    public void forgotPassword(String email) {
         User user = userDAO.findByEmail(email);
         if (user == null) {
             throw new InvalidInputException("User cannot be null");
@@ -77,14 +79,13 @@ public class UserService implements IUserService {
         }
         String token = generateVerificationToken();
         userDAO.updatePasswordResetToken(email, token);
-        String resetURL = "http://localhost:8080/api/open/v1/reset-password?token=" + token;
-        emailService.sendEmail(email, "ViaJarHub Reset Password", "Clicca il link per modificare la tua password: " + resetURL);
+        sendPasswordResetEmail(email, token);
     }
 
     @Override
     public User resetPassword(String token, String newPassword) {
         User user = userDAO.findByPasswordResetToken(token);
-        if (user == null) {
+        if (user == null || !isTokenValid(user.getPasswordResetTokenCreationTime())) {
             throw new InvalidInputException("Invalid password reset token");
         }
         if (user.getAuthProvider() != AuthProvider.LOCAL) {
@@ -93,6 +94,7 @@ public class UserService implements IUserService {
         checkPasswordValidity(newPassword, user.getAuthProvider());
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setPasswordResetToken(null);
+        user.setPasswordResetTokenCreationTime(null);
         userDAO.save(user);
         return userDAO.findByEmail(user.getEmail());
     }
@@ -100,10 +102,12 @@ public class UserService implements IUserService {
     @Override
     public boolean validateVerificationToken(String token) {
         User user = userDAO.findByToken(token);
-        if (user == null) {
+        if (user == null || !isTokenValid(user.getVerificationTokenCreationTime())) {
             return false;
         }
         user.setEnabled(true);
+        user.setVerificationToken(null);
+        user.setVerificationTokenCreationTime(null);
         userDAO.save(user);
         return true;
     }
@@ -166,6 +170,20 @@ public class UserService implements IUserService {
 
     private boolean isValidEmail(String email) {
         return email.matches("^[A-z0-9.+_-]+@[A-z0-9._-]+\\.[A-z]{2,6}$");
+    }
+
+    private boolean isTokenValid(LocalDateTime tokenCreationTime) {
+        return tokenCreationTime != null && tokenCreationTime.plusMinutes(TOKEN_EXPIRATION_MINUTES).isAfter(LocalDateTime.now());
+    }
+
+    private void sendVerificationEmail(User user) {
+        String confirmationURL = FRONTEND_URL + "/verify-email?token=" + user.getVerificationToken();
+        emailService.sendEmail(user.getEmail(), "Verify Your Email", "Click the link to verify your email: " + confirmationURL);
+    }
+
+    private void sendPasswordResetEmail(String email, String token) {
+        String resetURL = FRONTEND_URL + "/reset-password?token=" + token;
+        emailService.sendEmail(email, "Reset Your Password", "Click the link to reset your password: " + resetURL);
     }
 
     private String generateVerificationToken() {
