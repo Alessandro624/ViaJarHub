@@ -23,6 +23,7 @@ public class User implements UserDetails {
     private AuthProvider authProvider;
     private boolean enabled;
     private String verificationToken;
+    private String passwordResetToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

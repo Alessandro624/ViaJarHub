@@ -8,9 +8,11 @@ import it.unical.demacs.informatica.viajarhubbackend.model.User;
 import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.UserDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,8 +47,8 @@ public class UserService implements IUserService {
         checkEmailValidity(email, provider);
         checkNotDuplicate(email);
         boolean isEnabled = provider != AuthProvider.LOCAL;
-        String token = UUID.randomUUID().toString();
-        userDAO.save(new User(firstName, lastName, telephoneNumber, email, passwordEncoder.encode(password), role, provider, isEnabled, token));
+        String token = generateVerificationToken();
+        userDAO.save(new User(firstName, lastName, telephoneNumber, email, passwordEncoder.encode(password), role, provider, isEnabled, token, null));
         Optional<User> savedUser = findByEmail(email, provider);
         if (provider == AuthProvider.LOCAL && savedUser.isPresent()) {
             String confirmationURL = "http://localhost:8080/api/open/v1/verify-email?token=" + savedUser.get().getVerificationToken();
@@ -65,6 +67,37 @@ public class UserService implements IUserService {
         user.setEmail(user.getEmail());
         userDAO.save(user);
         return userDAO.findByEmail(email);
+    }
+
+    @Override
+    public void sendPasswordResetEmail(String email) {
+        User user = userDAO.findByEmail(email);
+        if (user == null) {
+            throw new InvalidInputException("User cannot be null");
+        }
+        if (user.getAuthProvider() != AuthProvider.LOCAL || user.getPasswordResetToken() != null) {
+            throw new InvalidInputException("Cannot send password reset email");
+        }
+        String token = generateVerificationToken();
+        userDAO.updatePasswordResetToken(email, token);
+        String resetURL = "http://localhost:8080/api/open/v1/reset-password?token=" + token;
+        emailService.sendEmail(email, "ViaJarHub Reset Password", "Clicca il link per modificare la tua password: " + resetURL);
+    }
+
+    @Override
+    public User resetPassword(String token, String newPassword) {
+        User user = userDAO.findByPasswordResetToken(token);
+        if (user == null) {
+            throw new InvalidInputException("Invalid password reset token");
+        }
+        if (user.getAuthProvider() != AuthProvider.LOCAL) {
+            throw new InvalidInputException("User cannot reset password");
+        }
+        checkPasswordValidity(newPassword, user.getAuthProvider());
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPasswordResetToken(null);
+        userDAO.save(user);
+        return userDAO.findByEmail(user.getEmail());
     }
 
     @Override
@@ -136,5 +169,9 @@ public class UserService implements IUserService {
 
     private boolean isValidEmail(String email) {
         return email.matches("^[A-z0-9.+_-]+@[A-z0-9._-]+\\.[A-z]{2,6}$");
+    }
+
+    private String generateVerificationToken() {
+        return UUID.randomUUID().toString();
     }
 }

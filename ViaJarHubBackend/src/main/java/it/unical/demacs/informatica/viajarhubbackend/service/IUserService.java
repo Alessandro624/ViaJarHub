@@ -13,5 +13,9 @@ public interface IUserService {
 
     User updateUser(String email, User user);
 
+    void sendPasswordResetEmail(String email);
+
+    User resetPassword(String token, String newPassword);
+
     boolean validateVerificationToken(String token);
 }
