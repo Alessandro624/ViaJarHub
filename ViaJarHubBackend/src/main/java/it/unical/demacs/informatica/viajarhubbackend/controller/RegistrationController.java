@@ -20,7 +20,7 @@ public class RegistrationController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<Void> register(@RequestBody User user) {
         try {
-            User createduser = userService.createUser(user.getFirstName(), user.getLastName(), user.getTelephoneNumber(), user.getEmail(), user.getPassword(), UserRole.ROLE_USER, AuthProvider.LOCAL);
+            User createduser = userService.createUser(user.getFirstName(), user.getLastName(), user.getBirthDate(), user.getEmail(), user.getPassword(), UserRole.ROLE_USER, AuthProvider.LOCAL);
             if (createduser == null) {
                 return ResponseEntity.badRequest().build();
             }

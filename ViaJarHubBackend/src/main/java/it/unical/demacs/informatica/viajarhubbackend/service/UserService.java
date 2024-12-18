@@ -11,6 +11,7 @@ import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,14 +42,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User createUser(String firstName, String lastName, String telephoneNumber, String email, String password, UserRole role, AuthProvider provider) {
-        checkNotNullFields(firstName, lastName, telephoneNumber, email, password, role, provider);
+    public User createUser(String firstName, String lastName, LocalDate birthDate, String email, String password, UserRole role, AuthProvider provider) {
+        checkNotNullFields(firstName, lastName, birthDate, email, password, role, provider);
         checkPasswordValidity(password, provider);
         checkEmailValidity(email, provider);
         checkNotDuplicate(email);
         boolean isEnabled = provider != AuthProvider.LOCAL;
         String token = generateVerificationToken();
-        userDAO.save(new User(firstName, lastName, telephoneNumber, email, passwordEncoder.encode(password), role, provider, isEnabled, token, LocalDateTime.now(), null, null));
+        userDAO.save(new User(firstName, lastName, birthDate, email, passwordEncoder.encode(password), role, provider, isEnabled, token, LocalDateTime.now(), null, null, null));
         Optional<User> savedUser = findByEmail(email, provider);
         if (provider == AuthProvider.LOCAL && savedUser.isPresent()) {
             sendVerificationEmail(savedUser.get());
@@ -61,7 +62,7 @@ public class UserService implements IUserService {
         if (user == null) {
             throw new InvalidInputException("User cannot be null");
         }
-        checkNotNullFields(user.getFirstName(), user.getLastName(), user.getTelephoneNumber(), email, user.getPassword(), user.getRole(), user.getAuthProvider());
+        checkNotNullFields(user.getFirstName(), user.getLastName(), user.getBirthDate(), email, user.getPassword(), user.getRole(), user.getAuthProvider());
         checkUserExistence(email);
         user.setEmail(user.getEmail());
         userDAO.save(user);
@@ -112,7 +113,7 @@ public class UserService implements IUserService {
         return true;
     }
 
-    private void checkNotNullFields(String firstName, String lastName, String telephoneNumber, String email, String password, UserRole role, AuthProvider provider) {
+    private void checkNotNullFields(String firstName, String lastName, LocalDate birthDate, String email, String password, UserRole role, AuthProvider provider) {
         if (email == null || email.isEmpty()) {
             throw new InvalidInputException("Email cannot be null");
         }
@@ -131,7 +132,7 @@ public class UserService implements IUserService {
         if (lastName == null || lastName.isEmpty()) {
             throw new InvalidInputException("Last name cannot be null");
         }
-        if (telephoneNumber == null || telephoneNumber.isEmpty()) {
+        if (birthDate == null) {
             throw new InvalidInputException("Telephone number cannot be null");
         }
     }

@@ -19,19 +19,19 @@ public class UserDAOJDBC implements UserDAO {
 
     @Override
     public User findByEmail(String email) {
-        String query = "SELECT email, password, role, provider, firstname, lastname, telephone, enabled, verification_token, token_creation_time, password_reset_token, password_reset_token_creation_time FROM \"user\" WHERE email = ?";
+        String query = "SELECT email, password, role, provider, firstname, lastname, birthdate, profile_image_path, enabled, verification_token, token_creation_time, password_reset_token, password_reset_token_creation_time FROM \"user\" WHERE email = ?";
         return getUser(email, query);
     }
 
     @Override
     public User findByToken(String token) {
-        String query = "SELECT email, password, role, provider, firstname, lastname, telephone, enabled, verification_token, token_creation_time, password_reset_token, password_reset_token_creation_time FROM \"user\" WHERE verification_token = ?";
+        String query = "SELECT email, password, role, provider, firstname, lastname, birthdate, profile_image_path, enabled, verification_token, token_creation_time, password_reset_token, password_reset_token_creation_time FROM \"user\" WHERE verification_token = ?";
         return getUser(token, query);
     }
 
     @Override
     public User findByPasswordResetToken(String token) {
-        String query = "SELECT email, password, role, provider, firstname, lastname, telephone, enabled, verification_token, token_creation_time, password_reset_token, password_reset_token_creation_time FROM \"user\" WHERE password_reset_token = ?";
+        String query = "SELECT email, password, role, provider, firstname, lastname, birthdate, profile_image_path, enabled, verification_token, token_creation_time, password_reset_token, password_reset_token_creation_time FROM \"user\" WHERE password_reset_token = ?";
         return getUser(token, query);
     }
 
@@ -53,8 +53,8 @@ public class UserDAOJDBC implements UserDAO {
 
     @Override
     public void save(User user) {
-        String query = "INSERT INTO \"user\" (email, password, role, provider, firstname, lastname, telephone, enabled, verification_token, token_creation_time, password_reset_token, password_reset_token_creation_time) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
-                + "ON CONFLICT (email) DO UPDATE SET password = EXCLUDED.password, role = EXCLUDED.role, enabled = EXCLUDED.enabled, verification_token = EXCLUDED.verification_token, token_creation_time = EXCLUDED.token_creation_time, password_reset_token = EXCLUDED.password_reset_token, password_reset_token_creation_time = EXCLUDED.password_reset_token_creation_time";
+        String query = "INSERT INTO \"user\" (email, password, role, provider, firstname, lastname, birthdate, profile_image_path, enabled, verification_token, token_creation_time, password_reset_token, password_reset_token_creation_time) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+                + "ON CONFLICT (email) DO UPDATE SET password = EXCLUDED.password, birthdate = EXCLUDED.birthdate, profile_image_path = EXCLUDED.profile_image_path, role = EXCLUDED.role, enabled = EXCLUDED.enabled, verification_token = EXCLUDED.verification_token, token_creation_time = EXCLUDED.token_creation_time, password_reset_token = EXCLUDED.password_reset_token, password_reset_token_creation_time = EXCLUDED.password_reset_token_creation_time";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, user.getEmail());
             statement.setString(2, user.getPassword());
@@ -62,12 +62,13 @@ public class UserDAOJDBC implements UserDAO {
             statement.setString(4, user.getAuthProvider().toString());
             statement.setString(5, user.getFirstName());
             statement.setString(6, user.getLastName());
-            statement.setString(7, user.getTelephoneNumber());
-            statement.setBoolean(8, user.isEnabled());
-            statement.setString(9, user.getVerificationToken());
-            statement.setTimestamp(10, user.getVerificationTokenCreationTime() != null ? Timestamp.valueOf(user.getVerificationTokenCreationTime()) : null);
-            statement.setString(11, user.getPasswordResetToken());
-            statement.setTimestamp(12, user.getPasswordResetTokenCreationTime() != null ? Timestamp.valueOf(user.getPasswordResetTokenCreationTime()) : null);
+            statement.setObject(7, user.getBirthDate());
+            statement.setString(8, user.getProfileImagePath());
+            statement.setBoolean(9, user.isEnabled());
+            statement.setString(10, user.getVerificationToken());
+            statement.setTimestamp(11, user.getVerificationTokenCreationTime() != null ? Timestamp.valueOf(user.getVerificationTokenCreationTime()) : null);
+            statement.setString(12, user.getPasswordResetToken());
+            statement.setTimestamp(13, user.getPasswordResetTokenCreationTime() != null ? Timestamp.valueOf(user.getPasswordResetTokenCreationTime()) : null);
             statement.executeUpdate();
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
@@ -126,7 +127,7 @@ public class UserDAOJDBC implements UserDAO {
         Timestamp passwordResetTokenCreationTime = resultSet.getTimestamp("password_reset_token_creation_time");
         return new User(resultSet.getString("firstname"),
                 resultSet.getString("lastname"),
-                resultSet.getString("telephone"),
+                resultSet.getDate("birthdate").toLocalDate(),
                 resultSet.getString("email"),
                 resultSet.getString("password"),
                 UserRole.valueOf(resultSet.getString("role")),
@@ -135,6 +136,7 @@ public class UserDAOJDBC implements UserDAO {
                 resultSet.getString("verification_token"),
                 tokenCreationTime != null ? tokenCreationTime.toLocalDateTime() : null,
                 resultSet.getString("password_reset_token"),
-                passwordResetTokenCreationTime != null ? passwordResetTokenCreationTime.toLocalDateTime() : null);
+                passwordResetTokenCreationTime != null ? passwordResetTokenCreationTime.toLocalDateTime() : null,
+                resultSet.getString("profile_image_path"));
     }
 }

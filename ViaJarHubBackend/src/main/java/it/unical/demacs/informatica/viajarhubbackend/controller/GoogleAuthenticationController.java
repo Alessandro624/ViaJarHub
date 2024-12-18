@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,7 +25,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/open/v1")
 public class GoogleAuthenticationController {
-    // TODO check real key of payload and existence of telephone number
     private final IUserService userService;
 
     public GoogleAuthenticationController(IUserService userService) {
@@ -54,10 +54,10 @@ public class GoogleAuthenticationController {
     private User fetchOrCreateUser(GoogleIdToken.Payload payload, String email) {
         Optional<User> user = userService.findByEmail(email, AuthProvider.GOOGLE);
         return user.orElseGet(() -> {
-            String firstName = (String) payload.get("first_name");
-            String lastName = (String) payload.get("last_name");
-            String telephoneNumber = (String) payload.getOrDefault("telephone_number", "N/A");
-            return userService.createUser(firstName, lastName, telephoneNumber, email, UUID.randomUUID().toString(), UserRole.ROLE_USER, AuthProvider.GOOGLE);
+            String firstName = (String) payload.get("given_name");
+            String lastName = (String) payload.get("family_name");
+            LocalDate birthDate = (LocalDate) payload.getOrDefault("birth_date", "1999-01-01");
+            return userService.createUser(firstName, lastName, birthDate, email, UUID.randomUUID().toString(), UserRole.ROLE_USER, AuthProvider.GOOGLE);
         });
     }
 

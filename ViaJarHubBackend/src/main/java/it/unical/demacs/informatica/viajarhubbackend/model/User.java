@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -14,10 +15,9 @@ import java.util.List;
 @Setter
 @ToString
 public class User implements UserDetails {
-    // TODO birthDate, profileImage, ...
     private String firstName;
     private String lastName;
-    private String telephoneNumber;
+    private LocalDate birthDate;
     private String email;
     private String password;
     private UserRole role;
@@ -27,6 +27,7 @@ public class User implements UserDetails {
     private LocalDateTime verificationTokenCreationTime;
     private String passwordResetToken;
     private LocalDateTime passwordResetTokenCreationTime;
+    private String profileImagePath;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

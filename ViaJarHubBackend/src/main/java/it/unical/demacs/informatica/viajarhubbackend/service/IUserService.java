@@ -4,12 +4,13 @@ import it.unical.demacs.informatica.viajarhubbackend.model.AuthProvider;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
 import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public interface IUserService {
     Optional<User> findByEmail(String email, AuthProvider provider);
 
-    User createUser(String firstName, String lastName, String telephoneNumber, String email, String password, UserRole role, AuthProvider provider);
+    User createUser(String firstName, String lastName, LocalDate birthDate, String email, String password, UserRole role, AuthProvider provider);
 
     User updateUser(String email, User user);
 
