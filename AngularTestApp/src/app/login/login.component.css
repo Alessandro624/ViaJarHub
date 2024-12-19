@@ -40,3 +40,10 @@ div.is-invalid-container {
   border-radius: 0.375rem;
 }
 
+#registerBirthDate::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+#registerBirthDate {
+  cursor: pointer;
+}
