@@ -7,8 +7,6 @@ import {HttpClient} from '@angular/common/http';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  // TODO aggiunta richieste di registrazione e recupero password
-
   currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
   private APIUrl = "api";
@@ -42,8 +40,7 @@ export class AuthenticationService {
 
   onGoogleLogin(token: string) {
     return this._http.post<void>(`${this.APIUrl}/open/v1/google-login`, {token}, {withCredentials: true}).pipe(
-      switchMap(() => this.getUser()),
-      catchError(async () => null)
+      switchMap(() => this.getUser())
     );
   }
 
@@ -74,5 +71,23 @@ export class AuthenticationService {
 
   sendVerificationToken(token: string) {
     return this._http.get<void>(`${this.APIUrl}/open/v1/verify-email?token=${token}`, {withCredentials: true});
+  }
+
+  onForgotPassword(email: string) {
+    const body = new URLSearchParams();
+    body.set('email', email);
+    return this._http.post<void>(`${this.APIUrl}/open/v1/forgot-password`, body.toString(), {
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      withCredentials: true
+    });
+  }
+
+  onResetPassword(token: string, newPassword: string) {
+    const body = new URLSearchParams();
+    body.set('newPassword', newPassword);
+    return this._http.post<void>(`${this.APIUrl}/open/v1/reset-password?token=${token}`, body.toString(), {
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      withCredentials: true
+    });
   }
 }

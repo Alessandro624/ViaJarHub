@@ -27,7 +27,6 @@ export class VerifyEmailComponent implements OnInit {
         next: () => {
           this.message = 'Email confermata con successo!';
           this.isLoading = false;
-          // TODO invia a login
         },
         error: () => {
           this.isLoading = false;
@@ -41,6 +40,12 @@ export class VerifyEmailComponent implements OnInit {
   }
 
   onClose() {
-    this._router.navigate(['/']).then();
+    // se non ci sono errori apri login, se ci sono errori imposta a register ma non aprire
+    this._router.navigate([''], {
+      queryParams: {
+        isOpened: !this.isError,
+        currentForm: this.isError ? 'registerStep1' : 'login'
+      }
+    }).then();
   }
 }
