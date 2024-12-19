@@ -113,6 +113,12 @@ public class UserService implements IUserService {
         return true;
     }
 
+    @Override
+    public boolean validateResetPasswordToken(String token) {
+        User user = userDAO.findByPasswordResetToken(token);
+        return user != null && isTokenValid(user.getPasswordResetTokenCreationTime());
+    }
+
     private void checkNotNullFields(String firstName, String lastName, LocalDate birthDate, String email, String password, UserRole role, AuthProvider provider) {
         if (email == null || email.isEmpty()) {
             throw new InvalidInputException("Email cannot be null");

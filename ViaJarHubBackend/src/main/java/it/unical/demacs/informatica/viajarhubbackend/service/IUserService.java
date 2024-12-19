@@ -19,4 +19,6 @@ public interface IUserService {
     User resetPassword(String token, String newPassword);
 
     boolean validateVerificationToken(String token);
+
+    boolean validateResetPasswordToken(String token);
 }
