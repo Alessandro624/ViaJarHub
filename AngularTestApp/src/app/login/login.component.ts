@@ -85,12 +85,7 @@ export class LoginComponent implements OnInit {
           this.isLoading = false;
           console.log('Login successful:', {email: this.email, password: this.password});
           alert("Login effettuato con successo");
-          this._router.navigate([''], {
-            queryParams: {
-              isOpened: false,
-              currentForm: 'login'
-            }
-          }).then();
+          this.sendUserHome();
         }, error => {
           this.isLoading = false;
           this.alertMessage = 'Email o password errati'
@@ -132,12 +127,7 @@ export class LoginComponent implements OnInit {
             birthDate: this.birthDate
           });
           alert("Email di conferma inviata con successo");
-          this._router.navigate([''], {
-            queryParams: {
-              isOpened: false,
-              currentForm: 'login'
-            }
-          }).then();
+          this.sendUserHome();
         }, error => {
           this.isLoading = false;
           console.log(error);
@@ -155,12 +145,7 @@ export class LoginComponent implements OnInit {
           this.isLoading = false;
           console.log('First step of password reset successful:', {email: this.email, password: this.confirmPassword});
           alert('Email di reset password inviata correttamente');
-          this._router.navigate([''], {
-            queryParams: {
-              isOpened: false,
-              currentForm: 'login'
-            }
-          }).then();
+          this.sendUserHome();
         }, error => {
           this.isLoading = false;
           console.log(error);
@@ -315,12 +300,7 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
         console.log('Google login completato.');
         alert("Accesso con google effettuato correttamente")
-        this._router.navigate([''], {
-          queryParams: {
-            isOpened: false,
-            currentForm: 'login'
-          }
-        }).then();
+        this.sendUserHome();
       },
       error => {
         this.isLoading = false;
@@ -336,5 +316,18 @@ export class LoginComponent implements OnInit {
     if (!target.closest('.dropdown-menu')) {
       this.isOpened = false;
     }
+  }
+
+  private sendUserHome() {
+    this._router.navigate([''], {
+      queryParams: {
+        isOpened: false,
+        currentForm: 'login'
+      }
+    }).then(this.reloadPage.bind(this));
+  }
+
+  reloadPage() {
+    window.location.reload();
   }
 }
