@@ -56,8 +56,8 @@ public class GoogleAuthenticationController {
         return user.orElseGet(() -> {
             String firstName = (String) payload.get("given_name");
             String lastName = (String) payload.get("family_name");
-            // LocalDate birthDate = (LocalDate) payload.getOrDefault("birth_date", "1999-01-01");
-            return userService.createUser(firstName, lastName, LocalDate.MIN, email, UUID.randomUUID().toString(), UserRole.ROLE_USER, AuthProvider.GOOGLE);
+            LocalDate birthDate = (LocalDate) payload.getOrDefault("birth_date", LocalDate.parse("1999-01-01"));
+            return userService.createUser(firstName, lastName, birthDate, email, UUID.randomUUID().toString(), UserRole.ROLE_USER, AuthProvider.GOOGLE);
         });
     }
 

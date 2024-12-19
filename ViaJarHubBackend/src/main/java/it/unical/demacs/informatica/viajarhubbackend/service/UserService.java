@@ -19,12 +19,11 @@ import java.util.UUID;
 @Service
 public class UserService implements IUserService {
     // TODO possibilità di reinvio mail nei termini di 15 minuti
-    // TODO sostituire link email con link frontend che poi richiamerà endpoint del backend
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
     private final IEmailService emailService;
     private static final int TOKEN_EXPIRATION_MINUTES = 15;
-    private static final String FRONTEND_URL = "http://localhost:8080/api/open/v1";
+    private static final String FRONTEND_URL = "http://localhost:4200";
 
     public UserService(PasswordEncoder passwordEncoder, IEmailService emailService) {
         this.userDAO = DBManager.getInstance().getUserDAO();
@@ -179,12 +178,12 @@ public class UserService implements IUserService {
     }
 
     private void sendVerificationEmail(User user) {
-        String confirmationURL = FRONTEND_URL + "/verify-email?token=" + user.getVerificationToken();
+        String confirmationURL = FRONTEND_URL + "/verify-email/" + user.getVerificationToken();
         emailService.sendEmail(user.getEmail(), "Verify Your Email", "Click the link to verify your email: " + confirmationURL);
     }
 
     private void sendPasswordResetEmail(String email, String token) {
-        String resetURL = FRONTEND_URL + "/reset-password?token=" + token;
+        String resetURL = FRONTEND_URL + "/reset-password/" + token;
         emailService.sendEmail(email, "Reset Your Password", "Click the link to reset your password: " + resetURL);
     }
 
