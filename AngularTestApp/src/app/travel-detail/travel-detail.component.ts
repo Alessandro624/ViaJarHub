@@ -6,6 +6,7 @@ import {FormsModule} from '@angular/forms';
 import {AddTravelComponent} from '../add-travel/add-travel.component';
 import {NgClass, NgStyle} from '@angular/common';
 import {PaymentComponent} from '../payment/payment.component';
+import {AuthenticationService} from '../login/authentication.service';
 
 @Component({
   selector: 'app-travel-detail',
@@ -29,7 +30,7 @@ export class TravelDetailComponent implements OnInit {
   prezzoFinale: number = 0;
   isPopupVisible: boolean = false;
 
-  constructor(private travelservice: TravelService, private _activatedRoute: ActivatedRoute) {
+  constructor(private travelservice: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -40,7 +41,7 @@ export class TravelDetailComponent implements OnInit {
     }
     this.travel = this.travelservice.getTravelById(id);
     this.modificaPrezzo();
-
+    
 
   }
 
@@ -52,7 +53,12 @@ export class TravelDetailComponent implements OnInit {
   }
 
   openPopup() {
-    this.isPopupVisible = true;
+    if (this.authentication.currentUserSubject.getValue()) {
+      this.isPopupVisible = true;
+    } else {
+      alert("Attenzione:\nPer prenotare devi accedere al sistema!");
+    }
+
   }
 
   closePopup() {
