@@ -48,8 +48,9 @@ public class UserService implements IUserService {
         checkEmailValidity(email, provider);
         checkNotDuplicate(email);
         boolean isEnabled = provider != AuthProvider.LOCAL;
-        String token = generateVerificationToken();
-        userDAO.save(new User(firstName, lastName, birthDate, email, passwordEncoder.encode(password), role, provider, isEnabled, token, LocalDateTime.now(), null, null, null));
+        String token = !isEnabled ? generateVerificationToken() : null;
+        LocalDateTime tokenCreationTime = !isEnabled ? LocalDateTime.now() : null;
+        userDAO.save(new User(firstName, lastName, birthDate, email, passwordEncoder.encode(password), role, provider, isEnabled, token, tokenCreationTime, null, null, null));
         Optional<User> savedUser = findByEmail(email, provider);
         if (provider == AuthProvider.LOCAL && savedUser.isPresent()) {
             sendVerificationEmail(savedUser.get());
