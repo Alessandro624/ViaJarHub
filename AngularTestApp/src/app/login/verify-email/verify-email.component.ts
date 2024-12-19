@@ -21,7 +21,7 @@ export class VerifyEmailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const token = this._activatedRoute.snapshot.queryParamMap.get('token');
+    const token = this._activatedRoute.snapshot.paramMap.get('token');
     if (token) {
       this._authenticationService.sendVerificationToken(token).subscribe({
         next: () => {

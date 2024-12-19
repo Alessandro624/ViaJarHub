@@ -22,6 +22,5 @@ export const routes: Routes = [
   },
   {path: 'client', component: ClientComponent, canActivate: [authenticationGuard]},
   {path: 'admin', component: AdminComponent, canActivate: [authenticationGuard], data: {requiredRoles: UserRole.ADMIN}},
-  {path: 'login', component: LoginComponent},
-  {path: 'verify-email', component: VerifyEmailComponent}
+  {path: 'verify-email/:token', component: VerifyEmailComponent}
 ];
