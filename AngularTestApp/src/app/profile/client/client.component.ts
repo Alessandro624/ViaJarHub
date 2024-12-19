@@ -4,6 +4,9 @@ import {AddTravelComponent} from '../../add-travel/add-travel.component';
 import {UpdateUserComponent} from '../../update-user/update-user.component';
 import {ReviewComponent} from '../../review/review.component';
 import {AddReviewComponent} from '../../add-review/add-review.component';
+import {AuthenticationService} from '../../login/authentication.service';
+import {User} from '../../models/user/user.model';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-client',
@@ -23,12 +26,22 @@ import {AddReviewComponent} from '../../add-review/add-review.component';
 export class ClientComponent implements OnInit {
   strokeDashArrayStart: string = '282, 285';
   strokeDashArrayEnd: string[] = ['100, 285', '200, 251', '100, 251', '90, 251', '251, 251'];
+  user: User | null | undefined;
+  birthdate: String | undefined;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private authentication: AuthenticationService) {
   }
 
   ngOnInit() {
     this.animateStrokeDashArray();
+    this.user = this.authentication.currentUserSubject.getValue();
+    console.log(this.user);
+    if (this.user?.birthDate) {
+      const birthDateObj = new Date(this.user.birthDate);
+      this.birthdate = birthDateObj.toLocaleDateString('it-IT');
+    }
+    console.log(this.birthdate);
+
   }
 
   animateStrokeDashArray() {
@@ -78,5 +91,10 @@ export class ClientComponent implements OnInit {
 
   }
 
-
+  formatDate(date: Date | undefined): string {
+    if (date) {
+      return date.toLocaleDateString();
+    }
+    return '';
+  }
 }

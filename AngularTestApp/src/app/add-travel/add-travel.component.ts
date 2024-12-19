@@ -16,7 +16,7 @@ import {TravelService} from '../travel.service';
 })
 export class AddTravelComponent {
   @Output() closeModal = new EventEmitter<void>();
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;//consente di accedere all'elemento del DOM
   today: string = new Date().toISOString().split('T')[0];
   travel: Travel = {
     id: 0,

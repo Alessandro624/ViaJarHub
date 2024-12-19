@@ -1,0 +1,74 @@
+<div>
+  <p>Prezzo totale: <strong>{{ prezzo }} €</strong></p>
+  <form>
+    <div class="mb-3">
+      <label for="cardNumber" class="form-label">Numero di Carta</label>
+      <input
+        type="text"
+        id="cardNumber"
+        class="form-control"
+        [(ngModel)]="cardNumber"
+        name="cardNumber"
+        placeholder="4242 4242 4242 4242"
+      />
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="expiryMonth" class="form-label">Mese di Scadenza</label>
+        <input
+          type="number"
+          id="expiryMonth"
+          class="form-control"
+          [(ngModel)]="expiryMonth"
+          name="expiryMonth"
+          placeholder="MM"
+          min="1"
+          max="12"
+          required
+        />
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="expiryYear" class="form-label">Anno di Scadenza</label>
+        <input
+          type="number"
+          id="expiryYear"
+          class="form-control"
+          [(ngModel)]="expiryYear"
+          name="expiryYear"
+          placeholder="YYYY"
+          min="2024"
+          max="2040"
+          required
+        />
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="cvv" class="form-label">CVV</label>
+      <input
+        type="password"
+        id="cvv"
+        class="form-control"
+        [(ngModel)]="cvv"
+        name="cvv"
+        placeholder="123"
+      />
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    data-bs-dismiss="modal"
+  >
+    Chiudi
+  </button>
+  <button
+    type="button"
+    class="btn btn-success"
+    (click)="makePayment()"
+  >
+    Paga
+  </button>
+</div>
+

@@ -45,8 +45,8 @@ export class FiltriComponent {
   };
   today: Date = new Date(); // Data di oggi
   minDate: string = this.formatDate(this.today); // Formatta la data in "YYYY-MM-DD"
-  startDate: string = this.formatDate(this.today); // Valore per il primo date picker
-  endDate: string = this.formatDate(this.today); // Valore per il secondo date picker
+  startDate: string = ''; // Valore per il primo date picker
+  endDate: string = ''; // Valore per il secondo date picker
   endDateMin: string = this.minDate; // Valore minimo per il secondo date picker
 
   // Aggiorna la data minima per il secondo date picker e controlla il valore
@@ -76,7 +76,11 @@ export class FiltriComponent {
   }
 
   changeFormat(string: string): string {
+    if (!string) {
+      return 'gg-mm-yyyy';
+    }
     const [year, month, day] = string.split('-');
+
     return `${day}-${month}-${year}`;
   }
 

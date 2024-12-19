@@ -1,29 +1,3 @@
-<!--<div class="container mt-3 p-4 shadow-sm bg-light mb-3">
-  <div class="row g-3">
-    <div class="col-md-4">
-      <label for="datePicker" class="form-label">Seleziona una data:</label>
-      <input id="datePicker" class="form-control" type="date" [min]="minDate | date:'yyyy-MM-dd'" (change)="onDateChange($event)">
-    </div>
-    <div class="col-md-4">
-      <label for="priceRange" class="form-label">Seleziona il prezzo:</label>
-      <input type="range" id="priceRange" min="1" max="1000" value="50" class="slider" [(ngModel)]="price">
-
-      <div class="d-flex justify-content-between">
-        <span>0</span>
-        <span>{{price}}</span>
-        <span>1000</span>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <label for="category" class="form-label">Categoria:</label>
-      <select id="category" class="form-select" [(ngModel)]="category">
-        <option value="exploration">Esplorazione</option>
-        <option value="culture">Cultura</option>
-      </select>
-    </div>
-  </div>
-</div>
--->
 <div class="filter-bar bg-light p-3 border d-flex align-items-center justify-content-between">
   <!-- Valori dei filtri -->
   <div class="filters d-flex align-items-center flex-wrap">
