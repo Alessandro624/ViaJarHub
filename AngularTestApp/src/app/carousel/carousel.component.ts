@@ -1,5 +1,5 @@
 import {OnInit, OnDestroy, Component, ElementRef, PLATFORM_ID, Inject} from '@angular/core';
-import {isPlatformBrowser, NgClass, NgIf} from '@angular/common';
+import {isPlatformBrowser, NgClass, NgForOf, NgIf} from '@angular/common';
 import {TravelService} from '../travel.service';
 import {ActivatedRoute} from '@angular/router';
 import {Travel} from '../models/travel/travel.module';
@@ -13,6 +13,7 @@ import {FormsModule} from '@angular/forms';
     NgClass,
     NgIf,
     FormsModule,
+    NgForOf,
 
   ],
   styleUrls: ['./carousel.component.css']

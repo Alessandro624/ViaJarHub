@@ -8,6 +8,7 @@ import {AdminComponent} from './profile/admin/admin.component';
 import {LoginComponent} from './login/login.component';
 import {authenticationGuard} from './login/authentication.guard';
 import {UserRole} from './models/user/user-role.enum';
+import {VerifyEmailComponent} from './login/verify-email/verify-email.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'body1', pathMatch: 'full'},
@@ -21,5 +22,6 @@ export const routes: Routes = [
   },
   {path: 'client', component: ClientComponent, canActivate: [authenticationGuard]},
   {path: 'admin', component: AdminComponent, canActivate: [authenticationGuard], data: {requiredRoles: UserRole.ADMIN}},
-  {path: 'login', component: LoginComponent}
+  {path: 'login', component: LoginComponent},
+  {path: 'verify-email', component: VerifyEmailComponent}
 ];

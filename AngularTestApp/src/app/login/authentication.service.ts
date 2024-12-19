@@ -29,6 +29,17 @@ export class AuthenticationService {
     );
   }
 
+  onRegister(email: string, password: string, firstName: string, lastName: string, birthDate: Date) {
+    const body = {
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      birthDate: birthDate
+    };
+    return this._http.post<void>(`${this.APIUrl}/open/v1/register`, body, {withCredentials: true});
+  }
+
   onGoogleLogin(token: string) {
     return this._http.post<void>(`${this.APIUrl}/open/v1/google-login`, {token}, {withCredentials: true}).pipe(
       switchMap(() => this.getUser()),
@@ -59,5 +70,9 @@ export class AuthenticationService {
         return of(null);
       })
     );
+  }
+
+  sendVerificationToken(token: string) {
+    return this._http.get<void>(`${this.APIUrl}/open/v1/verify-email?token=${token}`, {withCredentials: true});
   }
 }

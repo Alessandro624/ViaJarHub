@@ -1,0 +1,28 @@
+<div class="modal" tabindex="-1" role="dialog" [ngClass]="{ 'show': true }" style="display: block;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma Email</h5>
+      </div>
+      <div class="modal-body">
+        <p>{{ message }}</p>
+        @if (isLoading) {
+          <div class="loading-spinner text-center">
+            <p>Verifica in corso, attendere...</p>
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+        }
+        @if (isError) {
+          <div class="text-danger">
+            <p>Si è verificato un errore durante la verifica dell'email.</p>
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button (click)="onClose()" class="btn btn-secondary">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>

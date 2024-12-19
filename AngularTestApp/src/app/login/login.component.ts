@@ -16,28 +16,28 @@ import {environment} from '../../environments/environment';
 })
 
 export class LoginComponent implements OnInit {
-  // TODO aggiungere logica registrazione e attivazione degli alert/messaggi di insuccesso/successo delle operazioni
-
   firstName: string = '';
   lastName: string = '';
-  telephone: string = '';
+  birthDate: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
   firstNameError: string = '';
   lastNameError: string = '';
-  telephoneError: string = '';
+  birthDateError: string = '';
   emailError: string = '';
   passwordError: string = '';
   confirmPasswordError: string = '';
   currentForm: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail' | 'resetPassword' = 'login';
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
+  maxDate: string = new Date().toISOString().split('T')[0];
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
   }
 
   ngOnInit(): void {
+    this.maxDate = new Date().toISOString().split('T')[0];
     this.changeForm('login');
     if (isPlatformBrowser(this.platformId)) {
       this.initGoogleButton();
@@ -67,8 +67,8 @@ export class LoginComponent implements OnInit {
     return /[a-zA-Z]+$/.test(name);
   }
 
-  validatePhone(phone: string) {
-    return /^((00|\+)39[. ]??)??3\d{2}[. ]??\d{6,7}$/.test(phone);
+  validateBirthDate(birthDate: string) {
+    return /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(birthDate);
   }
 
   onLogin() {
@@ -90,12 +90,12 @@ export class LoginComponent implements OnInit {
     this.resetErrorLabels();
     this.checkFirstName();
     this.checkLastName();
-    this.checkTelephone();
-    if (!this.firstNameError && !this.lastNameError && !this.telephoneError) {
+    this.checkBirthDate();
+    if (!this.firstNameError && !this.lastNameError && !this.birthDateError) {
       console.log('Step 1 of register successful:', {
         firstName: this.firstName,
         lastName: this.lastName,
-        telephone: this.telephone
+        birthDate: this.birthDate
       });
       this.changeForm('registerStep2');
     }
@@ -107,8 +107,19 @@ export class LoginComponent implements OnInit {
     this.checkPassword();
     this.checkConfirmPassword();
     if (!this.emailError && !this.passwordError && !this.confirmPasswordError) {
-      console.log('Register successful:', {email: this.email, password: this.confirmPassword});
-      this._router.navigate(['client']).then();
+      this._authenticationService.onRegister(this.email, this.password, this.firstName, this.lastName, new Date(this.birthDate)).subscribe(
+        () => {
+          console.log('Register successful:', {
+            email: this.email,
+            password: this.confirmPassword,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            birthDate: this.birthDate
+          });
+          this._router.navigate(['/']).then();
+        }, error => {
+          console.log(error);
+        });
     }
   }
 
@@ -151,7 +162,7 @@ export class LoginComponent implements OnInit {
   private resetErrorLabels() {
     this.firstNameError = '';
     this.lastNameError = '';
-    this.telephoneError = '';
+    this.birthDateError = '';
     this.emailError = '';
     this.passwordError = '';
     this.confirmPasswordError = '';
@@ -200,11 +211,17 @@ export class LoginComponent implements OnInit {
 
   }
 
-  private checkTelephone() {
-    if (!this.telephone) {
-      this.telephoneError = 'Numero di telefono obbligatorio';
-    } else if (!this.validatePhone(this.telephone)) {
-      this.telephoneError = 'Formato numero di telefono non valido.';
+  private checkBirthDate() {
+    if (!this.birthDate) {
+      this.birthDateError = 'Data di nascita obbligatoria';
+    } else if (!this.validateBirthDate(this.birthDate)) {
+      this.birthDateError = 'Formato data di nascita non valido.';
+    } else {
+      const today = new Date();
+      const birthDate = new Date(this.birthDate);
+      if (birthDate > today) {
+        this.birthDateError = 'La data di nascita non può essere nel futuro.';
+      }
     }
   }
 
@@ -267,7 +284,7 @@ export class LoginComponent implements OnInit {
     this._authenticationService.onGoogleLogin(token).subscribe(
       () => {
         console.log('Google login completato.');
-        this._router.navigate(['/']).then(() => this._authenticationService.getUser().subscribe());
+        this._router.navigate(['/']).then();
       },
       (error) => {
         console.error('Errore nel Google login:', error);

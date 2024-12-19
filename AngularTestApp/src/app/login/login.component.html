@@ -93,24 +93,26 @@
     @if (lastNameError) {
       <div class="invalid-feedback d-block">{{ lastNameError }}</div>
     }
-    <div class="input-group mt-3" [class.is-invalid-container]="telephoneError">
-      <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+    <div class="input-group mt-3" [class.is-invalid-container]="birthDateError">
+      <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
       <div class="form-floating flex-grow-1">
         <input
-          id="registerTelephone"
-          type="tel"
+          id="registerBirthDate"
+          type="date"
           class="form-control"
-          [(ngModel)]="telephone"
-          name="telephone"
+          [(ngModel)]="birthDate"
+          name="birthDate"
           required
-          (input)="telephoneError = ''"
-          [class.is-invalid]="telephoneError"
-          placeholder="Numero di Telefono">
-        <label for="registerTelephone">Numero di Telefono</label>
+          onClick="this.showPicker()"
+          (input)="birthDateError = ''"
+          [class.is-invalid]="birthDateError"
+          [max]="maxDate"
+          placeholder="Data di nascita">
+        <label for="registerBirthDate">Data di nascita</label>
       </div>
     </div>
-    @if (telephoneError) {
-      <div class="invalid-feedback d-block">{{ telephoneError }}</div>
+    @if (birthDateError) {
+      <div class="invalid-feedback d-block">{{ birthDateError }}</div>
     }
     <div class="mt-3">
       <button type="submit" class="btn btn-primary w-100">Prosegui</button>
