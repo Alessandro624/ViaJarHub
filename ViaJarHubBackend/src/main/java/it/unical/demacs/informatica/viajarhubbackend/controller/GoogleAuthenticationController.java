@@ -45,7 +45,7 @@ public class GoogleAuthenticationController {
             String email = payload.getEmail();
             User user = fetchOrCreateUser(payload, email);
             authenticateUser(user, session);
-            return ResponseEntity.ok("User logged in successfully");
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
