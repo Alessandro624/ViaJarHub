@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, HostListener, Inject, Input, OnInit, PLATFORM_ID} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from './authentication.service';
@@ -28,17 +28,18 @@ export class LoginComponent implements OnInit {
   emailError: string = '';
   passwordError: string = '';
   confirmPasswordError: string = '';
-  currentForm: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail' | 'resetPassword' = 'login';
+  @Input() currentForm!: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail';
+  @Input() isOpened: boolean = false;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   maxDate: string = new Date().toISOString().split('T')[0];
+  alertMessage: string = '';
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
   }
 
   ngOnInit(): void {
     this.maxDate = new Date().toISOString().split('T')[0];
-    this.changeForm('login');
     if (isPlatformBrowser(this.platformId)) {
       this.initGoogleButton();
       this.renderGoogleButton();
@@ -79,8 +80,10 @@ export class LoginComponent implements OnInit {
       this._authenticationService.onLogin(this.email, this.password).subscribe(
         () => {
           console.log('Login successful:', {email: this.email, password: this.password});
-          this._router.navigate(['/']).then();
+          this._router.navigate(['']).then();
+          alert("Login effettuato con successo");
         }, error => {
+          this.alertMessage = 'Email o password errati'
           console.log(error);
         });
     }
@@ -116,9 +119,11 @@ export class LoginComponent implements OnInit {
             lastName: this.lastName,
             birthDate: this.birthDate
           });
-          this._router.navigate(['/']).then();
+          this._router.navigate(['']).then();
+          alert("Email di conferma inviata con successo");
         }, error => {
           console.log(error);
+          this.alertMessage = 'Errore nella registrazione'
         });
     }
   }
@@ -127,17 +132,15 @@ export class LoginComponent implements OnInit {
     this.resetErrorLabels();
     this.checkEmail();
     if (!this.emailError) {
-      console.log('First step of password reset successful:', {email: this.email, password: this.confirmPassword});
-      this.changeForm('resetPassword');
-    }
-  }
-
-  onResetPassword() {
-    this.checkPassword();
-    this.checkConfirmPassword();
-    if (!this.passwordError && !this.confirmPasswordError) {
-      console.log('Password reset successful:', {email: this.email, password: this.confirmPassword});
-      this._router.navigate(['client']).then();
+      this._authenticationService.onForgotPassword(this.email).subscribe(() => {
+          console.log('First step of password reset successful:', {email: this.email, password: this.confirmPassword});
+          this._router.navigate(['']).then();
+          alert('Email di reset password inviata correttamente');
+        }, error => {
+          console.log(error);
+          this.alertMessage = 'Email errata'
+        }
+      );
     }
   }
 
@@ -166,6 +169,7 @@ export class LoginComponent implements OnInit {
     this.emailError = '';
     this.passwordError = '';
     this.confirmPasswordError = '';
+    this.alertMessage = '';
   }
 
   private checkEmail() {
@@ -256,8 +260,7 @@ export class LoginComponent implements OnInit {
         text: "signin_with",
         shape: "pill",
         locale: "it",
-        logo_alignment: "left",
-        // width: "200"
+        logo_alignment: "left"
       }
     );
   }
@@ -284,11 +287,21 @@ export class LoginComponent implements OnInit {
     this._authenticationService.onGoogleLogin(token).subscribe(
       () => {
         console.log('Google login completato.');
-        this._router.navigate(['/']).then();
+        this._router.navigate(['']).then();
+        alert("Accesso con google effettuato correttamente")
       },
       (error) => {
         console.error('Errore nel Google login:', error);
+        this.alertMessage = 'Errore nell\'accesso';
       }
     );
+  }
+
+  @HostListener('document:click', ['$event'])
+  onOutsideClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-menu')) {
+      this.isOpened = false;
+    }
   }
 }
