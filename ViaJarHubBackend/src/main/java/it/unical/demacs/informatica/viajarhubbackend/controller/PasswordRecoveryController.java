@@ -40,4 +40,13 @@ public class PasswordRecoveryController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @RequestMapping(value = "/check-reset-token", method = RequestMethod.GET)
+    public ResponseEntity<Void> checkPasswordResetToken(@RequestParam("token") String token) {
+        boolean result = userService.validateResetPasswordToken(token);
+        if (result) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }
