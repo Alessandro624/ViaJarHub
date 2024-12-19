@@ -2,14 +2,15 @@ import {Component, HostListener, Inject, Input, OnInit, PLATFORM_ID} from '@angu
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from './authentication.service';
-import {isPlatformBrowser} from '@angular/common';
+import {isPlatformBrowser, NgIf} from '@angular/common';
 import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    NgIf
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -34,6 +35,7 @@ export class LoginComponent implements OnInit {
   showConfirmPassword: boolean = false;
   maxDate: string = new Date().toISOString().split('T')[0];
   alertMessage: string = '';
+  isLoading: boolean = false;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
   }
@@ -77,12 +79,20 @@ export class LoginComponent implements OnInit {
     this.checkEmail();
     this.checkPassword();
     if (!this.emailError && !this.passwordError) {
+      this.isLoading = true;
       this._authenticationService.onLogin(this.email, this.password).subscribe(
         () => {
+          this.isLoading = false;
           console.log('Login successful:', {email: this.email, password: this.password});
-          this._router.navigate(['']).then();
           alert("Login effettuato con successo");
+          this._router.navigate([''], {
+            queryParams: {
+              isOpened: false,
+              currentForm: 'login'
+            }
+          }).then();
         }, error => {
+          this.isLoading = false;
           this.alertMessage = 'Email o password errati'
           console.log(error);
         });
@@ -110,8 +120,10 @@ export class LoginComponent implements OnInit {
     this.checkPassword();
     this.checkConfirmPassword();
     if (!this.emailError && !this.passwordError && !this.confirmPasswordError) {
+      this.isLoading = true;
       this._authenticationService.onRegister(this.email, this.password, this.firstName, this.lastName, new Date(this.birthDate)).subscribe(
         () => {
+          this.isLoading = false;
           console.log('Register successful:', {
             email: this.email,
             password: this.confirmPassword,
@@ -119,9 +131,15 @@ export class LoginComponent implements OnInit {
             lastName: this.lastName,
             birthDate: this.birthDate
           });
-          this._router.navigate(['']).then();
           alert("Email di conferma inviata con successo");
+          this._router.navigate([''], {
+            queryParams: {
+              isOpened: false,
+              currentForm: 'login'
+            }
+          }).then();
         }, error => {
+          this.isLoading = false;
           console.log(error);
           this.alertMessage = 'Errore nella registrazione'
         });
@@ -132,11 +150,19 @@ export class LoginComponent implements OnInit {
     this.resetErrorLabels();
     this.checkEmail();
     if (!this.emailError) {
+      this.isLoading = true;
       this._authenticationService.onForgotPassword(this.email).subscribe(() => {
+          this.isLoading = false;
           console.log('First step of password reset successful:', {email: this.email, password: this.confirmPassword});
-          this._router.navigate(['']).then();
           alert('Email di reset password inviata correttamente');
+          this._router.navigate([''], {
+            queryParams: {
+              isOpened: false,
+              currentForm: 'login'
+            }
+          }).then();
         }, error => {
+          this.isLoading = false;
           console.log(error);
           this.alertMessage = 'Email errata'
         }
@@ -212,7 +238,6 @@ export class LoginComponent implements OnInit {
     } else if (!this.validateName(this.lastName)) {
       this.lastNameError = 'Il cognome deve contenere solo lettere';
     }
-
   }
 
   private checkBirthDate() {
@@ -284,13 +309,21 @@ export class LoginComponent implements OnInit {
   }
 
   sendTokenToBackend(token: string) {
+    this.isLoading = true;
     this._authenticationService.onGoogleLogin(token).subscribe(
       () => {
+        this.isLoading = false;
         console.log('Google login completato.');
-        this._router.navigate(['']).then();
         alert("Accesso con google effettuato correttamente")
+        this._router.navigate([''], {
+          queryParams: {
+            isOpened: false,
+            currentForm: 'login'
+          }
+        }).then();
       },
-      (error) => {
+      error => {
+        this.isLoading = false;
         console.error('Errore nel Google login:', error);
         this.alertMessage = 'Errore nell\'accesso';
       }

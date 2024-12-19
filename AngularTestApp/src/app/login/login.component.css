@@ -8,6 +8,11 @@ a:hover {
   text-decoration: underline;
 }
 
+a.disabled {
+  pointer-events: none;
+  color: grey;
+}
+
 .input-group-text.password-toggle {
   cursor: pointer;
   transition: all 0.3s ease-in-out;

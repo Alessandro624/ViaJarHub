@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from '../authentication.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgClass} from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @Component({
@@ -10,7 +10,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
   imports: [
     NgClass,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgIf
   ],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
@@ -81,11 +82,14 @@ export class ResetPasswordComponent implements OnInit {
       this.checkPassword();
       this.checkConfirmPassword();
       if (!this.passwordError && !this.confirmPasswordError) {
+        this.isLoading = true;
         this._authenticationService.onResetPassword(this.resetToken, this.password).subscribe(() => {
+          this.isLoading = false;
           console.log('Password reset successful:', {token: this.resetToken, password: this.password});
           alert('Password modificata correttamente:');
           this.onClose();
         }, (error) => {
+          this.isLoading = false;
           console.error(error);
           this.alertMessage = "Errore nella modifica della password";
         });

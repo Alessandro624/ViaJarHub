@@ -30,7 +30,12 @@ export class AppComponent implements OnInit {
   onLogout() {
     this._authenticationService.onLogout().subscribe(
       () => {
-        this._router.navigate(['']).then(() => alert("Logout completato"));
+        this._router.navigate([''], {
+          queryParams: {
+            isOpened: false,
+            currentForm: 'login'
+          }
+        }).then(() => alert("Logout completato"));
       }
     );
   }
@@ -51,13 +56,9 @@ export class AppComponent implements OnInit {
     this._activatedRoute.queryParams.subscribe(params => {
       if (params['isOpened']) {
         this.isDropdownOpened = params['isOpened'] == 'true';
-      } else {
-        this.isDropdownOpened = false;
       }
       if (params['currentForm'] && params['currentForm'] != 'registerStep2') {
         this.currentFrom = params['currentForm'];
-      } else {
-        this.currentFrom = 'login';
       }
     });
   }
