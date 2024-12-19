@@ -32,7 +32,7 @@ public class GoogleAuthenticationController {
     }
 
     @RequestMapping(value = "/google-login", method = RequestMethod.POST)
-    public ResponseEntity<String> verifyGoogleToken(@RequestBody GoogleTokenRequest googleTokenRequest, HttpSession session) {
+    public ResponseEntity<Void> verifyGoogleToken(@RequestBody GoogleTokenRequest googleTokenRequest, HttpSession session) {
         try {
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance())
                     .setAudience(Collections.singletonList(System.getenv("GOOGLE_CLIENT_ID_VIAJARHUB")))
