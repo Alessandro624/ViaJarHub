@@ -82,6 +82,10 @@ export class AuthenticationService {
     });
   }
 
+  validatePasswordResetToken(token: string) {
+    return this._http.get<void>(`${this.APIUrl}/open/v1/check-reset-token?token=${token}`, {withCredentials: true});
+  }
+
   onResetPassword(token: string, newPassword: string) {
     const body = new URLSearchParams();
     body.set('newPassword', newPassword);

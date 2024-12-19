@@ -26,6 +26,7 @@ export class ResetPasswordComponent implements OnInit {
   isLoading: boolean = true;
   isError: boolean = false;
   showResetPasswordForm: boolean = false;
+  alertMessage: string = '';
 
   constructor(private _authenticationService: AuthenticationService, private _router: Router, private _activatedRoute: ActivatedRoute) {
   }
@@ -33,20 +34,28 @@ export class ResetPasswordComponent implements OnInit {
   ngOnInit(): void {
     const token = this._activatedRoute.snapshot.paramMap.get('token');
     if (token) {
-      this.showResetPasswordForm = true;
-      this.resetToken = token;
+      this._authenticationService.validatePasswordResetToken(token).subscribe({
+          next: () => {
+            this.showResetPasswordForm = true;
+            this.resetToken = token;
+            this.isLoading = false;
+          }, error: () => {
+            this.isError = true;
+            this.isLoading = false;
+          }
+        }
+      )
     } else {
       this.isError = true;
     }
-    this.isLoading = false;
   }
 
   onClose() {
-    // se non ci sono errori apri login, se ci sono errori imposta a register ma non aprire
+    // se non ci sono errori apri login, se ci sono errori imposta a forgotPasswordEmail ma non aprire
     this._router.navigate([''], {
       queryParams: {
         isOpened: !this.isError,
-        currentForm: this.isError ? 'registerStep1' : 'login'
+        currentForm: this.isError ? 'forgotPasswordEmail' : 'login'
       }
     }).then();
   }
@@ -78,7 +87,7 @@ export class ResetPasswordComponent implements OnInit {
           this.onClose();
         }, (error) => {
           console.error(error);
-          alert('Errore nella modifica della password');
+          this.alertMessage = "Errore nella modifica della password";
         });
       }
     }

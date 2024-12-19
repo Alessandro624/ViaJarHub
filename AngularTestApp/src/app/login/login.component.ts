@@ -1,4 +1,4 @@
-import {Component, Inject, Input, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, HostListener, Inject, Input, OnInit, PLATFORM_ID} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from './authentication.service';
@@ -33,6 +33,7 @@ export class LoginComponent implements OnInit {
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   maxDate: string = new Date().toISOString().split('T')[0];
+  alertMessage: string = '';
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
   }
@@ -82,7 +83,7 @@ export class LoginComponent implements OnInit {
           this._router.navigate(['']).then();
           alert("Login effettuato con successo");
         }, error => {
-          alert("Errore nel login")
+          this.alertMessage = 'Email o password errati'
           console.log(error);
         });
     }
@@ -121,8 +122,8 @@ export class LoginComponent implements OnInit {
           this._router.navigate(['']).then();
           alert("Email di conferma inviata con successo");
         }, error => {
-          alert("Errore nella registrazione");
           console.log(error);
+          this.alertMessage = 'Errore nella registrazione'
         });
     }
   }
@@ -136,8 +137,8 @@ export class LoginComponent implements OnInit {
           this._router.navigate(['']).then();
           alert('Email di reset password inviata correttamente');
         }, error => {
-          alert("Errore nell'invio dell'email di reset password");
           console.log(error);
+          this.alertMessage = 'Email errata'
         }
       );
     }
@@ -168,6 +169,7 @@ export class LoginComponent implements OnInit {
     this.emailError = '';
     this.passwordError = '';
     this.confirmPasswordError = '';
+    this.alertMessage = '';
   }
 
   private checkEmail() {
@@ -290,8 +292,16 @@ export class LoginComponent implements OnInit {
       },
       (error) => {
         console.error('Errore nel Google login:', error);
-        alert("Errore nell'accesso con google")
+        this.alertMessage = 'Errore nell\'accesso';
       }
     );
+  }
+
+  @HostListener('document:click', ['$event'])
+  onOutsideClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-menu')) {
+      this.isOpened = false;
+    }
   }
 }
