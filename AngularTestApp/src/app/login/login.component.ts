@@ -42,10 +42,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.maxDate = new Date().toISOString().split('T')[0];
-    if (isPlatformBrowser(this.platformId)) {
-      this.initGoogleButton();
-      this.renderGoogleButton();
-    }
+    this.loadGoogleButton();
   }
 
   validateEmail(email: string) {
@@ -149,7 +146,7 @@ export class LoginComponent implements OnInit {
         }, error => {
           this.isLoading = false;
           console.log(error);
-          this.alertMessage = 'Email errata'
+          this.alertMessage = 'Errore nell\'invio';
         }
       );
     }
@@ -159,6 +156,9 @@ export class LoginComponent implements OnInit {
     this.resetFields();
     this.resetErrorLabels();
     this.currentForm = nextForm;
+    if (this.currentForm === 'login') {
+      this.loadGoogleButton();
+    }
   }
 
   resetFields() {
@@ -251,6 +251,23 @@ export class LoginComponent implements OnInit {
     $event.preventDefault();
   }
 
+  loadGoogleButton() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.initGoogleButton();
+      this.waitForButtonAndRender();
+    }
+  }
+
+  private waitForButtonAndRender() {
+    const interval = setInterval(() => {
+      const buttonElement = document.getElementById("google-signin-button");
+      if (buttonElement) {
+        clearInterval(interval);
+        this.renderGoogleButton();
+      }
+    }, 100);
+  }
+
   private initGoogleButton() {
     (globalThis as any).google.accounts.id.initialize({
       client_id: environment.googleClientId,
@@ -328,6 +345,7 @@ export class LoginComponent implements OnInit {
   }
 
   reloadPage() {
-    window.location.reload();
+    // window.location.reload();
+    this.isOpened = false;
   }
 }
