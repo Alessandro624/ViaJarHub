@@ -185,12 +185,37 @@ public class UserService implements IUserService {
 
     private void sendVerificationEmail(User user) {
         String confirmationURL = FRONTEND_URL + "/verify-email/" + user.getVerificationToken();
-        emailService.sendEmail(user.getEmail(), "Verify Your Email", "Click the link to verify your email: " + confirmationURL);
+        String htmlBody = "<!DOCTYPE html>" +
+                "<html>" +
+                "<head><title>Verifica Email</title></head>" +
+                "<body style=\"font-family: Arial, sans-serif; text-align: center;\">" +
+                "<img src=\"cid:logo\" alt=\"Logo\" style=\"max-width: 150px; margin-bottom: 20px;\">" +
+                "<h2 style=\"color: black;\">Verifica il tuo indirizzo email</h2>" +
+                "<p>Ciao, clicca sul pulsante qui sotto per verificare il tuo indirizzo email:</p>" +
+                "<a href=\"" + confirmationURL + "\" style=\"display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;\">" +
+                "Verifica Email</a>" +
+                "<p style=\"margin-top: 20px; font-size: 14px; color: #555;\">Se non hai richiesto questa email, ignora questo messaggio.</p>" +
+                "</body>" +
+                "</html>";
+        emailService.sendEmail(user.getEmail(), "Verify Your Email", htmlBody);
+
     }
 
     private void sendPasswordResetEmail(String email, String token) {
         String resetURL = FRONTEND_URL + "/reset-password/" + token;
-        emailService.sendEmail(email, "Reset Your Password", "Click the link to reset your password: " + resetURL);
+        String htmlBody = "<!DOCTYPE html>" +
+                "<html>" +
+                "<head><title>Reset Password</title></head>" +
+                "<body style=\"font-family: Arial, sans-serif; text-align: center;\">" +
+                "<img src=\"cid:logo\" alt=\"Logo\" style=\"max-width: 150px; margin-bottom: 20px;\">" +
+                "<h2 style=\"color: black;\">Reimposta la tua password</h2>" +
+                "<p>Hai richiesto di reimpostare la tua password. Clicca sul pulsante qui sotto per procedere:</p>" +
+                "<a href=\"" + resetURL + "\" style=\"display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;\">" +
+                "Reimposta Password</a>" +
+                "<p style=\"margin-top: 20px; font-size: 14px; color: #555;\">Se non hai richiesto questa modifica, ignora questa email.</p>" +
+                "</body>" +
+                "</html>";
+        emailService.sendEmail(email, "Reset Your Password",htmlBody);
     }
 
     private String generateVerificationToken() {
