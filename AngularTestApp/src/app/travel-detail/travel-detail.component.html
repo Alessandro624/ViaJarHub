@@ -69,7 +69,8 @@
         </div>
         <div class="modal-body shadow-lg">
           <!-- Contenuto del modale -->
-          <app-payment (closeModal)="closePopup() " [prezzo]="prezzoFinale"></app-payment>
+          <app-payment (closeModal)="closePopup() " [prezzo]="prezzoFinale" [travel]="travel"
+                       [numeroPartecipanti]="postiSelezionati"></app-payment>
         </div>
       </div>
     </div>

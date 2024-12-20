@@ -1,10 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, input, Input, OnInit, Output} from '@angular/core';
 import {HttpClientModule, HttpClient, HttpHeaders} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {window} from 'rxjs';
 import {response} from 'express';
 import {loadStripe} from '@stripe/stripe-js';
+import {Travel} from '../models/travel/travel.module';
+import {AuthenticationService} from '../login/authentication.service';
 
 
 @Component({
@@ -18,6 +20,8 @@ export class PaymentComponent {
   @Output() closeModal = new EventEmitter<void>();
 
   @Input() prezzo: number = 0;
+  @Input() travel: Travel | undefined;
+  @Input() numeroPartecipanti: number = 0;
   cardNumber: string = '';
   expiryMonth: string = '';
   expiryYear: string = '';
@@ -31,7 +35,7 @@ export class PaymentComponent {
   private APIUrl = "api";
 
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private authentication: AuthenticationService) {
   }
 
   makePayment() {
@@ -42,7 +46,13 @@ export class PaymentComponent {
       expiryMonth: this.expiryMonth,
       expiryYear: this.expiryYear,
       cvv: this.cvv,
-      amount: this.prezzo
+      amount: this.prezzo,
+      destinazione: this.travel?.destinazione,
+      dataPartenza: this.travel?.dataPartenza,
+      dataRitorno: this.travel?.dataRitorno,
+      numeroPartecipanti: this.numeroPartecipanti,
+      email: this.authentication.currentUserSubject.getValue()?.email
+
     };
     console.log(this.prezzo);
 
@@ -52,6 +62,7 @@ export class PaymentComponent {
         next: (response: any) => {
           console.log('Pagamento completato:', response);
           alert('pagamento riuscito');
+          console.log(response);
           this.paymentSuccess = true;
           this.loading = false;
           this.closeModal.emit();
