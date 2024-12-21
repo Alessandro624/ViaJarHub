@@ -46,7 +46,7 @@ public class PaymentController {
             if (!paymentData.containsKey("amount") || paymentData.get("amount") == null) {
                 response.put("success", false);
                 response.put("message", "Importo mancante o non valido.");
-                System.out.println(response.toString());
+                System.out.println(response);
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -54,7 +54,7 @@ public class PaymentController {
 
                 response.put("success", false);
                 response.put("message", "Numero di carta mancante.");
-                System.out.println(response.toString());
+                System.out.println(response);
                 return ResponseEntity.badRequest().body(response);
 
             }
@@ -62,7 +62,7 @@ public class PaymentController {
             if (!paymentData.containsKey("expiryMonth") || paymentData.get("expiryMonth") == null) {
                 response.put("success", false);
                 response.put("message", "Mese di scadenza mancante.");
-                System.out.println(response.toString());
+                System.out.println(response);
                 return ResponseEntity.badRequest().body(response);
 
             }
@@ -70,7 +70,7 @@ public class PaymentController {
             if (!paymentData.containsKey("expiryYear") || paymentData.get("expiryYear") == null) {
                 response.put("success", false);
                 response.put("message", "Anno di scadenza mancante.");
-                System.out.println(response.toString());
+                System.out.println(response);
                 return ResponseEntity.badRequest().body(response);
 
             }
@@ -78,7 +78,7 @@ public class PaymentController {
             if (!paymentData.containsKey("cvv") || paymentData.get("cvv") == null) {
                 response.put("success", false);
                 response.put("message", "CVV mancante.");
-                System.out.println(response.toString());
+                System.out.println(response);
                 return ResponseEntity.badRequest().body(response);
 
             }
@@ -89,7 +89,7 @@ public class PaymentController {
                 System.out.println("sss");
                 response.put("success", false);
                 response.put("message", "Numero di carta non valido.");
-                System.out.println(response.toString());
+                System.out.println(response);
                 return ResponseEntity.badRequest().body(response);
 
             }
@@ -99,7 +99,7 @@ public class PaymentController {
             if (expiryMonth < 1 || expiryMonth > 12) {
                 response.put("success", false);
                 response.put("message", "Mese di scadenza non valido.");
-                System.out.println(response.toString());
+                System.out.println(response);
                 return ResponseEntity.badRequest().body(response);
 
             }
@@ -110,7 +110,7 @@ public class PaymentController {
             if (expiryYear < currentYear || expiryYear > currentYear + 20) { // Limite massimo di 20 anni nel futuro
                 response.put("success", false);
                 response.put("message", "Anno di scadenza non valido.");
-                System.out.println(response.toString());
+                System.out.println(response);
                 return ResponseEntity.badRequest().body(response);
 
             }
@@ -120,7 +120,7 @@ public class PaymentController {
             if (!isValidCVV(cvv)) {
                 response.put("success", false);
                 response.put("message", "CVV non valido.");
-                System.out.println(response.toString());
+                System.out.println(response);
                 return ResponseEntity.badRequest().body(response);
 
             }
@@ -147,7 +147,7 @@ public class PaymentController {
             // Risposta di successo
             response.put("success", true);
             response.put("status", paymentIntent.getStatus());
-            System.out.println(response.toString());
+            System.out.println(response);
             this.sendEmail(paymentData);
             return ResponseEntity.ok(response);
 
@@ -155,7 +155,7 @@ public class PaymentController {
             // Risposta di errore Stripe
             response.put("success", false);
             response.put("message", "Errore durante il pagamento: " + e.getMessage());
-            System.out.println(response.toString());
+            System.out.println(response);
             return ResponseEntity.badRequest().body(response);
 
 
@@ -164,7 +164,7 @@ public class PaymentController {
             response.put("success", false);
             response.put("message", "Errore generico: " + e.getMessage());
             e.printStackTrace();
-            System.out.println(response.toString());
+            System.out.println(response);
             return ResponseEntity.badRequest().body(response);
 
         }
@@ -204,24 +204,6 @@ public class PaymentController {
     }
 
     private void sendEmail(Map<String, Object> paymentData) {
-        String htmlBody = "<!DOCTYPE html>" +
-                "<html>" +
-                "<head><title>Conferma Prenotazione</title></head>" +
-                "<body style=\"font-family: Arial, sans-serif; text-align: center; background-color: #f9f9f9; padding: 20px;\">" +
-                "<img src=\"cid:logo\" alt=\"Logo\" style=\"max-width: 150px; margin-bottom: 20px;\">" +
-                "<h2 style=\"color: #333;\">Conferma della tua Prenotazione</h2>" +
-                "<p style=\"color: #555;\">Grazie per aver prenotato con noi! Ecco i dettagli della tua prenotazione:</p>" +
-                "<table style=\"margin: 0 auto; border-collapse: collapse;\">" +
-                "<tr><td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Destinazione</td><td style=\"padding: 10px; border: 1px solid #ddd;\">" + paymentData.get("destinazione") + "</td></tr>" +
-                "<tr><td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Numero di Partecipanti</td><td style=\"padding: 10px; border: 1px solid #ddd;\">" + paymentData.get("numeroPartecipanti") + "</td></tr>" +
-                "<tr><td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Data di Partenza</td><td style=\"padding: 10px; border: 1px solid #ddd;\">" + paymentData.get("dataPartenza") + "</td></tr>" +
-                "<tr><td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Data di Ritorno</td><td style=\"padding: 10px; border: 1px solid #ddd;\">" + paymentData.get("dataRitorno") + "</td></tr>" +
-                "<tr><td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Prezzo Totale</td><td style=\"padding: 10px; border: 1px solid #ddd;\">€" + paymentData.get("amount") + "</td></tr>" + "</table>" +
-                "<p style=\"margin-top: 20px; font-size: 14px; color: #555;\">Se non hai effettuato questa prenotazione, ignora questo messaggio.</p>" +
-                "</body>" +
-                "</html>";
-        emailService.sendEmail(String.valueOf(paymentData.get("email")), "Dettagli pagamento", htmlBody);
-
+        emailService.sendPaymentConfirmationEmail(String.valueOf(paymentData.get("email")), paymentData.get("destinazione").toString(), paymentData.get("numeroPartecipanti").toString(), paymentData.get("dataPartenza").toString(), paymentData.get("dataRitorno").toString(), paymentData.get("amount").toString());
     }
 }
-

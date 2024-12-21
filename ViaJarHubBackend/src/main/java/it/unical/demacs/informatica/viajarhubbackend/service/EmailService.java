@@ -64,6 +64,20 @@ public class EmailService implements IEmailService {
         sendTemplateEmail(email, "Reimposta la tua password", templatePath, placeholders);
     }
 
+    @Override
+    public void sendPaymentConfirmationEmail(String email, String destination, String participantsNumber, String startDate, String endDate, String total) {
+        String templatePath = "templates/payment-confirmation-email.html";
+        Map<String, String> placeholders = Map.of(
+                "destination", destination,
+                "participantsNumber", participantsNumber,
+                "startDate", startDate,
+                "endDate", endDate,
+                "total", total,
+                "logoCid", "logo"
+        );
+        sendTemplateEmail(email, "Dettagli Pagamento", templatePath, placeholders);
+    }
+
     private void sendTemplateEmail(String to, String subject, String templatePath, Map<String, String> placeholders) {
         try {
             String template = new String(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(templatePath)).readAllBytes());
