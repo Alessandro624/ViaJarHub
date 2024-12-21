@@ -1,24 +1,16 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller;
+
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Charge;
 import com.stripe.model.PaymentIntent;
-import com.stripe.param.ChargeCreateParams;
 import com.stripe.param.PaymentIntentConfirmParams;
 import com.stripe.param.PaymentIntentCreateParams;
-import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
 import it.unical.demacs.informatica.viajarhubbackend.service.EmailService;
-import it.unical.demacs.informatica.viajarhubbackend.service.IEmailService;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -39,7 +31,7 @@ public class PaymentController {
 
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
 
-    public ResponseEntity processPayment(@RequestBody Map<String, Object> paymentData) {
+    public ResponseEntity<Map<String, Object>> processPayment(@RequestBody Map<String, Object> paymentData) {
         String stripeApiKey = "sk_test_51QXRegAy1mElwXplBtKd1JF5OfVvXMBKbOk3DVRM64FDM9d9cbfuwB8RKM5feK1yOiHwZoyIbxYIw9HTZ4rJ4WPX00QrtOIGao";
         Stripe.apiKey = stripeApiKey;
         System.out.println(stripeApiKey);
@@ -92,7 +84,7 @@ public class PaymentController {
             }
 
             // Controllo del formato del numero di carta
-            String cardNumber=paymentData.get("cardNumber").toString().replaceAll(" ","");
+            String cardNumber = paymentData.get("cardNumber").toString().replaceAll(" ", "");
             if (!isValidCardNumber(cardNumber)) {
                 System.out.println("sss");
                 response.put("success", false);
@@ -211,7 +203,7 @@ public class PaymentController {
         return pattern.matcher(cvv).matches();
     }
 
-    private void sendEmail( Map<String, Object> paymentData){
+    private void sendEmail(Map<String, Object> paymentData) {
         String htmlBody = "<!DOCTYPE html>" +
                 "<html>" +
                 "<head><title>Conferma Prenotazione</title></head>" +
@@ -224,11 +216,11 @@ public class PaymentController {
                 "<tr><td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Numero di Partecipanti</td><td style=\"padding: 10px; border: 1px solid #ddd;\">" + paymentData.get("numeroPartecipanti") + "</td></tr>" +
                 "<tr><td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Data di Partenza</td><td style=\"padding: 10px; border: 1px solid #ddd;\">" + paymentData.get("dataPartenza") + "</td></tr>" +
                 "<tr><td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Data di Ritorno</td><td style=\"padding: 10px; border: 1px solid #ddd;\">" + paymentData.get("dataRitorno") + "</td></tr>" +
-                "<tr><td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Prezzo Totale</td><td style=\"padding: 10px; border: 1px solid #ddd;\">€" +paymentData.get("amount") + "</td></tr>" + "</table>" +
+                "<tr><td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Prezzo Totale</td><td style=\"padding: 10px; border: 1px solid #ddd;\">€" + paymentData.get("amount") + "</td></tr>" + "</table>" +
                 "<p style=\"margin-top: 20px; font-size: 14px; color: #555;\">Se non hai effettuato questa prenotazione, ignora questo messaggio.</p>" +
                 "</body>" +
                 "</html>";
-        emailService.sendEmail(String.valueOf(paymentData.get("email")), "Reset Your Password",htmlBody);
+        emailService.sendEmail(String.valueOf(paymentData.get("email")), "Dettagli pagamento", htmlBody);
 
     }
 }
