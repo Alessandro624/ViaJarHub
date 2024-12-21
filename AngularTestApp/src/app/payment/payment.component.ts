@@ -2,11 +2,9 @@ import {Component, EventEmitter, input, Input, OnInit, Output} from '@angular/co
 import {HttpClientModule, HttpClient, HttpHeaders} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {window} from 'rxjs';
-import {response} from 'express';
-import {loadStripe} from '@stripe/stripe-js';
 import {Travel} from '../models/travel/travel.module';
 import {AuthenticationService} from '../login/authentication.service';
+import {PaymentService} from './payment.service';
 
 
 @Component({
@@ -27,20 +25,14 @@ export class PaymentComponent {
   expiryYear: string = '';
   cvv: string = '';
   stripe: any;
+  isLoading: boolean = false;
 
 
-  // Stato del pagamento
-  loading: boolean = false;
-  paymentSuccess: boolean = false;
-  private APIUrl = "api";
-
-
-  constructor(private http: HttpClient, private authentication: AuthenticationService) {
+  constructor(private authentication: AuthenticationService, private payment: PaymentService) {
   }
 
   makePayment() {
-    this.loading = true;
-
+    this.isLoading = true;
     const paymentData = {
       cardNumber: this.cardNumber,
       expiryMonth: this.expiryMonth,
@@ -55,22 +47,18 @@ export class PaymentComponent {
 
     };
     console.log(this.prezzo);
-
-    // Invio dati al backend
-    this.http.post(`${this.APIUrl}/auth/v1/payment`, paymentData)
+    this.payment.makePayment(paymentData)
       .subscribe({
         next: (response: any) => {
           console.log('Pagamento completato:', response);
-          alert('pagamento riuscito');
-          console.log(response);
-          this.paymentSuccess = true;
-          this.loading = false;
+          alert('Pagamento riuscito');
+          this.isLoading = false;
           this.closeModal.emit();
-        },
-        error: (error) => {
+        }, error: (error) => {
           console.error('Errore durante il pagamento:', error);
           alert('Errore durante il pagamento.');
-          this.loading = false;
+          this.isLoading = false;
+          this.closeModal.emit();
         }
       });
   }
