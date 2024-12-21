@@ -22,4 +22,6 @@ public interface IUserService {
     boolean validateVerificationToken(String token);
 
     boolean validateResetPasswordToken(String token);
+
+    byte[] getProfileImage(String email) throws Exception;
 }

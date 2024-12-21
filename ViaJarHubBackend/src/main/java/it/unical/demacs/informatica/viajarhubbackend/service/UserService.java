@@ -30,6 +30,7 @@ public class UserService implements IUserService {
     private final IEmailService emailService;
     private static final int TOKEN_EXPIRATION_MINUTES = 15;
     private static final String FRONTEND_URL = "http://localhost:4200";
+    private static final String PROFILE_IMAGE_DIR = "profileImages/";
 
     public UserService(PasswordEncoder passwordEncoder, IEmailService emailService) {
         this.userDAO = DBManager.getInstance().getUserDAO();
@@ -126,6 +127,20 @@ public class UserService implements IUserService {
         return user != null && isTokenValid(user.getPasswordResetTokenCreationTime());
     }
 
+    @Override
+    public byte[] getProfileImage(String email) throws Exception {
+        User user = userDAO.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+        String profileImagePath = user.getProfileImagePath();
+        if (profileImagePath == null || profileImagePath.isEmpty()) {
+            throw new IllegalArgumentException("Profile image path cannot be null or empty");
+        }
+        Path imagePath = Path.of(PROFILE_IMAGE_DIR + profileImagePath);
+        return Files.readAllBytes(imagePath);
+    }
+
     private void checkNotNullFields(String firstName, String lastName, LocalDate birthDate, String email, String password, UserRole role, AuthProvider provider) {
         if (email == null || email.isBlank()) {
             throw new InvalidInputException("Email cannot be null");
@@ -208,13 +223,25 @@ public class UserService implements IUserService {
     }
 
     private void saveProfileImage(User user, MultipartFile profileImage) throws Exception {
-        String fileName = user.getEmail() + '-' + Objects.requireNonNull(profileImage.getOriginalFilename()).substring(profileImage.getOriginalFilename().lastIndexOf(".") + 1);
-        Path path = Path.of("profileImages", fileName);
-        File directory = new File("profileImages");
+        String baseFileName = user.getEmail();
+        String fileName = baseFileName + Objects.requireNonNull(profileImage.getOriginalFilename()).substring(profileImage.getOriginalFilename().lastIndexOf("."));
+        Path path = Path.of(PROFILE_IMAGE_DIR, fileName);
+        File directory = new File(PROFILE_IMAGE_DIR);
         if (!directory.exists() && !directory.mkdirs()) {
             throw new Exception("Could not create directory");
         }
+        deleteExistingFiles(directory.listFiles((dir, name) -> name.startsWith(baseFileName)));
         Files.copy(profileImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-        user.setProfileImagePath(user.getProfileImagePath());
+        user.setProfileImagePath(fileName);
+    }
+
+    private void deleteExistingFiles(File[] existingFiles) throws Exception {
+        if (existingFiles != null) {
+            for (File existingFile : existingFiles) {
+                if (!existingFile.delete()) {
+                    throw new Exception("Could not delete existing file: " + existingFile.getName());
+                }
+            }
+        }
     }
 }
