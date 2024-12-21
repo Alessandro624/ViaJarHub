@@ -6,15 +6,18 @@
     <div class="row justify-content-between">
       <div class="col-6 d-flex align-items-center">
         <!-- Profile Image -->
-        <img src="4646289.jpg" alt="Profile Picture"
-             class="rounded-circle me-4" width="100"
-             height="100"/>
+        <div *ngIf="profileImageUrl">
+          <img [src]="profileImageUrl" alt="Profile Picture"
+               class="rounded-circle me-4" width="100"
+               height="100"/>
+        </div>
+        <div *ngIf="!profileImageUrl">
+          <i class="fa-solid fa-circle-user fa-5x me-4"></i>
+        </div>
         <!-- User Info -->
         <div class="d-flex flex-column">
-          <div class="d-flex align-items-center"><h4 class="mb-1 me-2">{{ user?.firstName }} {{ user?.lastName }}</h4>
+          <div class="d-flex align-items-center"><h4 class="mb-1 me-2">{{ user.firstName }} {{ user.lastName }}</h4>
             <button class="btn btn-sm btn-primary edit-btn" (click)="openPopup()">modifica</button>
-
-
           </div>
           <p class="text-muted mb-0">Cliente</p> <small
           class="text-muted">{{ birthdate }}</small></div>
@@ -39,7 +42,7 @@
         </div>
         <div class="modal-body shadow-lg ">
           <!-- Contenuto del modale -->
-          <app-update-user (closeModal)="closePopup()"></app-update-user>
+          <app-update-user [user]="user" (closeModal)="closePopup()"></app-update-user>
         </div>
       </div>
     </div>

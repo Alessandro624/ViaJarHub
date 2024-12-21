@@ -1,4 +1,4 @@
-import {Component, contentChildren, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgClass, NgForOf, NgStyle} from "@angular/common";
 import {FormsModule} from '@angular/forms';
 import {AddTravelComponent} from '../../add-travel/add-travel.component';

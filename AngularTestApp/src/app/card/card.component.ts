@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Travel} from '../models/travel/travel.module';
+import {Travel} from '../models/travel/travel.model';
 import {RouterLink} from '@angular/router';
 
 @Component({

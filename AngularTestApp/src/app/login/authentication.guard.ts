@@ -17,8 +17,18 @@ export const authenticationGuard: CanActivateFn = (route) => {
         _router.navigate(['403']).then();
         return false;
       }
-      _router.navigate(['login']).then();
+      _router.navigate([''], {
+        queryParams: {
+          isOpened: true,
+          currentForm: 'login'
+        }
+      }).then();
       return false;
     })
-    .catch(() => _router.navigate(['login']));
+    .catch(() => _router.navigate([''], {
+      queryParams: {
+        isOpened: true,
+        currentForm: 'login'
+      }
+    }));
 };

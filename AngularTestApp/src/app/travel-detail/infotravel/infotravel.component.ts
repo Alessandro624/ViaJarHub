@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Travel} from '../../models/travel/travel.module';
+import {Travel} from '../../models/travel/travel.model';
 import {TravelService} from '../../travel.service';
 import {ActivatedRoute} from '@angular/router';
 import {ReviewComponent} from '../../review/review.component';

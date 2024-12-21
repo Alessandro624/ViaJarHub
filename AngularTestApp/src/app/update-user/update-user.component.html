@@ -1,69 +1,65 @@
-<div>
-  <form (ngSubmit)="onSubmit()" #form="ngForm">
-    <!-- Campo di testo: Titolo -->
-    <div class="mb-3">
-      <label for="title" class="form-label">Nome</label>
-      <input
-        type="text"
-        id="title"
-        class="form-control"
-        [(ngModel)]="formData.nome"
-        name="title"
-        pattern="^[a-zA-Zà-üÀ-Ü\s]*$"
-        required
-      />
-    </div>
-
-    <!-- Date Picker: Data di Inizio -->
-    <div class="mb-3">
-      <label for="title" class="form-label">Cognome</label>
-      <input
-        type="text"
-        id="Cognome"
-        class="form-control"
-        [(ngModel)]="formData.cognome"
-        name="title"
-        pattern="^[a-zA-Zà-üÀ-Ü\s]*$"
-        required
-      />
-    </div>
-
-
-    <!-- Drop area per immagini -->
-    <div class="mb-3">
-      <label for="images" class="form-label">Carica Immagini</label>
-      <div
-        class="drop-area border border-primary p-3 text-center"
-        (click)="triggerFileInput()"
-        (dragover)="onDragOver($event)"
-        (dragleave)="onDragLeave($event)"
-        (drop)="onDrop($event)"
-      >
-        <p>Trascina qui le immagini o clicca per selezionarle</p>
-        <!-- Input file nascosto -->
-        <input
-          #fileInput
-          type="file"
-          id="images"
-          class="d-none"
-          (change)="onFileSelect($event)"
-        />
-      </div>
-      <div class="mt-2">
-        @if (formData.image != null) {
-          <p>{{ formData.image.name }}</p>
-        }
-      </div>
-    </div>
-
-    <!-- Pulsante di invio -->
-    <button
-      type="submit"
-      class="btn btn-success"
-      [disabled]="form.invalid || formData.image==null || hasDateErrors()"
+<form (ngSubmit)="onSubmit()" method="POST">
+  <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+    {{ alertMessage }}
+  </div>
+  <div class="mb-3 form-floating flex-grow-1">
+    <input
+      type="text"
+      id="firstName"
+      class="form-control"
+      [(ngModel)]="firstName"
+      name="firstName"
+      required
+      placeholder="Nome"
+      (input)="firstNameError = ''; alertMessage='';"
+      [class.is-invalid]="firstNameError"
+    />
+    <label for="firstName" class="form-label">Nome</label>
+    <div *ngIf="firstNameError" class="invalid-feedback d-block">{{ firstNameError }}</div>
+  </div>
+  <div class="mb-3 form-floating flex-grow-1">
+    <input
+      type="text"
+      id="lastName"
+      class="form-control"
+      [(ngModel)]="lastName"
+      name="lastName"
+      required
+      placeholder="Cognome"
+      (input)="lastNameError = ''; alertMessage='';"
+      [class.is-invalid]="lastNameError"
+    />
+    <label for="lastName" class="form-label">Cognome</label>
+    <div *ngIf="firstNameError" class="invalid-feedback d-block">{{ lastNameError }}</div>
+  </div>
+  <div class="mb-3">
+    <label for="images" class="form-label">Carica Immagini</label>
+    <div
+      class="drop-area border border-primary p-3 text-center"
+      (click)="triggerFileInput()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
     >
-      Modifica
-    </button>
-
-  </form>
-</div>
+      <p>Trascina qui le immagini o clicca per selezionarle</p>
+      <!-- Input file nascosto -->
+      <input
+        #fileInput
+        type="file"
+        id="images"
+        class="d-none"
+        (change)="onFileSelect($event)"
+        accept="image/*"
+      />
+    </div>
+    <div *ngIf="image" class="mt-2">
+      <p>{{ image.name }}</p>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-success"
+          [disabled]="isLoading || (firstName===user.firstName && lastName===user.lastName && !image)">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+    <span *ngIf="!isLoading">Modifica</span>
+  </button>
+</form>

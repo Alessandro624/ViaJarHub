@@ -1,24 +1,22 @@
-import {Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
-import {isPlatformBrowser, NgClass, NgForOf, NgStyle} from "@angular/common";
-import {AddTravelComponent} from '../../add-travel/add-travel.component';
+import {Component, OnInit} from '@angular/core';
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {UpdateUserComponent} from '../../update-user/update-user.component';
 import {ReviewComponent} from '../../review/review.component';
 import {AddReviewComponent} from '../../add-review/add-review.component';
 import {AuthenticationService} from '../../login/authentication.service';
-import {User} from '../../models/user/user.model';
-import {BehaviorSubject} from 'rxjs';
+import {ClientService} from './client.service';
 
 @Component({
   selector: 'app-client',
   standalone: true,
   imports: [
     NgForOf,
-    AddTravelComponent,
     NgClass,
     NgStyle,
     UpdateUserComponent,
     ReviewComponent,
-    AddReviewComponent
+    AddReviewComponent,
+    NgIf
   ],
   templateUrl: './client.component.html',
   styleUrl: './client.component.css'
@@ -26,22 +24,19 @@ import {BehaviorSubject} from 'rxjs';
 export class ClientComponent implements OnInit {
   strokeDashArrayStart: string = '282, 285';
   strokeDashArrayEnd: string[] = ['100, 285', '200, 251', '100, 251', '90, 251', '251, 251'];
-  user: User | null | undefined;
+  user!: any;
   birthdate: String | undefined;
+  isPopupVisible2 = false;
+  profileImageUrl: string = '';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private authentication: AuthenticationService) {
+  constructor(private _authenticationService: AuthenticationService, private _clientService: ClientService) {
   }
 
   ngOnInit() {
+    this.setUser();
+    this.showBirthdate();
+    this.showProfileImage();
     this.animateStrokeDashArray();
-    this.user = this.authentication.currentUserSubject.getValue();
-    console.log(this.user);
-    if (this.user?.birthDate) {
-      const birthDateObj = new Date(this.user.birthDate);
-      this.birthdate = birthDateObj.toLocaleDateString('it-IT');
-    }
-    console.log(this.birthdate);
-
   }
 
   animateStrokeDashArray() {
@@ -77,10 +72,8 @@ export class ClientComponent implements OnInit {
 
   closePopup() {
     this.isPopupVisible = false;
-
   }
 
-  isPopupVisible2 = false;
 
   openPopup2() {
     this.isPopupVisible2 = true;
@@ -91,10 +84,33 @@ export class ClientComponent implements OnInit {
 
   }
 
-  formatDate(date: Date | undefined): string {
-    if (date) {
-      return date.toLocaleDateString();
+  private setUser() {
+    this._authenticationService.currentUser$.subscribe({
+      next: data => {
+        this.user = data;
+        console.log(this.user);
+      }, error: error => console.log(error)
+    });
+  }
+
+  private showBirthdate() {
+    if (this.user.birthDate) {
+      const birthDateObj = new Date(this.user.birthDate);
+      this.birthdate = birthDateObj.toLocaleDateString('it-IT');
     }
-    return '';
+    console.log(this.birthdate);
+  }
+
+  private showProfileImage() {
+    this._clientService.getUserProfileImage().subscribe(
+      {
+        next: data => {
+          this.profileImageUrl = URL.createObjectURL(data);
+        },
+        error: error => {
+          console.log(error);
+        }
+      }
+    )
   }
 }

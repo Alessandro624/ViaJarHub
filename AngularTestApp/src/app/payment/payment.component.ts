@@ -1,18 +1,15 @@
-import {Component, EventEmitter, input, Input, OnInit, Output} from '@angular/core';
-import {HttpClientModule, HttpClient, HttpHeaders} from '@angular/common/http';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {window} from 'rxjs';
-import {response} from 'express';
-import {loadStripe} from '@stripe/stripe-js';
-import {Travel} from '../models/travel/travel.module';
+import {Travel} from '../models/travel/travel.model';
 import {AuthenticationService} from '../login/authentication.service';
 
 
 @Component({
   selector: 'app-payment',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule], // Importa i moduli richiesti
+  imports: [CommonModule, FormsModule],
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css']
 })
@@ -35,7 +32,7 @@ export class PaymentComponent {
   private APIUrl = "api";
 
 
-  constructor(private http: HttpClient, private authentication: AuthenticationService) {
+  constructor(private _http: HttpClient, private authentication: AuthenticationService) {
   }
 
   makePayment() {
@@ -57,7 +54,7 @@ export class PaymentComponent {
     console.log(this.prezzo);
 
     // Invio dati al backend
-    this.http.post(`${this.APIUrl}/auth/v1/payment`, paymentData)
+    this._http.post(`${this.APIUrl}/auth/v1/payment`, paymentData)
       .subscribe({
         next: (response: any) => {
           console.log('Pagamento completato:', response);
@@ -74,6 +71,4 @@ export class PaymentComponent {
         }
       });
   }
-
-
 }

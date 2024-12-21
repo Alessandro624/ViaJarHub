@@ -20,7 +20,12 @@ export const routes: Routes = [
       {path: '', redirectTo: 'info', pathMatch: 'full'}
     ]
   },
-  {path: 'client', component: ClientComponent, canActivate: [authenticationGuard]},
+  {
+    path: 'client',
+    component: ClientComponent,
+    canActivate: [authenticationGuard],
+    data: {requiredRoles: UserRole.USER}
+  },
   {path: 'admin', component: AdminComponent, canActivate: [authenticationGuard], data: {requiredRoles: UserRole.ADMIN}},
   {path: 'verify-email/:token', component: VerifyEmailComponent},
   {path: 'reset-password/:token', component: ResetPasswordComponent}
