@@ -3,9 +3,7 @@ package it.unical.demacs.informatica.viajarhubbackend.controller;
 import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth/v1")

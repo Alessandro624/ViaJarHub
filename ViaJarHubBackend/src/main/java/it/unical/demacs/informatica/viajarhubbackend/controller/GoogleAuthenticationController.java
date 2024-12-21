@@ -4,6 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
 import it.unical.demacs.informatica.viajarhubbackend.model.AuthProvider;
 import it.unical.demacs.informatica.viajarhubbackend.model.GoogleTokenRequest;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
@@ -12,9 +13,6 @@ import it.unical.demacs.informatica.viajarhubbackend.service.IUserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -44,7 +42,7 @@ public class GoogleAuthenticationController {
             GoogleIdToken.Payload payload = token.getPayload();
             String email = payload.getEmail();
             User user = fetchOrCreateUser(payload, email);
-            authenticateUser(user, session);
+            SecurityUtility.updateCurrentUser(user, null, session);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -59,11 +57,5 @@ public class GoogleAuthenticationController {
             LocalDate birthDate = (LocalDate) payload.getOrDefault("birth_date", LocalDate.parse("1999-01-01"));
             return userService.createUser(firstName, lastName, birthDate, email, UUID.randomUUID().toString(), UserRole.ROLE_USER, AuthProvider.GOOGLE);
         });
-    }
-
-    private void authenticateUser(User user, HttpSession session) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
     }
 }

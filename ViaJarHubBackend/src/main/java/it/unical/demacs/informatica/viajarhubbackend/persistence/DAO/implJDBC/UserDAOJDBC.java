@@ -54,7 +54,7 @@ public class UserDAOJDBC implements UserDAO {
     @Override
     public void save(User user) {
         String query = "INSERT INTO \"user\" (email, password, role, provider, firstname, lastname, birthdate, profile_image_path, enabled, verification_token, token_creation_time, password_reset_token, password_reset_token_creation_time) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
-                + "ON CONFLICT (email) DO UPDATE SET password = EXCLUDED.password, birthdate = EXCLUDED.birthdate, profile_image_path = EXCLUDED.profile_image_path, role = EXCLUDED.role, enabled = EXCLUDED.enabled, verification_token = EXCLUDED.verification_token, token_creation_time = EXCLUDED.token_creation_time, password_reset_token = EXCLUDED.password_reset_token, password_reset_token_creation_time = EXCLUDED.password_reset_token_creation_time";
+                + "ON CONFLICT (email) DO UPDATE SET firstname = EXCLUDED.firstname, lastname = EXCLUDED.lastname, password = EXCLUDED.password, birthdate = EXCLUDED.birthdate, profile_image_path = EXCLUDED.profile_image_path, role = EXCLUDED.role, enabled = EXCLUDED.enabled, verification_token = EXCLUDED.verification_token, token_creation_time = EXCLUDED.token_creation_time, password_reset_token = EXCLUDED.password_reset_token, password_reset_token_creation_time = EXCLUDED.password_reset_token_creation_time";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, user.getEmail());
             statement.setString(2, user.getPassword());

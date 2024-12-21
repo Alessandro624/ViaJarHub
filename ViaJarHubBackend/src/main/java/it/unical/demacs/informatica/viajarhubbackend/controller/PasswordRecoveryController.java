@@ -1,7 +1,9 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller;
 
+import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
 import it.unical.demacs.informatica.viajarhubbackend.service.IUserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +29,13 @@ public class PasswordRecoveryController {
     }
 
     @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
-    public ResponseEntity<Void> resetPassword(@RequestParam("token") String token, @RequestParam String newPassword) {
+    public ResponseEntity<Void> resetPassword(@RequestParam("token") String token, @RequestParam String newPassword, HttpSession session) {
         try {
             User user = userService.resetPassword(token, newPassword);
             if (user == null) {
                 return ResponseEntity.badRequest().build();
             }
+            SecurityUtility.updateCurrentUser(user, user.getPassword(), session);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
