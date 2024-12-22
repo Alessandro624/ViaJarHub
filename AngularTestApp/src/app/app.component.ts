@@ -4,6 +4,7 @@ import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {LoginComponent} from './login/login.component';
 import {UserRole} from './models/user/user-role.enum';
 import {AuthenticationService} from './login/authentication.service';
+import {User} from './models/user/user.model';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ import {AuthenticationService} from './login/authentication.service';
 })
 
 export class AppComponent implements OnInit {
-  user!: any;
+  user!: User | null;
   protected readonly UserRole = UserRole;
   isDropdownOpened: boolean = false;
   currentFrom: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail' = 'login';
@@ -52,12 +53,12 @@ export class AppComponent implements OnInit {
     });
   }
 
-  private setCurrentForm() {
+  protected setCurrentForm() {
     this._activatedRoute.queryParams.subscribe(params => {
       if (params['isOpened']) {
-        this.isDropdownOpened = params['isOpened'] == 'true';
+        this.isDropdownOpened = params['isOpened'] === 'true';
       }
-      if (params['currentForm'] && params['currentForm'] != 'registerStep2') {
+      if (params['currentForm'] && params['currentForm'] !== 'registerStep2') {
         this.currentFrom = params['currentForm'];
       }
     });

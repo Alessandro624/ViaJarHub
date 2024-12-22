@@ -4,27 +4,29 @@
   <!-- Colonna Profilo -->
   <div class="card p-4 ">
     <div class="row justify-content-between">
-      <div class="col-lg-3 col-9  d-flex align-items-center">
-        <img src="4646289.jpg"
-             alt="Profile Picture"
-             class="rounded-circle me-4"
-             width="100"
-             height="100">
+      <div class="col-6 d-flex align-items-center">
+        <!-- Profile Image -->
+        <div *ngIf="profileImageUrl">
+          <img [src]="profileImageUrl" alt="Profile Picture"
+               class="rounded-circle me-4" width="100"
+               height="100"/>
+        </div>
+        <div *ngIf="!profileImageUrl">
+          <i class="fa-solid fa-circle-user fa-5x me-4"></i>
+        </div>
         <!-- User Info -->
         <div class="d-flex flex-column">
-          <div class="d-flex align-items-center"><h4 class="mb-1 me-2">Piero</h4>
+          <div class="d-flex align-items-center">
+            <h4 class="mb-1 me-2">{{ user.firstName }} {{ user.lastName }}</h4>
+            <button class="btn btn-primary" (click)="openPopup()">
+              Aggiungi
+            </button>
           </div>
           <p class="text-muted mb-0">Admin</p>
           <small class="text-muted">
-            Join at 20 09 2019
-
+            {{ birthdate }}
           </small>
         </div>
-      </div>
-      <div class="col-3 mt-5">
-        <button class="btn btn-primary" (click)="openPopup()">
-          Aggiungi
-        </button>
       </div>
       <div class="col-lg-6 col-12">
         <div class="row">

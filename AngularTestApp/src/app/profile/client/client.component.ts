@@ -5,6 +5,7 @@ import {ReviewComponent} from '../../review/review.component';
 import {AddReviewComponent} from '../../add-review/add-review.component';
 import {AuthenticationService} from '../../login/authentication.service';
 import {ClientService} from './client.service';
+import {User} from '../../models/user/user.model';
 
 @Component({
   selector: 'app-client',
@@ -24,10 +25,11 @@ import {ClientService} from './client.service';
 export class ClientComponent implements OnInit {
   strokeDashArrayStart: string = '282, 285';
   strokeDashArrayEnd: string[] = ['100, 285', '200, 251', '100, 251', '90, 251', '251, 251'];
-  user!: any;
+  user!: User;
   birthdate: String | undefined;
-  isPopupVisible2 = false;
   profileImageUrl: string = '';
+  isPopupVisible2 = false;
+  isPopupVisible = false;
 
   constructor(private _authenticationService: AuthenticationService, private _clientService: ClientService) {
   }
@@ -64,7 +66,6 @@ export class ClientComponent implements OnInit {
     animation();
   }
 
-  isPopupVisible = false;
 
   openPopup() {
     this.isPopupVisible = true;
@@ -87,8 +88,10 @@ export class ClientComponent implements OnInit {
   private setUser() {
     this._authenticationService.currentUser$.subscribe({
       next: data => {
-        this.user = data;
-        console.log(this.user);
+        if (data) {
+          this.user = data;
+          console.log(this.user);
+        }
       }, error: error => console.log(error)
     });
   }
@@ -101,7 +104,7 @@ export class ClientComponent implements OnInit {
     console.log(this.birthdate);
   }
 
-  private showProfileImage() {
+  protected showProfileImage() {
     this._clientService.getUserProfileImage().subscribe(
       {
         next: data => {

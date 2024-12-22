@@ -1,4 +1,4 @@
-import {Component, HostListener, Inject, Input, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from './authentication.service';
@@ -36,13 +36,14 @@ export class LoginComponent implements OnInit {
   maxDate: string = new Date().toISOString().split('T')[0];
   alertMessage: string = '';
   isLoading: boolean = false;
+  @Output() setCurrentForm = new EventEmitter<void>();
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
   }
 
   ngOnInit(): void {
-    this.maxDate = new Date().toISOString().split('T')[0];
-    this.loadGoogleButton();
+    this.setCurrentForm.emit();
+    this.changeForm(this.currentForm);
   }
 
   validateEmail(email: string) {

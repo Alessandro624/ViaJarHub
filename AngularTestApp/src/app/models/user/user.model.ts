@@ -1,5 +1,4 @@
 import {UserRole} from './user-role.enum';
-import {AuthProvider} from './auth-provider.enum';
 
 export interface User {
   firstName: string;
@@ -9,6 +8,5 @@ export interface User {
   password: string;
   profileImagePath: string;
   role: UserRole;
-  provider: AuthProvider;
   authorities: any;
 }

@@ -12,7 +12,8 @@
                       aria-expanded="false" data-bs-auto-close="outside" (click)="toggleDropdown()">
                 Accedi
               </button>
-              <app-login [isOpened]="isDropdownOpened" [currentForm]="currentFrom"></app-login>
+              <app-login (setCurrentForm)="this.setCurrentForm()" [isOpened]="isDropdownOpened"
+                         [currentForm]="currentFrom"></app-login>
             </li>
           } @else {
             <li class="nav-item dropdown">

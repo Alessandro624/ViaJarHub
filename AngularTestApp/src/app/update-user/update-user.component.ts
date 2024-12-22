@@ -25,8 +25,7 @@ export class UpdateUserComponent implements OnInit {
   firstNameError: string = '';
   lastNameError: string = '';
   isLoading: boolean = false;
-
-  // TODO togliere reload ma non si aggiornano in automatico i dati
+  @Output() showImage = new EventEmitter<void>();
 
   constructor(private _clientService: ClientService) {
   }
@@ -59,9 +58,9 @@ export class UpdateUserComponent implements OnInit {
           next: () => {
             this.isLoading = false;
             alert(`Form inviato con successo!\nNome: ${this.firstName}\nCognome: ${this.lastName}\nImmagine: ${this.image}`);
-            this.closeModal.emit();
+            this.updateUser();
             this.resetData();
-            window.location.reload();
+            this.closeModal.emit();
           },
           error: () => {
             this.isLoading = false;
@@ -123,5 +122,11 @@ export class UpdateUserComponent implements OnInit {
     } else if (!this.validateName(this.lastName)) {
       this.lastNameError = 'Il cognome deve contenere solo lettere';
     }
+  }
+
+  private updateUser() {
+    this.user.firstName = this.firstName;
+    this.user.lastName = this.lastName;
+    this.showImage.emit();
   }
 }
