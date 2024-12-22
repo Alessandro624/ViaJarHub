@@ -1,7 +1,7 @@
 import {Component, Output, EventEmitter, ElementRef, ViewChild} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {Travel} from '../models/travel/travel.module';
+import {Travel} from '../models/travel/travel.model';
 import {TravelService} from '../travel.service';
 
 @Component({

@@ -1,12 +1,9 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {NgForOf} from "@angular/common";
 
 @Component({
   selector: 'app-review',
   standalone: true,
-  imports: [
-    NgForOf
-  ],
+  imports: [],
   templateUrl: './review.component.html',
   styleUrl: './review.component.css'
 })

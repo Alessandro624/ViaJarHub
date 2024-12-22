@@ -1,4 +1,4 @@
-import {Component, HostListener, Inject, Input, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from './authentication.service';
@@ -36,13 +36,14 @@ export class LoginComponent implements OnInit {
   maxDate: string = new Date().toISOString().split('T')[0];
   alertMessage: string = '';
   isLoading: boolean = false;
+  @Output() setCurrentForm = new EventEmitter<void>();
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
   }
 
   ngOnInit(): void {
-    this.maxDate = new Date().toISOString().split('T')[0];
-    this.loadGoogleButton();
+    this.setCurrentForm.emit();
+    this.changeForm(this.currentForm);
   }
 
   validateEmail(email: string) {
@@ -64,7 +65,7 @@ export class LoginComponent implements OnInit {
   };
 
   validateName(name: string) {
-    return /[a-zA-Z]+$/.test(name);
+    return /^[a-zA-Zà-üÀ-Ü\s]*$/.test(name);
   }
 
   validateBirthDate(birthDate: string) {
@@ -77,17 +78,18 @@ export class LoginComponent implements OnInit {
     this.checkPassword();
     if (!this.emailError && !this.passwordError) {
       this.isLoading = true;
-      this._authenticationService.onLogin(this.email, this.password).subscribe(
-        () => {
+      this._authenticationService.onLogin(this.email, this.password).subscribe({
+        next: () => {
           this.isLoading = false;
           console.log('Login successful:', {email: this.email, password: this.password});
           alert("Login effettuato con successo");
           this.sendUserHome();
-        }, error => {
+        }, error: error => {
           this.isLoading = false;
           this.alertMessage = 'Email o password errati'
           console.log(error);
-        });
+        }
+      });
     }
   }
 
@@ -113,8 +115,8 @@ export class LoginComponent implements OnInit {
     this.checkConfirmPassword();
     if (!this.emailError && !this.passwordError && !this.confirmPasswordError) {
       this.isLoading = true;
-      this._authenticationService.onRegister(this.email, this.password, this.firstName, this.lastName, new Date(this.birthDate)).subscribe(
-        () => {
+      this._authenticationService.onRegister(this.email, this.password, this.firstName, this.lastName, new Date(this.birthDate)).subscribe({
+        next: () => {
           this.isLoading = false;
           console.log('Register successful:', {
             email: this.email,
@@ -125,11 +127,12 @@ export class LoginComponent implements OnInit {
           });
           alert("Email di conferma inviata con successo");
           this.sendUserHome();
-        }, error => {
+        }, error: error => {
           this.isLoading = false;
           console.log(error);
           this.alertMessage = 'Errore nella registrazione'
-        });
+        }
+      });
     }
   }
 
@@ -138,15 +141,17 @@ export class LoginComponent implements OnInit {
     this.checkEmail();
     if (!this.emailError) {
       this.isLoading = true;
-      this._authenticationService.onForgotPassword(this.email).subscribe(() => {
-          this.isLoading = false;
-          console.log('First step of password reset successful:', {email: this.email, password: this.confirmPassword});
-          alert('Email di reset password inviata correttamente');
-          this.sendUserHome();
-        }, error => {
-          this.isLoading = false;
-          console.log(error);
-          this.alertMessage = 'Errore nell\'invio';
+      this._authenticationService.onForgotPassword(this.email).subscribe({
+          next: () => {
+            this.isLoading = false;
+            console.log('First step of password reset successful:', {email: this.email, password: this.confirmPassword});
+            alert('Email di reset password inviata correttamente');
+            this.sendUserHome();
+          }, error: error => {
+            this.isLoading = false;
+            console.log(error);
+            this.alertMessage = 'Errore nell\'invio';
+          }
         }
       );
     }
@@ -312,17 +317,18 @@ export class LoginComponent implements OnInit {
 
   sendTokenToBackend(token: string) {
     this.isLoading = true;
-    this._authenticationService.onGoogleLogin(token).subscribe(
-      () => {
-        this.isLoading = false;
-        console.log('Google login completato.');
-        alert("Accesso con google effettuato correttamente")
-        this.sendUserHome();
-      },
-      error => {
-        this.isLoading = false;
-        console.error('Errore nel Google login:', error);
-        this.alertMessage = 'Errore nell\'accesso';
+    this._authenticationService.onGoogleLogin(token).subscribe({
+        next: () => {
+          this.isLoading = false;
+          console.log('Google login completato.');
+          alert("Accesso con google effettuato correttamente")
+          this.sendUserHome();
+        },
+        error: error => {
+          this.isLoading = false;
+          console.error('Errore nel Google login:', error);
+          this.alertMessage = 'Errore nell\'accesso';
+        }
       }
     );
   }

@@ -4,7 +4,7 @@ import {CommonModule} from '@angular/common';
 import {CarouselComponent} from '../carousel/carousel.component';
 import {CardComponent} from '../card/card.component';
 import {FiltriComponent} from '../filtri/filtri.component';
-import {Travel} from '../models/travel/travel.module';
+import {Travel} from '../models/travel/travel.model';
 import {TravelService} from '../travel.service';
 
 @Component({

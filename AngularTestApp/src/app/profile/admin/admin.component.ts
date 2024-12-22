@@ -1,10 +1,13 @@
-import {Component, contentChildren, OnInit, ViewChild} from '@angular/core';
-import {NgClass, NgForOf, NgStyle} from "@angular/common";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {FormsModule} from '@angular/forms';
 import {AddTravelComponent} from '../../add-travel/add-travel.component';
 import {ReviewComponent} from '../../review/review.component';
-import {AuthenticationService} from '../../login/authentication.service';
+
+
 import {User} from '../../models/user/user.model';
+import {ClientService} from '../client/client.service';
+import {AuthenticationService} from '../../login/authentication.service';
 
 @Component({
   selector: 'app-admin',
@@ -15,7 +18,8 @@ import {User} from '../../models/user/user.model';
     AddTravelComponent,
     NgClass,
     NgStyle,
-    ReviewComponent
+    ReviewComponent,
+    NgIf
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -51,18 +55,58 @@ export class AdminComponent implements OnInit {
 
   ];
   animatedData: number[] = [];
+  profileImageUrl: string = '';
+  birthdate: String | undefined;
+  isPopupVisible = false;
 
-  constructor(private authentication: AuthenticationService) {
+  constructor(private _clientService: ClientService, private _authenticationService: AuthenticationService) {
   }
 
+
   ngOnInit(): void {
-    this.user = this.authentication.currentUserSubject.getValue();
+
+    this.setUser();
+    this.showProfileImage();
+    this.showBirthdate();
     this.initializeAnimation();
     this.animateValues();
 
   }
 
-  isPopupVisible = false;
+  private setUser() {
+    this._authenticationService.currentUser$.subscribe({
+      next: data => {
+        if (data) {
+          this.user = data;
+          console.log(this.user);
+        }
+      }, error: error => console.log(error)
+    });
+  }
+
+  private showBirthdate() {
+    if (this.user) {
+      if (this.user.birthDate) {
+        const birthDateObj = new Date(this.user.birthDate);
+        this.birthdate = birthDateObj.toLocaleDateString('it-IT');
+      }
+      console.log(this.birthdate);
+    }
+
+  }
+
+  private showProfileImage() {
+    this._clientService.getUserProfileImage().subscribe(
+      {
+        next: data => {
+          this.profileImageUrl = URL.createObjectURL(data);
+        },
+        error: error => {
+          console.log(error);
+        }
+      }
+    )
+  }
 
   openPopup() {
     this.isPopupVisible = true;

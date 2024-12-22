@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
-import {Travel} from '../models/travel/travel.module';
+import {Travel} from '../models/travel/travel.model';
 import {TravelService} from '../travel.service';
 import {FormsModule} from '@angular/forms';
-import {AddTravelComponent} from '../add-travel/add-travel.component';
 import {NgClass, NgStyle} from '@angular/common';
 import {PaymentComponent} from '../payment/payment.component';
 import {AuthenticationService} from '../login/authentication.service';
@@ -16,7 +15,6 @@ import {AuthenticationService} from '../login/authentication.service';
     RouterOutlet,
     RouterLinkActive,
     FormsModule,
-    AddTravelComponent,
     NgClass,
     NgStyle,
     PaymentComponent
@@ -41,7 +39,7 @@ export class TravelDetailComponent implements OnInit {
     }
     this.travel = this.travelservice.getTravelById(id);
     this.modificaPrezzo();
-    
+
 
   }
 

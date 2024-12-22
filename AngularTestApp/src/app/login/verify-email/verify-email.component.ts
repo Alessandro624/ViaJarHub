@@ -28,9 +28,10 @@ export class VerifyEmailComponent implements OnInit {
           this.message = 'Email confermata con successo!';
           this.isLoading = false;
         },
-        error: () => {
+        error: err => {
           this.isLoading = false;
           this.isError = true;
+          console.log(err);
         }
       });
     } else {

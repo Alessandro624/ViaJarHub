@@ -83,15 +83,17 @@ export class ResetPasswordComponent implements OnInit {
       this.checkConfirmPassword();
       if (!this.passwordError && !this.confirmPasswordError) {
         this.isLoading = true;
-        this._authenticationService.onResetPassword(this.resetToken, this.password).subscribe(() => {
-          this.isLoading = false;
-          console.log('Password reset successful:', {token: this.resetToken, password: this.password});
-          alert('Password modificata correttamente:');
-          this.onClose();
-        }, (error) => {
-          this.isLoading = false;
-          console.error(error);
-          this.alertMessage = "Errore nella modifica della password";
+        this._authenticationService.onResetPassword(this.resetToken, this.password).subscribe({
+          next: () => {
+            this.isLoading = false;
+            console.log('Password reset successful:', {token: this.resetToken, password: this.password});
+            alert('Password modificata correttamente:');
+            this.onClose();
+          }, error: err => {
+            this.isLoading = false;
+            console.log(err);
+            this.alertMessage = "Errore nella modifica della password";
+          }
         });
       }
     }
