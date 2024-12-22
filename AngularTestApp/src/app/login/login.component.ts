@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.setCurrentForm.emit();
+    this.loadGoogleButton();
     this.changeForm(this.currentForm);
   }
 

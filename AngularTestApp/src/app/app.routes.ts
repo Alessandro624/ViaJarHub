@@ -14,19 +14,19 @@ export const routes: Routes = [
   {path: '', redirectTo: 'body1', pathMatch: 'full'},
   {path: 'body1', component: Body1Component},
   {
-    path: 'body1/:id', component: TravelDetailComponent, children: [
-      {path: 'img', component: CarouselComponent},
-      {path: 'info', component: InfotravelComponent},
-      {path: '', redirectTo: 'info', pathMatch: 'full'}
-    ]
-  },
-  {
     path: 'client',
     component: ClientComponent,
     canActivate: [authenticationGuard],
     data: {requiredRoles: UserRole.USER}
   },
   {path: 'admin', component: AdminComponent, canActivate: [authenticationGuard], data: {requiredRoles: UserRole.ADMIN}},
+  {
+    path: 'body1/:id', component: TravelDetailComponent, children: [
+      {path: 'img', component: CarouselComponent},
+      {path: 'info', component: InfotravelComponent},
+      {path: '', redirectTo: 'info', pathMatch: 'full'}
+    ]
+  },
   {path: 'verify-email/:token', component: VerifyEmailComponent},
   {path: 'reset-password/:token', component: ResetPasswordComponent}
 ];

@@ -18,7 +18,9 @@ export class TravelService {
       postiDisponibile: 10,
       tipo: 'Culturale',
       numeroStelle: 4,
-      immagini: []
+      immagini: [],
+      latitude: 41.9028,
+      longitude: 12.4964
     },
     {
       id: 2,
@@ -30,7 +32,9 @@ export class TravelService {
       postiDisponibile: 8,
       tipo: 'Romantico',
       numeroStelle: 5,
-      immagini: []
+      immagini: [],
+      latitude: 48.8566,
+      longitude: 2.3522
     }, {
       id: 3,
       destinazione: 'New York, USA',
@@ -41,7 +45,9 @@ export class TravelService {
       postiDisponibile: 12,
       tipo: 'Urbano',
       numeroStelle: 4,
-      immagini: []
+      immagini: [],
+      latitude: 40.7128,
+      longitude: -74.0060
     }, {
       id: 4,
       destinazione: 'Tokyo, Giappone',
@@ -52,7 +58,9 @@ export class TravelService {
       postiDisponibile: 15,
       tipo: 'Culturale',
       numeroStelle: 5,
-      immagini: []
+      immagini: [],
+      latitude: 35.6895,
+      longitude: 139.6917
     }, {
       id: 5,
       destinazione: 'Sydney, Australia',
@@ -63,7 +71,9 @@ export class TravelService {
       postiDisponibile: 7,
       tipo: 'Avventura',
       numeroStelle: 4,
-      immagini: []
+      immagini: [],
+      latitude: -33.8688,
+      longitude: 151.2093
     }, {
       id: 6,
       destinazione: 'Cairo, Egitto',
@@ -74,7 +84,9 @@ export class TravelService {
       postiDisponibile: 20,
       tipo: 'Storico',
       numeroStelle: 3,
-      immagini: []
+      immagini: [],
+      latitude: 30.0444,
+      longitude: 31.2357
     }, {
       id: 7,
       destinazione: 'Bangkok, Thailandia',
@@ -85,7 +97,9 @@ export class TravelService {
       postiDisponibile: 10,
       tipo: 'Esotico',
       numeroStelle: 4,
-      immagini: []
+      immagini: [],
+      latitude: 13.7563,
+      longitude: 100.5018
     }, {
       id: 8,
       destinazione: 'Londra, Regno Unito',
@@ -96,7 +110,9 @@ export class TravelService {
       postiDisponibile: 9,
       tipo: 'Urbano',
       numeroStelle: 4,
-      immagini: []
+      immagini: [],
+      latitude: 51.5074,
+      longitude: -0.1278
     }, {
       id: 9,
       destinazione: 'Mosca, Russia',
@@ -107,7 +123,9 @@ export class TravelService {
       postiDisponibile: 11,
       tipo: 'Storico',
       numeroStelle: 4,
-      immagini: []
+      immagini: [],
+      latitude: 55.7558,
+      longitude: 37.6173
     }, {
       id: 10,
       destinazione: 'Rio de Janeiro, Brasile',
@@ -118,7 +136,9 @@ export class TravelService {
       postiDisponibile: 14,
       tipo: 'Festivo',
       numeroStelle: 5,
-      immagini: []
+      immagini: [],
+      latitude: -22.9068,
+      longitude: -43.1729
     }, {
       id: 11,
       destinazione: 'Dubai, Emirati Arabi Uniti',
@@ -129,7 +149,9 @@ export class TravelService {
       postiDisponibile: 8,
       tipo: 'Lusso',
       numeroStelle: 5,
-      immagini: []
+      immagini: [],
+      latitude: 25.276987,
+      longitude: 55.296249
     }, {
       id: 12,
       destinazione: 'Singapore',
@@ -140,7 +162,9 @@ export class TravelService {
       postiDisponibile: 10,
       tipo: 'Moderno',
       numeroStelle: 5,
-      immagini: []
+      immagini: [],
+      latitude: 1.3521,
+      longitude: 103.8198
     },
     {
       id: 13,
@@ -152,7 +176,9 @@ export class TravelService {
       postiDisponibile: 18,
       tipo: 'Storico',
       numeroStelle: 4,
-      immagini: []
+      immagini: [],
+      latitude: 1.3521,
+      longitude: 103.8198
     }, {
       id: 14,
       destinazione: 'San Francisco, USA',
@@ -163,7 +189,9 @@ export class TravelService {
       postiDisponibile: 12,
       tipo: 'Urbano',
       numeroStelle: 4,
-      immagini: []
+      immagini: [],
+      latitude: 1.3521,
+      longitude: 103.8198
     }, {
       id: 15,
       destinazione: 'Vienna, Austria',
@@ -174,7 +202,9 @@ export class TravelService {
       postiDisponibile: 16,
       tipo: 'Culturale',
       numeroStelle: 5,
-      immagini: []
+      immagini: [],
+      latitude: 1.3521,
+      longitude: 103.8198
     }, {
       id: 16,
       destinazione: 'Marrakech, Marocco',
@@ -185,7 +215,9 @@ export class TravelService {
       postiDisponibile: 14,
       tipo: 'Esotico',
       numeroStelle: 4,
-      immagini: []
+      immagini: [],
+      latitude: 1.3521,
+      longitude: 103.8198
     }, {
       id: 17,
       destinazione: 'Toronto, Canada',
@@ -196,9 +228,12 @@ export class TravelService {
       postiDisponibile: 13,
       tipo: 'Urbano',
       numeroStelle: 4,
-      immagini: []
+      immagini: [],
+      latitude: 1.3521,
+      longitude: 103.8198
     }
   ];
+
 
   constructor() {
   }

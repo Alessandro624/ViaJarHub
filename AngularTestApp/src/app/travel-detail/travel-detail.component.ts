@@ -28,19 +28,16 @@ export class TravelDetailComponent implements OnInit {
   prezzoFinale: number = 0;
   isPopupVisible: boolean = false;
 
-  constructor(private travelservice: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
+  constructor(private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
   }
 
   ngOnInit() {
     const id = Number(this._activatedRoute.snapshot.paramMap.get('id'));
     if (id == null) {
       throw new Error("Viaggio non trovato");
-
     }
-    this.travel = this.travelservice.getTravelById(id);
+    this.travel = this._travelService.getTravelById(id);
     this.modificaPrezzo();
-
-
   }
 
   modificaPrezzo() {

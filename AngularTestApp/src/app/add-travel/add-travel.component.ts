@@ -28,7 +28,9 @@ export class AddTravelComponent {
     postiDisponibile: 0,
     tipo: '',
     numeroStelle: 0,
-    immagini: []
+    immagini: [],
+    latitude: 0,
+    longitude: 0
   };
   dateErrors = {startDateInvalid: false, endDateInvalid: false};
 
@@ -46,7 +48,9 @@ export class AddTravelComponent {
       postiDisponibile: 0,
       tipo: '',
       numeroStelle: 0,
-      immagini: []
+      immagini: [],
+      latitude: 0,
+      longitude: 0
     };
     this.dateErrors = {startDateInvalid: false, endDateInvalid: false};
   }

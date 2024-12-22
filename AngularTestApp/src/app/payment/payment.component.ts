@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 
@@ -30,12 +29,7 @@ export class PaymentComponent {
 
 
   // Stato del pagamento
-  loading: boolean = false;
-  paymentSuccess: boolean = false;
-  private APIUrl = "api";
-
-
-  constructor(private _http: HttpClient, private authentication: AuthenticationService) {
+  constructor(private _paymentService: PaymentService, private authentication: AuthenticationService) {
   }
 
   makePayment() {
@@ -54,10 +48,8 @@ export class PaymentComponent {
 
     };
     console.log(this.prezzo);
-
-
     // Invio dati al backend
-    this._http.post(`${this.APIUrl}/auth/v1/payment`, paymentData)
+    this._paymentService.makePayment(paymentData)
       .subscribe({
         next: (response: any) => {
           console.log('Pagamento completato:', response);

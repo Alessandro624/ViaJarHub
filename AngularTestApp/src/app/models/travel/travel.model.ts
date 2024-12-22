@@ -9,4 +9,6 @@ export interface Travel {
   tipo: string;
   numeroStelle: number;
   immagini: File[];
+  latitude: number;
+  longitude: number;
 }
