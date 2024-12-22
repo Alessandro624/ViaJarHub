@@ -1,8 +1,11 @@
 package it.unical.demacs.informatica.viajarhubbackend.config.security;
 
+import jakarta.servlet.http.HttpSession;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 public class SecurityUtility {
     public static UserDetails getCurrentUser() {
@@ -16,5 +19,11 @@ public class SecurityUtility {
             }
         }
         return null;
+    }
+
+    public static void updateCurrentUser(UserDetails user, String credentials, HttpSession session) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, credentials, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
     }
 }

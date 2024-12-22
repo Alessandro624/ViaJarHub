@@ -10,9 +10,15 @@ import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.UserDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,6 +30,7 @@ public class UserService implements IUserService {
     private final IEmailService emailService;
     private static final int TOKEN_EXPIRATION_MINUTES = 15;
     private static final String FRONTEND_URL = "http://localhost:4200";
+    private static final String PROFILE_IMAGE_DIR = "profileImages/";
 
     public UserService(PasswordEncoder passwordEncoder, IEmailService emailService) {
         this.userDAO = DBManager.getInstance().getUserDAO();
@@ -58,24 +65,25 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User updateUser(String email, User user) {
+    public User updateUser(String email, User user, MultipartFile profileImage) throws Exception {
         if (user == null) {
             throw new InvalidInputException("User cannot be null");
         }
-        checkNotNullFields(user.getFirstName(), user.getLastName(), user.getBirthDate(), email, user.getPassword(), user.getRole(), user.getAuthProvider());
-        checkUserExistence(email);
-        user.setEmail(user.getEmail());
-        userDAO.save(user);
+        User existingUser = checkUserExistence(email);
+        if (user.getFirstName() != null && !user.getFirstName().isBlank())
+            existingUser.setFirstName(user.getFirstName());
+        if (user.getLastName() != null && !user.getLastName().isBlank())
+            existingUser.setLastName(user.getLastName());
+        if (profileImage != null && !profileImage.isEmpty())
+            saveProfileImage(existingUser, profileImage);
+        userDAO.save(existingUser);
         return userDAO.findByEmail(email);
     }
 
     @Override
     public void forgotPassword(String email) {
-        User user = userDAO.findByEmail(email);
-        if (user == null) {
-            throw new InvalidInputException("User cannot be null");
-        }
-        if (user.getAuthProvider() != AuthProvider.LOCAL || user.getPasswordResetToken() != null) {
+        User existingUser = checkUserExistence(email);
+        if (existingUser.getAuthProvider() != AuthProvider.LOCAL || existingUser.getPasswordResetToken() != null) {
             throw new InvalidInputException("Cannot send password reset email");
         }
         String token = generateVerificationToken();
@@ -119,11 +127,25 @@ public class UserService implements IUserService {
         return user != null && isTokenValid(user.getPasswordResetTokenCreationTime());
     }
 
+    @Override
+    public byte[] getProfileImage(String email) throws Exception {
+        User user = userDAO.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+        String profileImagePath = user.getProfileImagePath();
+        if (profileImagePath == null || profileImagePath.isEmpty()) {
+            throw new IllegalArgumentException("Profile image path cannot be null or empty");
+        }
+        Path imagePath = Path.of(PROFILE_IMAGE_DIR + profileImagePath);
+        return Files.readAllBytes(imagePath);
+    }
+
     private void checkNotNullFields(String firstName, String lastName, LocalDate birthDate, String email, String password, UserRole role, AuthProvider provider) {
-        if (email == null || email.isEmpty()) {
+        if (email == null || email.isBlank()) {
             throw new InvalidInputException("Email cannot be null");
         }
-        if (password == null || password.isEmpty()) {
+        if (password == null || password.isBlank()) {
             throw new InvalidInputException("Password cannot be null");
         }
         if (provider == null) {
@@ -132,10 +154,10 @@ public class UserService implements IUserService {
         if (role == null) {
             throw new InvalidInputException("Role cannot be null");
         }
-        if (firstName == null || firstName.isEmpty()) {
+        if (firstName == null || firstName.isBlank()) {
             throw new InvalidInputException("First name cannot be null");
         }
-        if (lastName == null || lastName.isEmpty()) {
+        if (lastName == null || lastName.isBlank()) {
             throw new InvalidInputException("Last name cannot be null");
         }
         if (birthDate == null) {
@@ -161,10 +183,12 @@ public class UserService implements IUserService {
         }
     }
 
-    private void checkUserExistence(String email) {
-        if (userDAO.findByEmail(email) == null) {
+    private User checkUserExistence(String email) {
+        User existingUser = userDAO.findByEmail(email);
+        if (existingUser == null) {
             throw new UserNotFoundException("User not found");
         }
+        return existingUser;
     }
 
     private boolean isPasswordComplex(String password) {
@@ -196,5 +220,28 @@ public class UserService implements IUserService {
 
     private String generateVerificationToken() {
         return UUID.randomUUID().toString();
+    }
+
+    private void saveProfileImage(User user, MultipartFile profileImage) throws Exception {
+        String baseFileName = user.getEmail();
+        String fileName = baseFileName + Objects.requireNonNull(profileImage.getOriginalFilename()).substring(profileImage.getOriginalFilename().lastIndexOf("."));
+        Path path = Path.of(PROFILE_IMAGE_DIR, fileName);
+        File directory = new File(PROFILE_IMAGE_DIR);
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw new Exception("Could not create directory");
+        }
+        deleteExistingFiles(directory.listFiles((dir, name) -> name.startsWith(baseFileName)));
+        Files.copy(profileImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        user.setProfileImagePath(fileName);
+    }
+
+    private void deleteExistingFiles(File[] existingFiles) throws Exception {
+        if (existingFiles != null) {
+            for (File existingFile : existingFiles) {
+                if (!existingFile.delete()) {
+                    throw new Exception("Could not delete existing file: " + existingFile.getName());
+                }
+            }
+        }
     }
 }
