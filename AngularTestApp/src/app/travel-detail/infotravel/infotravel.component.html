@@ -21,7 +21,7 @@
 
         <!-- Most Liked Comments Section -->
         <div class="mt-4">
-          <h5 class="mb-3">Most liked comments</h5>
+          <h5 class="mb-3">Ultime recensioni</h5>
           <!-- Comment 1 -->
           <app-review></app-review>
           <!-- Comment 2 -->
@@ -33,6 +33,12 @@
 
   <!-- Colonna 2 -->
   <div class="col-12 col-lg-6 my-3">
-    <img class="img-fluid" alt="" src="map.png">
+    <div *ngIf="center.lat && center.lng" style="width: 100%; height: 400px;">
+      <google-map [center]="center" [zoom]="zoom" style="width: 100%; height: 100%;">
+        <map-marker *ngIf="markerPosition.lat && markerPosition.lng" [position]="markerPosition"
+                    [options]="markerOptions"></map-marker>
+      </google-map>
+    </div>
   </div>
+
 </div>

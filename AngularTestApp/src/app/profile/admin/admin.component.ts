@@ -3,6 +3,8 @@ import {NgClass, NgForOf, NgStyle} from "@angular/common";
 import {FormsModule} from '@angular/forms';
 import {AddTravelComponent} from '../../add-travel/add-travel.component';
 import {ReviewComponent} from '../../review/review.component';
+import {AuthenticationService} from '../../login/authentication.service';
+import {User} from '../../models/user/user.model';
 
 @Component({
   selector: 'app-admin',
@@ -20,6 +22,7 @@ import {ReviewComponent} from '../../review/review.component';
 })
 export class AdminComponent implements OnInit {
   @ViewChild(AddTravelComponent) addTravelComponent: AddTravelComponent | undefined;
+  user: User | null | undefined
   // Valori finali
   finalDailyIncome = 102;
   finalMonthlyIncome = 102;
@@ -49,7 +52,11 @@ export class AdminComponent implements OnInit {
   ];
   animatedData: number[] = [];
 
+  constructor(private authentication: AuthenticationService) {
+  }
+
   ngOnInit(): void {
+    this.user = this.authentication.currentUserSubject.getValue();
     this.initializeAnimation();
     this.animateValues();
 

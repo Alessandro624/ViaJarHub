@@ -12,12 +12,11 @@
              height="100">
         <!-- User Info -->
         <div class="d-flex flex-column">
-          <div class="d-flex align-items-center"><h4 class="mb-1 me-2">Piero</h4>
+          <div class="d-flex align-items-center"><h4 class="mb-1 me-2">{{ user?.firstName }} {{ user?.lastName }}</h4>
           </div>
           <p class="text-muted mb-0">Admin</p>
           <small class="text-muted">
-            Join at 20 09 2019
-
+            {{ user?.birthDate }}
           </small>
         </div>
       </div>
@@ -59,16 +58,18 @@
     <!-- Skills -->
     <div class="col-lg-6 mb-4">
       <div class="card p-3 mb-2 shadow-sm">
-        <h5 class="fw-bold  mb-4">Viaggi più votati</h5>
-        <div class="card-data  m-3" *ngFor="let card of [1, 2, 3]">
+        <h5 class="fw-bold  mb-3">Viaggi più votati</h5>
+        <div class="card-data  m-3 mb-2" *ngFor="let card of [1, 2, 3]">
           <div class="row">
             <div class="col mx-2">
-              <h5 class="card-title  mt-2 mb-0 fw-bold">Nome del Prodotto</h5>
-              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-              <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-              <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
+              <h5 class="card-title  mt-2 mb-1 fw-bold">Nome del Prodotto</h5>
+              <div class="mb-2">
+                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+                <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
+              </div>
             </div>
           </div>
         </div>
