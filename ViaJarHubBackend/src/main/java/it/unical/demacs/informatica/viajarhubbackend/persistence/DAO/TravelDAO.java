@@ -7,6 +7,8 @@ import java.util.List;
 public interface TravelDAO {
     List<Travel> findAll();
 
+    List<Travel> findAllPaginated(int offset, int limit);
+
     Travel findById(Long id);
 
     void save(Travel travel);

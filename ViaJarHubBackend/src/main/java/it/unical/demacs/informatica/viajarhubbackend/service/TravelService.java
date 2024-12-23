@@ -31,6 +31,11 @@ public class TravelService implements ITravelService {
     }
 
     @Override
+    public List<Travel> findAllPaginated(int offset, int limit) {
+        return travelDAO.findAllPaginated(offset, limit);
+    }
+
+    @Override
     public Optional<Travel> findById(Long id) {
         Travel travel = travelDAO.findById(id);
         if (travel == null) {

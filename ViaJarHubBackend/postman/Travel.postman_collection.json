@@ -65,18 +65,18 @@
 					"mode": "formdata",
 					"formdata": [
 						{
+							"key": "travel",
+							"value": "{\n    \"destination\": \"example\",\n    \"isCountry\": \"false\",\n    \"startDate\": \"2020-01-01\",\n    \"endDate\": \"2020-01-01\",\n    \"description\": \"example description\",\n    \"price\": 13.99,\n    \"maxParticipantsNumber\": 15,\n    \"travelType\": \"CULTURA\",\n    \"imagesPaths\": [],\n    \"latitude\": 12.1,\n    \"longitude\": 15.1\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
 							"key": "travelImages",
 							"type": "file",
 							"src": [
 								"/C:/Users/sider/Desktop/altro/demoFrontend/ViaJarHub/AngularTestApp/public/OIP (2).jpg",
 								"/C:/Users/sider/Desktop/altro/demoFrontend/ViaJarHub/AngularTestApp/public/R.jpg"
 							]
-						},
-						{
-							"key": "travel",
-							"value": "{\n    \"destination\": \"example\",\n    \"isCountry\": \"false\",\n    \"startDate\": \"2020-01-01\",\n    \"endDate\": \"2020-01-01\",\n    \"description\": \"example description\",\n    \"price\": 13.99,\n    \"maxParticipantsNumber\": 15,\n    \"travelType\": \"CULTURA\",\n    \"imagesPaths\": [],\n    \"latitude\": 12.1,\n    \"longitude\": 15.1\n}",
-							"contentType": "application/json",
-							"type": "text"
 						}
 					]
 				},
@@ -119,6 +119,38 @@
 						{
 							"key": "id",
 							"value": "25"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllTravelsPaginated",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/open/v1/travels-paginated?offset=3&limit=8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"open",
+						"v1",
+						"travels-paginated"
+					],
+					"query": [
+						{
+							"key": "offset",
+							"value": "3"
+						},
+						{
+							"key": "limit",
+							"value": "8"
 						}
 					]
 				}

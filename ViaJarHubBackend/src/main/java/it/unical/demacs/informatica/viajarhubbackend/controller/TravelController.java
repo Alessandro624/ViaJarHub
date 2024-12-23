@@ -32,6 +32,18 @@ public class TravelController {
         }
     }
 
+    @RequestMapping(value = "/travels-paginated", method = RequestMethod.GET)
+    public ResponseEntity<List<Travel>> getAllTravelsPaginated(@RequestParam("offset") int offset, @RequestParam("limit") int limit) {
+        try {
+            List<Travel> travels = travelService.findAllPaginated(offset, limit);
+            return ResponseEntity.ok().body(travels);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @RequestMapping(value = "/travel", method = RequestMethod.GET)
     public ResponseEntity<Travel> getTravel(@RequestParam("id") Long id) {
         try {

@@ -33,6 +33,23 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
+    public List<Travel> findAllPaginated(int offset, int limit) {
+        String query = "SELECT * FROM travel ORDER BY id LIMIT ? OFFSET ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, limit);
+            statement.setInt(2, offset);
+            ResultSet resultSet = statement.executeQuery();
+            List<Travel> travels = new ArrayList<>();
+            while (resultSet.next()) {
+                travels.add(mapResultSetToTravel(resultSet));
+            }
+            return travels;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
     public Travel findById(Long id) {
         String query = "SELECT * FROM travel WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {

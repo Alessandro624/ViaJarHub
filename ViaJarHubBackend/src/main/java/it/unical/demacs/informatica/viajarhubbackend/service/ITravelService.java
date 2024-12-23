@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface ITravelService {
     List<Travel> findAll();
 
+    List<Travel> findAllPaginated(int offset, int limit);
+
     Optional<Travel> findById(Long id);
 
     Travel createTravel(Travel travel, List<MultipartFile> travelImages) throws Exception;
