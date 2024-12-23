@@ -1,0 +1,129 @@
+{
+	"info": {
+		"_postman_id": "d54df965-1be7-4b77-838a-d4e89ff94804",
+		"name": "Travel",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39487144"
+	},
+	"item": [
+		{
+			"name": "GetAllTravels",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/open/v1/travels",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"open",
+						"v1",
+						"travels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTravelById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/open/v1/travel?id=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"open",
+						"v1",
+						"travel"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateTravel",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "travelImages",
+							"type": "file",
+							"src": [
+								"/C:/Users/sider/Desktop/altro/demoFrontend/ViaJarHub/AngularTestApp/public/OIP (2).jpg",
+								"/C:/Users/sider/Desktop/altro/demoFrontend/ViaJarHub/AngularTestApp/public/R.jpg"
+							]
+						},
+						{
+							"key": "travel",
+							"value": "{\n    \"destination\": \"example\",\n    \"isCountry\": \"false\",\n    \"startDate\": \"2020-01-01\",\n    \"endDate\": \"2020-01-01\",\n    \"description\": \"example description\",\n    \"price\": 13.99,\n    \"maxParticipantsNumber\": 15,\n    \"travelType\": \"CULTURA\",\n    \"imagesPaths\": [],\n    \"latitude\": 12.1,\n    \"longitude\": 15.1\n}",
+							"contentType": "application/json",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/open/v1/create-travel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"open",
+						"v1",
+						"create-travel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTravelImages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/open/v1/travel-images?id=25",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"open",
+						"v1",
+						"travel-images"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "25"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

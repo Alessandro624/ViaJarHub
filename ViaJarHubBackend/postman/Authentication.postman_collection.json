@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"firstName\": \"name\",\r\n    \"lastName\": \"surname\",\r\n    \"birthDate\": \"2000-01-01\",\r\n    \"email\": \"example@gmail.com\",\r\n    \"password\": \"Example1@\"\r\n}",
+					"raw": "{\r\n    \"firstName\": \"Example\",\r\n    \"lastName\": \"Example\",\r\n    \"birthDate\": \"2000-01-01\",\r\n    \"email\": \"example@example.com\",\r\n    \"password\": \"Example01@\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -47,12 +47,12 @@
 					"urlencoded": [
 						{
 							"key": "username",
-							"value": "example@gmail.com",
+							"value": "example@example.com",
 							"type": "text"
 						},
 						{
 							"key": "password",
-							"value": "Example11@",
+							"value": "Example01@",
 							"type": "text"
 						}
 					]
@@ -156,13 +156,13 @@
 					"urlencoded": [
 						{
 							"key": "newPassword",
-							"value": "Example11@",
+							"value": "Example01@",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/open/v1/reset-password?token=a90ab33e-503f-463a-9b6a-60b5b933d9fb",
+					"raw": "http://localhost:8080/api/open/v1/reset-password?token=PASSWORD_RESET_TOKEN_GOES_HERE",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -177,7 +177,35 @@
 					"query": [
 						{
 							"key": "token",
-							"value": "a90ab33e-503f-463a-9b6a-60b5b933d9fb"
+							"value": "PASSWORD_RESET_TOKEN_GOES_HERE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "VerifyEmail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/open/v1/verify-email?token=VERIFICATION_TOKEN_GOES_HERE",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"open",
+						"v1",
+						"verify-email"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "VERIFICATION_TOKEN_GOES_HERE"
 						}
 					]
 				}

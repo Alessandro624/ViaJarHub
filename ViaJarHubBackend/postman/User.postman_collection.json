@@ -12,13 +12,20 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"example@gmail.com\",\r\n    \"firstName\": \"nameaq\",\r\n    \"lastName\": \"surnameaq\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user",
+							"value": "{\n    \"email\": \"example@example.com\",\n    \"firstName\": \"ExampleModified\",\n    \"lastName\": \"ExampleModified\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "profileImage",
+							"type": "file",
+							"src": "/C:/Users/sider/Desktop/altro/demoFrontend/ViaJarHub/AngularTestApp/public/ViaJar-Hub.png"
 						}
-					}
+					]
 				},
 				"url": {
 					"raw": "http://localhost:8080/api/auth/v1/update-user",
