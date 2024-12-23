@@ -42,10 +42,15 @@ public class TravelService implements ITravelService {
     @Override
     public Travel createTravel(Travel travel, List<MultipartFile> travelImages) throws Exception {
         checkNotNullFields(travel);
+        if (travelImages == null || travelImages.isEmpty()) {
+            throw new InvalidInputException("Images cannot be null");
+        }
         checkNotDuplicate(travel.getId());
-        saveTravelImages(travel, travelImages);
         travelDAO.save(travel);
         Optional<Travel> savedTravel = findById(travel.getId());
+        if (savedTravel.isPresent()) {
+            saveTravelImages(savedTravel.get(), travelImages);
+        }
         return savedTravel.orElse(null);
     }
 
@@ -104,9 +109,6 @@ public class TravelService implements ITravelService {
         }
         if (travel.getTravelType() == null) {
             throw new InvalidInputException("Type cannot be null");
-        }
-        if (travel.getImagesPaths() == null || travel.getImagesPaths().isEmpty()) {
-            throw new InvalidInputException("Images cannot be null");
         }
     }
 
