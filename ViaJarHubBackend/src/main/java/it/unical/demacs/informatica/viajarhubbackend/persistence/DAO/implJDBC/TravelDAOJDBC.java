@@ -1,6 +1,7 @@
 package it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC;
 
-import it.unical.demacs.informatica.viajarhubbackend.model.*;
+import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
+import it.unical.demacs.informatica.viajarhubbackend.model.TravelType;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.TravelDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 
