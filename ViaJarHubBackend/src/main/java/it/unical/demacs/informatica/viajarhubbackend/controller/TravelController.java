@@ -53,15 +53,13 @@ public class TravelController {
             }
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
 
-    @RequestMapping(value = "/travel-images", method = RequestMethod.GET, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequestMapping(value = "/travel-images", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<byte[]>> getTravelImages(@RequestParam("id") Long id) {
         try {
             List<byte[]> imagesBytes = this.travelService.getTravelImages(id);

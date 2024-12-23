@@ -50,6 +50,7 @@ public class TravelService implements ITravelService {
         Optional<Travel> savedTravel = findById(travel.getId());
         if (savedTravel.isPresent()) {
             saveTravelImages(savedTravel.get(), travelImages);
+            travelDAO.save(savedTravel.get());
         }
         return savedTravel.orElse(null);
     }
@@ -77,7 +78,7 @@ public class TravelService implements ITravelService {
         }
         List<byte[]> travelImages = new ArrayList<>();
         for (String imagePath : travelImagesPaths) {
-            Path path = Path.of(TRAVEL_IMAGES_DIR + imagePath);
+            Path path = Path.of(TRAVEL_IMAGES_DIR + id + '/' + imagePath);
             travelImages.add(Files.readAllBytes(path));
         }
         return travelImages;

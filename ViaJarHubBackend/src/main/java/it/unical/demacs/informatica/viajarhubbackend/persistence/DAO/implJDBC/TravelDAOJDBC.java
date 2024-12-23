@@ -49,35 +49,46 @@ public class TravelDAOJDBC implements TravelDAO {
 
     @Override
     public void save(Travel travel) {
-        String insertQuery = "INSERT INTO travel (destination, iscountry, start_date, end_date, description, old_price, price, max_participants_number, type, images_paths, latitude, longitude) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-        String updateQuery = "INSERT INTO travel (destination, iscountry, start_date, end_date, description, old_price, price, max_participants_number, type, images_paths, latitude, longitude, id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-        String query = travel.getId() != null ? updateQuery : insertQuery
-                + "ON CONFLICT (id) DO UPDATE SET destination = EXCLUDED.destination, iscountry = EXCLUDED.iscountry, start_date = EXCLUDED.start_date, end_date = EXCLUDED.end_date, description = EXCLUDED.description, old_price = EXCLUDED.old_price, price = EXCLUDED.price, max_participants_number = EXCLUDED.max_participants_number, type = EXCLUDED.type, images_paths = EXCLUDED.images_paths, latitude = EXCLUDED.latitude, longitude = EXCLUDED.longitude RETURNING id ";
+        String query = "INSERT INTO travel (id, destination, iscountry, start_date, end_date, description, old_price, price, max_participants_number, type, images_paths, latitude, longitude) " +
+                "VALUES (COALESCE(?, nextval('travel_id_seq')), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                "ON CONFLICT (id) DO UPDATE SET " +
+                "destination = EXCLUDED.destination, " +
+                "iscountry = EXCLUDED.iscountry, " +
+                "start_date = EXCLUDED.start_date, " +
+                "end_date = EXCLUDED.end_date, " +
+                "description = EXCLUDED.description, " +
+                "old_price = EXCLUDED.old_price, " +
+                "price = EXCLUDED.price, " +
+                "max_participants_number = EXCLUDED.max_participants_number, " +
+                "type = EXCLUDED.type, " +
+                "images_paths = EXCLUDED.images_paths, " +
+                "latitude = EXCLUDED.latitude, " +
+                "longitude = EXCLUDED.longitude " +
+                "RETURNING id";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, travel.getDestination());
-            statement.setBoolean(2, travel.isCountry());
-            statement.setObject(3, travel.getStartDate());
-            statement.setObject(4, travel.getEndDate());
-            statement.setString(5, travel.getDescription());
-            statement.setDouble(6, travel.getOldPrice());
-            statement.setDouble(7, travel.getPrice());
-            statement.setInt(8, travel.getMaxParticipantsNumber());
-            statement.setString(9, travel.getTravelType().toString());
+            if (travel.getId() != null) {
+                statement.setObject(1, travel.getId());
+            } else {
+                statement.setNull(1, Types.BIGINT);
+            }
+            statement.setString(2, travel.getDestination());
+            statement.setBoolean(3, travel.isCountry());
+            statement.setObject(4, travel.getStartDate());
+            statement.setObject(5, travel.getEndDate());
+            statement.setString(6, travel.getDescription());
+            statement.setDouble(7, travel.getOldPrice());
+            statement.setDouble(8, travel.getPrice());
+            statement.setInt(9, travel.getMaxParticipantsNumber());
+            statement.setString(10, travel.getTravelType().toString());
             List<String> imagesPaths = travel.getImagesPaths();
             Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
-            statement.setArray(10, sqlArray);
-            statement.setDouble(11, travel.getLatitude());
-            statement.setDouble(12, travel.getLongitude());
-            if (travel.getId() != null) {
-                statement.setObject(13, travel.getId());
-                statement.executeUpdate();
-            } else {
-                try (ResultSet rs = statement.executeQuery()) {
-                    if (rs.next()) {
-                        long generatedId = rs.getLong("id");
-                        travel.setId(generatedId);
-                    }
-                }
+            statement.setArray(11, sqlArray);
+            statement.setDouble(12, travel.getLatitude());
+            statement.setDouble(13, travel.getLongitude());
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                long generatedId = rs.getLong("id");
+                travel.setId(generatedId);
             }
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
