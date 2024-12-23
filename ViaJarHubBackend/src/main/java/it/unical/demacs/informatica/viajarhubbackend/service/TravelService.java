@@ -26,6 +26,11 @@ public class TravelService implements ITravelService {
     }
 
     @Override
+    public List<Travel> findAll() {
+        return travelDAO.findAll();
+    }
+
+    @Override
     public Optional<Travel> findById(Long id) {
         Travel travel = travelDAO.findById(id);
         if (travel == null) {
@@ -35,9 +40,10 @@ public class TravelService implements ITravelService {
     }
 
     @Override
-    public Travel createTravel(Travel travel) {
+    public Travel createTravel(Travel travel, List<MultipartFile> travelImages) throws Exception {
         checkNotNullFields(travel);
         checkNotDuplicate(travel.getId());
+        saveTravelImages(travel, travelImages);
         travelDAO.save(travel);
         Optional<Travel> savedTravel = findById(travel.getId());
         return savedTravel.orElse(null);
@@ -72,6 +78,17 @@ public class TravelService implements ITravelService {
         return travelImages;
     }
 
+    @Override
+    public void deleteTravel(Long id) throws Exception {
+        Travel travel = checkTravelExistence(id);
+        Long travelDirectory = travel.getId();
+        File directory = new File(TRAVEL_IMAGES_DIR + travelDirectory);
+        if (directory.exists()) {
+            deleteExistingFiles(directory.listFiles());
+        }
+        this.travelDAO.delete(id);
+    }
+
     private void checkNotNullFields(Travel travel) {
         if (travel.getDestination() == null || travel.getDestination().isBlank()) {
             throw new InvalidInputException("Destination cannot be null");
@@ -94,7 +111,7 @@ public class TravelService implements ITravelService {
     }
 
     private void checkNotDuplicate(Long id) {
-        if (travelDAO.findById(id) != null) {
+        if (id != null) {
             throw new TravelAlreadyExistsException("Travel already exists");
         }
     }
