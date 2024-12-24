@@ -256,4 +256,8 @@ export class TravelService {
   getTravelById(id: number) {
     return this._http.get<Travel>(`${this.APIUrl}/open/v1/travel?id=${id}`);
   }
+
+  getTravelImages(id: number) {
+    return this._http.get<string[]>(`${this.APIUrl}/open/v1/travel-images?id=${id}`);
+  }
 }

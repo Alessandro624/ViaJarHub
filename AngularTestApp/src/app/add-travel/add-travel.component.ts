@@ -5,8 +5,7 @@ import {
   ElementRef,
   ViewChild,
   CUSTOM_ELEMENTS_SCHEMA,
-  OnInit,
-  input, Inject, PLATFORM_ID
+  OnInit, Inject, PLATFORM_ID
 } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule, isPlatformBrowser} from '@angular/common';

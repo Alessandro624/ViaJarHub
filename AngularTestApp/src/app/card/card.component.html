@@ -1,6 +1,6 @@
 <a routerLink="{{travel.id}}">
   <div class="card">
-    <img src="R.jpg" class="card-img-top" alt="Immagine della card">
+    <img [src]="copertina" class="card-img-top" alt="Immagine della card">
     <div class="card-body">
       <h5 class="card-title">
         <div class="row justify-content-between">
@@ -8,13 +8,9 @@
             {{ travel.destination }}
           </div>
           <div class="col-4  no-wrap fw-semibold text-center">
-
             {{ travel.price }}€
-
           </div>
-
         </div>
-
       </h5>
       <div class=" mb-2">
         <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
@@ -22,7 +18,6 @@
         <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
         <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
         <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
-
       </div>
       <p class="card-text  mb-1">{{ travel.description }}</p>
       <div class="card-date text-body-secondary">{{ travel.startDate }} - {{ travel.endDate }}</div>
