@@ -40,9 +40,9 @@ export class PaymentComponent {
       expiryYear: this.expiryYear,
       cvv: this.cvv,
       amount: this.prezzo,
-      destinazione: this.travel?.destinazione,
-      dataPartenza: this.travel?.dataPartenza,
-      dataRitorno: this.travel?.dataRitorno,
+      destinazione: this.travel?.destination,
+      dataPartenza: this.travel?.startDate,
+      dataRitorno: this.travel?.endDate,
       numeroPartecipanti: this.numeroPartecipanti,
       email: this.authentication.currentUserSubject.getValue()?.email
 

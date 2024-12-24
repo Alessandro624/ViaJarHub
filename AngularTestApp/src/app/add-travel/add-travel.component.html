@@ -7,7 +7,7 @@
         type="text"
         id="title"
         class="form-control"
-        [(ngModel)]="travel.destinazione"
+        [(ngModel)]="travel.destination"
         name="title"
         required
       />
@@ -20,7 +20,7 @@
         type="date"
         id="startDate"
         class="form-control"
-        [(ngModel)]="travel.dataPartenza"
+        [(ngModel)]="travel.startDate"
         name="startDate"
         (change)="validateDates()"
         [min]="today"
@@ -36,10 +36,10 @@
         type="date"
         id="endDate"
         class="form-control"
-        [(ngModel)]="travel.dataRitorno"
+        [(ngModel)]="travel.endDate"
         name="endDate"
         (change)="validateDates()"
-        [min]="travel.dataPartenza || today"
+        [min]="travel.startDate || today"
         required
       />
 
@@ -48,7 +48,7 @@
     <!-- Campo di testo: Prezzo -->
     <div class="mb-3"><label for="price" class="form-label">Prezzo</label> <input type="text" id="price"
                                                                                   class="form-control"
-                                                                                  [(ngModel)]="travel.prezzo"
+                                                                                  [(ngModel)]="travel.price"
                                                                                   name="price"
                                                                                   (input)="validateAndFormatPrice($event)"
                                                                                   required/>
@@ -56,14 +56,14 @@
 
     <div class="mb-4"><label for="seats" class="form-label">Numero Posti</label> <input type="number" id="seats"
                                                                                         class="form-control"
-                                                                                        [(ngModel)]="travel.postiDisponibile"
+                                                                                        [(ngModel)]="travel.maxParticipantsNumber"
                                                                                         name="seats" min="1" required/>
     </div>
     <div class="btn-group dropdown mb-3 w-100 ">
       <button type="button"
               class="btn prova border dropdown-toggle d-flex justify-content-between align-items-center"
               data-bs-toggle="dropdown" aria-expanded="false">
-        <span>{{ travel.tipo || 'Tipo' }}</span>
+        <span>{{ travel.travelType || 'Tipo' }}</span>
       </button>
       <ul class="dropdown-menu ">
         <!-- Dropdown menu links -->
@@ -80,7 +80,7 @@
       <textarea
         id="description"
         class="form-control"
-        [(ngModel)]="travel.descrizione"
+        [(ngModel)]="travel.description"
         name="description"
         rows="4"
         required

@@ -43,12 +43,15 @@ export class InfotravelComponent implements OnInit {
       this.initMap().then();
     }
     const id = Number(this._activatedRoute.parent?.snapshot.paramMap.get('id'));
-    this.travel = this._travelService.getTravelById(id);
-    if (this.travel) {
-      this.center = {lat: this.travel.latitude, lng: this.travel.longitude};
-      this.markerPosition = {lat: this.travel.latitude, lng: this.travel.longitude};
-      console.log(this.center);
-    }
+    this._travelService.getTravelById(id).subscribe({
+      next: result => {
+        this.travel = result;
+        if (this.travel) {
+          this.center = {lat: this.travel.latitude, lng: this.travel.longitude};
+          this.markerPosition = {lat: this.travel.latitude, lng: this.travel.longitude};
+        }
+      }
+    });
     /*let lat = 51.678418;
     let lng = 7.809007;
     this.showMap(this.center.lat, this.center.lng);*/

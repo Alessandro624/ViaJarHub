@@ -20,13 +20,14 @@ export class AddTravelComponent {
   today: string = new Date().toISOString().split('T')[0];
   travel: Travel = {
     id: 0,
-    destinazione: '',
-    dataPartenza: '',
-    dataRitorno: '',
-    descrizione: '',
-    prezzo: 0,
-    postiDisponibile: 0,
-    tipo: '',
+    destination: '',
+    startDate: '',
+    endDate: '',
+    description: '',
+    oldPrice: 0,
+    price: 0,
+    maxParticipantsNumber: 0,
+    travelType: '',
     numeroStelle: 0,
     immagini: [],
     latitude: 0,
@@ -40,13 +41,14 @@ export class AddTravelComponent {
   resetData() {
     this.travel = {
       id: 0,
-      destinazione: '',
-      dataPartenza: '',
-      dataRitorno: '',
-      descrizione: '',
-      prezzo: 0,
-      postiDisponibile: 0,
-      tipo: '',
+      destination: '',
+      startDate: '',
+      endDate: '',
+      description: '',
+      oldPrice: 0,
+      price: 0,
+      maxParticipantsNumber: 0,
+      travelType: '',
       numeroStelle: 0,
       immagini: [],
       latitude: 0,
@@ -60,7 +62,7 @@ export class AddTravelComponent {
     console.log('Immagini caricate:', this.travel.immagini);
 
     // Mostra conferma e chiudi il modale
-    alert(`Form inviato con successo!\nDestinazione: ${this.travel.destinazione}\nData di Partenza: ${this.travel.dataPartenza}\nData di Ritorno: ${this.travel.dataRitorno}\nDescrizione: ${this.travel.descrizione}\nNumero di immagini: ${this.travel.immagini.length}`);
+    alert(`Form inviato con successo!\nDestinazione: ${this.travel.destination}\nData di Partenza: ${this.travel.startDate}\nData di Ritorno: ${this.travel.endDate}\nDescrizione: ${this.travel.description}\nNumero di immagini: ${this.travel.immagini.length}`);
     this.closeModal.emit();
     this.resetData();
   }
@@ -71,7 +73,7 @@ export class AddTravelComponent {
     if (!pricePattern.test(input)) {
       event.target.value = input.slice(0, -1);
     } else {
-      this.travel.prezzo = input;
+      this.travel.price = input;
     }
   }
 
@@ -105,9 +107,9 @@ export class AddTravelComponent {
 
   validateDates() {
     const today = new Date();
-    const startDate = new Date(this.travel.dataPartenza);
-    const endDate = new Date(this.travel.dataRitorno); // Controlla se la data di partenza è minore di oggi (solo se una data di partenza è stata inserita) if (this.formData.startDate) { this.dateErrors.startDateInvalid = startDate < today.setHours(0, 0, 0, 0); } else { this.dateErrors.startDateInvalid = false; } // Controlla se la data di ritorno è minore della data di partenza (solo se entrambe le date sono state inserite)
-    if (this.travel.dataPartenza && this.travel.dataRitorno) {
+    const startDate = new Date(this.travel.startDate);
+    const endDate = new Date(this.travel.endDate); // Controlla se la data di partenza è minore di oggi (solo se una data di partenza è stata inserita) if (this.formData.startDate) { this.dateErrors.startDateInvalid = startDate < today.setHours(0, 0, 0, 0); } else { this.dateErrors.startDateInvalid = false; } // Controlla se la data di ritorno è minore della data di partenza (solo se entrambe le date sono state inserite)
+    if (this.travel.startDate && this.travel.endDate) {
       this.dateErrors.endDateInvalid = endDate < startDate;
     } else {
       this.dateErrors.endDateInvalid = false;
@@ -129,7 +131,7 @@ export class AddTravelComponent {
   }
 
   selectType(tipo: string) {
-    this.travel.tipo = tipo;
+    this.travel.travelType = tipo;
   }
 
   addTravel() {

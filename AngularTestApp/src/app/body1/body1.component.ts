@@ -26,15 +26,21 @@ export class Body1Component implements OnInit {
 
   ngOnInit() {
     this.loadTravels()
-    this.elementiTot = this.travelService.getLenghtTravels();
+    this.travelService.getLenghtTravels().subscribe({
+      next: data => {
+        this.elementiTot = data;
+      }
+    });
   }
 
   loadTravels() {
-    const newTravels = this.travelService.getTravels(this.index, 9);
-    this.travels = [...this.travels, ...newTravels];
-    this.travelsMatrix = this.chunkArray(this.travels, 3); // Suddividi in gruppi di 3
-
-    this.index += 9;
+    this.travelService.getTravelsPaginated(this.index, 9).subscribe({
+      next: data => {
+        this.travels = [...this.travels, ...data];
+        this.travelsMatrix = this.chunkArray(this.travels, 3);
+        this.index += 9;
+      }
+    });
   }
 
   private chunkArray(array: Travel[], chunkSize: number): Travel[][] {
