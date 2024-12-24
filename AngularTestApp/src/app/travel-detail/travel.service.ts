@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Travel} from './models/travel/travel.model';
 import {HttpClient} from '@angular/common/http';
+import {Travel} from '../models/travel/travel.model';
 
 @Injectable({
   providedIn: 'root'
@@ -262,5 +262,4 @@ export class TravelService {
     return this._http.get<Travel>(`${this.APIUrl}/open/v1/travel?id=${id}`);
     // return this.travels.find(travel => travel.id === id);
   }
-
 }

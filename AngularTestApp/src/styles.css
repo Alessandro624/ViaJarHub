@@ -33,3 +33,14 @@
 body, button, input, select, textarea {
   font-family: Arial, sans-serif !important;
 }
+
+
+/*BARRA DI RICERCA DELLA MAPPA*/
+.pac-container {
+  display: block !important;
+  z-index: 9999 !important;
+}
+
+.pac-container::after {
+  display: none !important;
+}

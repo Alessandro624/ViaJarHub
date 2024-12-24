@@ -2,7 +2,7 @@
   <form (ngSubmit)="onSubmit()" #form="ngForm">
     <!-- Campo di testo: Titolo -->
     <div class="mb-3">
-      <label for="title" class="form-label">Destinazione</label>
+      <label for="title" class="form-label">Titolo</label>
       <input
         type="text"
         id="title"
@@ -85,6 +85,16 @@
         rows="4"
         required
       ></textarea>
+    </div>
+
+    <div class="map-container mb-5">
+      <label for="title" class="form-label">Destinazione</label>
+      <gmp-map [center]="center" [zoom]="zoom" map-id="24dfd8a38027bce5">
+        <div slot="control-block-start-inline-start" class="p-3">
+          <gmpx-place-picker placeholder="Inserisci la destinazione"></gmpx-place-picker>
+        </div>
+        <gmp-advanced-marker [position]="markerPosition" [draggable]="false"></gmp-advanced-marker>
+      </gmp-map>
     </div>
 
     <!-- Drop area per immagini -->

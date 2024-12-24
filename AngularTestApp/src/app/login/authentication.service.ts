@@ -12,6 +12,7 @@ export class AuthenticationService {
   private APIUrl = "api";
 
   constructor(private _http: HttpClient) {
+    this.getUser().subscribe();
   }
 
   onLogin(email: string, password: string) {
