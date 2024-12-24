@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,6 +24,8 @@ public class AdminController {
     @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createTravel(@RequestPart Travel travel, @RequestParam List<MultipartFile> travelImages) {
         try {
+            travel.setId(null);
+            travel.setImagesPaths(new ArrayList<>());
             Travel createdTravel = travelService.createTravel(travel, travelImages);
             if (createdTravel == null) {
                 return ResponseEntity.badRequest().build();
