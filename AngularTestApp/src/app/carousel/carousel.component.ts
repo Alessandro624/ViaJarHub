@@ -1,6 +1,6 @@
 import {OnInit, OnDestroy, Component, ElementRef, PLATFORM_ID, Inject} from '@angular/core';
 import {isPlatformBrowser, NgClass, NgForOf, NgIf} from '@angular/common';
-import {TravelService} from '../travel.service';
+import {TravelService} from '../travel-detail/travel.service';
 import {ActivatedRoute} from '@angular/router';
 import {Travel} from '../models/travel/travel.model';
 import {FormsModule} from '@angular/forms';

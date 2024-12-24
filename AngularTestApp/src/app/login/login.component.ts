@@ -84,7 +84,7 @@ export class LoginComponent implements OnInit {
           this.isLoading = false;
           console.log('Login successful:', {email: this.email, password: this.password});
           alert("Login effettuato con successo");
-          this.sendUserHome();
+          //this.sendUserHome();
         }, error: error => {
           this.isLoading = false;
           this.alertMessage = 'Email o password errati'

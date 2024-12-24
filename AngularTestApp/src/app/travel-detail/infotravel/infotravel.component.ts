@@ -1,7 +1,7 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA, Inject, OnInit, PLATFORM_ID} from '@angular/core';
 import {Travel} from '../../models/travel/travel.model';
 
-import {TravelService} from '../../travel.service';
+import {TravelService} from '../travel.service';
 import {ReviewComponent} from '../../review/review.component';
 import {GoogleMapsModule} from '@angular/google-maps';
 import {isPlatformBrowser} from '@angular/common';
@@ -26,16 +26,9 @@ export class InfotravelComponent implements OnInit {
   center: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
   markerPosition: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
 
-  zoom = 15;
+  zoom = 10;
   protected readonly environment = environment;
 
-  /*lat = 51.678418;
-  lng = 7.809007;
-  center: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
-  zoom = 15;
-  markerOptions: google.maps.MarkerOptions = {draggable: false};
-  markerPosition: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
-  */
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
   }
@@ -53,21 +46,9 @@ export class InfotravelComponent implements OnInit {
       console.log(this.center);
     }
 
-    /*let lat = 51.678418;
-    let lng = 7.809007;
-    this.showMap(this.center.lat, this.center.lng);*/
+
   }
 
-  /*showMap(latitude: number, longitude: number) {
-    this.mapsService.getMap({latitude, longitude}).subscribe(response => {
-      if (response.results && response.results.length > 0) {
-        console.log(response.results);
-        const location = response.results[0].geometry.location;
-        this.center = {lat: location.lat, lng: location.lng};
-        this.markerPosition = {lat: location.lat, lng: location.lng};
-      }
-    });
-  }*/
 
   async initMap() {
     await customElements.whenDefined('gmp-map');
@@ -84,13 +65,6 @@ export class InfotravelComponent implements OnInit {
       draggable: false,
     })
 
-    /* DOPO 3 secondi ti riporta al marker
-    map.innerMap.addListener("center_changed", () => {
-      window.setTimeout(() => {
-        map.innerMap.panTo(marker.position as google.maps.LatLng);
-      }, 3000);
-    });
-    */
 
     map.innerMap.addListener('click', (event: google.maps.MapMouseEvent) => {
       const location = event.latLng;

@@ -12,7 +12,7 @@ import {
 import {FormsModule} from '@angular/forms';
 import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {Travel} from '../models/travel/travel.model';
-import {TravelService} from '../travel.service';
+import {TravelService} from '../travel-detail/travel.service';
 import {environment} from '../../environments/environment';
 import {GoogleMapsModule} from '@angular/google-maps';
 
@@ -23,6 +23,7 @@ import {GoogleMapsModule} from '@angular/google-maps';
     FormsModule,
     CommonModule,
     GoogleMapsModule
+
 
   ],
   templateUrl: './add-travel.component.html',
@@ -40,8 +41,8 @@ export class AddTravelComponent implements OnInit {
     dataPartenza: '',
     dataRitorno: '',
     descrizione: '',
-    prezzo: 0,
-    postiDisponibile: 0,
+    prezzo: NaN,
+    postiDisponibile: NaN,
     tipo: '',
     numeroStelle: 0,
     immagini: [],
@@ -52,6 +53,9 @@ export class AddTravelComponent implements OnInit {
   center: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
   markerPosition: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
   zoom = 10;
+  protected readonly environment = environment;
+
+
   isCountry: boolean = false;
   selectedOption: string = '1';
 
@@ -89,15 +93,6 @@ export class AddTravelComponent implements OnInit {
     this.resetData();
   }
 
-  validateAndFormatPrice(event: any) {
-    const input = event.target.value;
-    const pricePattern = /^\d*\.?\d*$/;
-    if (!pricePattern.test(input)) {
-      event.target.value = input.slice(0, -1);
-    } else {
-      this.travel.prezzo = input;
-    }
-  }
 
   onFileSelect(event: any) {
     const files = event.target.files;
@@ -162,7 +157,6 @@ export class AddTravelComponent implements OnInit {
 
   }
 
-  protected readonly environment = environment;
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -171,6 +165,7 @@ export class AddTravelComponent implements OnInit {
 
 
   }
+
 
   async initMap() {
     await customElements.whenDefined('gmp-map');
@@ -184,13 +179,6 @@ export class AddTravelComponent implements OnInit {
       mapTypeControl: false
     });
 
-    /* DOPO 3 secondi ti riporta al marker
-    map.innerMap.addListener("center_changed", () => {
-      window.setTimeout(() => {
-        map.innerMap.panTo(marker.position as google.maps.LatLng);
-      }, 3000);
-    });
-    */
 
     map.innerMap.addListener('click', (event: google.maps.MapMouseEvent) => {
       const location = event.latLng;
@@ -210,8 +198,8 @@ export class AddTravelComponent implements OnInit {
     });
 
     placePicker.addEventListener('gmpx-placechange', () => {
-      const place = placePicker.value;
 
+      const place = placePicker.value;
       if (!place.location) {
         window.alert(
           "No details available for input: '" + place.name + "'"
@@ -231,7 +219,7 @@ export class AddTravelComponent implements OnInit {
       marker.position = place.location;
       infoWindow.setContent(
         `<strong>${place.displayName}</strong><br>
-         <span>${place.formattedAddress}</span>`
+             <span>${place.formattedAddress}</span>`
       );
       infoWindow.open(map.innerMap, marker);
     });
@@ -251,7 +239,6 @@ export class AddTravelComponent implements OnInit {
         const country = location.address_components.find(component =>
           component.types.includes('country')
         )?.long_name;
-        console.log(country);
         infoWindow.setContent(
           `<strong>${city}, ${country}</strong><br>
          <span>${location.formatted_address}</span>`

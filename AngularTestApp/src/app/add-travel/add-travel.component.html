@@ -13,11 +13,12 @@
       />
     </div>
 
-    <div><input type="radio" id="option1" name="options" value="1" required (change)="setOption(false)"
-                [(ngModel)]="selectedOption"> <label
+    <div>
+      <input type="radio" id="option1" name="options" value="1" required (change)="setOption(false)"
+             [(ngModel)]="selectedOption"> <label
       class="ms-1" for="option1">Città</label></div>
-    <div><input type="radio" id="option2" name="options" value="2" required (change)="setOption(true)"
-                [(ngModel)]="selectedOption"> <label
+    <div class="mb-2"><input type="radio" id="option2" name="options" value="2" required (change)="setOption(true)"
+                             [(ngModel)]="selectedOption"> <label
       class="ms-1" for="option2">Stato</label></div>
     <div>
 
@@ -55,11 +56,10 @@
       </div>
 
       <!-- Campo di testo: Prezzo -->
-      <div class="mb-3"><label for="price" class="form-label">Prezzo</label> <input type="text" id="price"
+      <div class="mb-3"><label for="price" class="form-label">Prezzo</label> <input type="number" id="price"
                                                                                     class="form-control"
                                                                                     [(ngModel)]="travel.prezzo"
                                                                                     name="price"
-                                                                                    (input)="validateAndFormatPrice($event)"
                                                                                     required/>
       </div>
 
@@ -127,16 +127,19 @@
         <p class="mt-2">Numero di immagini caricate: <strong>{{ travel.immagini.length }}</strong></p>
       </div>
 
-      <div class="map-container">
-        <gmpx-api-loader [key]="environment.googleMapsApiKey"
-                         solution-channel="GMP_GE_mapsandplacesautocomplete_v2">
-        </gmpx-api-loader>
-        <gmp-map [center]="center" [zoom]="zoom" map-id="24dfd8a38027bce5">
-          <div slot="control-block-start-inline-start" class="p-3">
-            <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
-          </div>
-          <gmp-advanced-marker [position]="markerPosition" [draggable]="false"></gmp-advanced-marker>
-        </gmp-map>
+      <div class="col-12 my-3">
+
+        <div class="map-container ">
+          <gmpx-api-loader [key]="environment.googleMapsApiKey"
+                           solution-channel="GMP_GE_mapsandplacesautocomplete_v2">
+          </gmpx-api-loader>
+          <gmp-map [center]="center" [zoom]="zoom" map-id="24dfd8a38027bce5">
+            <div slot="control-block-start-inline-start" class="p-3">
+              <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
+            </div>
+            <gmp-advanced-marker [position]="markerPosition" [draggable]="false"></gmp-advanced-marker>
+          </gmp-map>
+        </div>
       </div>
 
 

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Travel} from './models/travel/travel.model';
+import {Travel} from '../models/travel/travel.model';
 
 @Injectable({
   providedIn: 'root'

@@ -6,6 +6,9 @@ import {AddReviewComponent} from '../../add-review/add-review.component';
 import {AuthenticationService} from '../../login/authentication.service';
 import {ClientService} from './client.service';
 import {User} from '../../models/user/user.model';
+import {RouterLink} from '@angular/router';
+import {PaymentComponent} from '../../payment/payment.component';
+import {Travel} from '../../models/travel/travel.model';
 
 @Component({
   selector: 'app-client',
@@ -17,7 +20,9 @@ import {User} from '../../models/user/user.model';
     UpdateUserComponent,
     ReviewComponent,
     AddReviewComponent,
-    NgIf
+    NgIf,
+    RouterLink,
+    PaymentComponent
   ],
   templateUrl: './client.component.html',
   styleUrl: './client.component.css'
@@ -30,6 +35,9 @@ export class ClientComponent implements OnInit {
   profileImageUrl: string = '';
   isPopupVisible2 = false;
   isPopupVisible = false;
+  isPopupVisible3 = false;
+  settedTravel: Travel | undefined = undefined;
+
 
   constructor(private _authenticationService: AuthenticationService, private _clientService: ClientService) {
   }
@@ -42,7 +50,7 @@ export class ClientComponent implements OnInit {
   }
 
   animateStrokeDashArray() {
-    const circles = document.querySelectorAll<SVGCircleElement>('.prova');
+    const circles = document.querySelectorAll<SVGCircleElement>('.grafo');
     circles.forEach((circle, index) => {
       const endValue = this.strokeDashArrayEnd[index];
       this.animateValue(circle, this.strokeDashArrayStart, endValue);
@@ -82,6 +90,17 @@ export class ClientComponent implements OnInit {
 
   closePopup2() {
     this.isPopupVisible2 = false;
+
+  }
+
+  openPopup3(/*travel:Travel*/) {
+    this.isPopupVisible3 = true;
+    /* this.settedTravel = travel;*/
+  }
+
+  closePopup3() {
+    this.isPopupVisible3 = false;
+    this.settedTravel = undefined;
 
   }
 

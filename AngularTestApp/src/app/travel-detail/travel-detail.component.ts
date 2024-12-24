@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {Travel} from '../models/travel/travel.model';
-import {TravelService} from '../travel.service';
+import {TravelService} from './travel.service';
 import {FormsModule} from '@angular/forms';
 import {NgClass, NgStyle} from '@angular/common';
 import {PaymentComponent} from '../payment/payment.component';

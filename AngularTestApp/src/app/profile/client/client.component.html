@@ -55,8 +55,11 @@
         <h5 class="fw-bold">La tua lista dei desideri!</h5>
         <div class="card-data m-3" *ngFor="let card of [1, 2, 3]">
           <div class="row">
+
             <div class="col-8 ms-2">
-              <h5 class="card-title  mt-2 mb-0 fw-bold">Nome del Prodotto</h5>
+
+              <a routerLink="../body1/1/info"><h5 class="card-title  mt-2 mb-0 fw-bold">Nome del Prodotto</h5>
+              </a>
               <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
               <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
               <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
@@ -65,7 +68,7 @@
               <span class="card-date ms-3 no-wrap">01 dicembre</span>
             </div>
             <div class="col-2 d-flex align-items-center">
-              <button class="btn btn-outline-success me-3">
+              <button class="btn btn-outline-success me-3" (click)="openPopup3()">
                 <i class="fa-solid fa-cart-shopping"></i>
               </button>
               <button class="btn btn-outline-danger">
@@ -73,6 +76,22 @@
               </button>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" [ngClass]="{'show': isPopupVisible3}"
+       [ngStyle]="{'display': isPopupVisible3 ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Acquista</h5>
+          <button type="button" class="btn-close" (click)="closePopup3()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body shadow-lg ">
+          <!-- Contenuto del modale -->
+          <app-payment (closeModal)="closePopup3() " [prezzo]="100" [travel]=""
+                       [numeroPartecipanti]="1"></app-payment>
         </div>
       </div>
     </div>
@@ -120,7 +139,7 @@
             <div class="d-inline-block position-relative">
               <svg class="torta" height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
-                <circle class="prova" cx="50" cy="50" r="45" stroke="#F5F5F5" stroke-width="10"
+                <circle class="grafo" cx="50" cy="50" r="45" stroke="#F5F5F5" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
               </svg>
               <div class="position-absolute top-50 start-50 translate-middle fw-bold">Cultura</div>
@@ -131,7 +150,7 @@
             <div class="d-inline-block position-relative">
               <svg class="torta" height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
-                <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                <circle class="grafo" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
               </svg>
               <div class="position-absolute top-50 start-50 translate-middle fw-bold">Relax</div>
@@ -144,7 +163,7 @@
             <div class="d-inline-block position-relative">
               <svg class="torta" height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
-                <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                <circle class="grafo" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
               </svg>
               <div class="position-absolute top-50 start-50 translate-middle fw-bold">Natura</div>
@@ -157,7 +176,7 @@
             <div class="d-inline-block position-relative">
               <svg class="torta" height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
-                <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                <circle class="grafo" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
               </svg>
               <div class="position-absolute top-50 start-50 translate-middle fw-bold">Romantico</div>
@@ -168,7 +187,7 @@
             <div class="d-inline-block position-relative">
               <svg class="torta" height="100" width="100">
                 <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
-                <circle class="prova" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                <circle class="grafo" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
                         [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
               </svg>
               <div class="position-absolute top-50 start-50 translate-middle fw-bold">Famiglia</div>
