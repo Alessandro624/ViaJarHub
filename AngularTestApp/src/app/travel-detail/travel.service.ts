@@ -249,8 +249,13 @@ export class TravelService {
     return this._http.get<number>(`${this.APIUrl}/open/v1/travels-count`);
   }
 
-  addTravel(travel: Travel): void {
-    this.travels.push(travel);
+  addTravel(travel: Travel, images: File[]) {
+    const formData = new FormData();
+    formData.append('travel', new Blob([JSON.stringify(travel)], {type: 'application/json'}));
+    images.forEach((image) => {
+      formData.append(`travelImages`, image);
+    });
+    return this._http.post(`${this.APIUrl}/admin/v1/create-travel`, formData);
   }
 
   getTravelById(id: number) {

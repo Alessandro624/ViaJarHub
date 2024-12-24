@@ -1,6 +1,7 @@
 export interface Travel {
   id: number;
   destination: string;
+  isCountry: boolean;
   startDate: string;
   endDate: string;
   description: string;
@@ -9,7 +10,6 @@ export interface Travel {
   maxParticipantsNumber: number;
   travelType: string;
   numeroStelle: number;
-  immagini: File[];
   latitude: number;
   longitude: number;
 }

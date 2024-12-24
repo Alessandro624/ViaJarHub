@@ -119,12 +119,12 @@
         />
       </div>
       <ul class="mt-2">
-        <li class="mb-2" *ngFor="let image of travel.immagini; let i = index">
+        <li class="mb-2" *ngFor="let image of images; let i = index">
           {{ image.name }}
           <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
         </li>
       </ul>
-      <p class="mt-2">Numero di immagini caricate: <strong>{{ travel.immagini.length }}</strong></p>
+      <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
     </div>
 
     <!-- Pulsante di invio -->
@@ -132,7 +132,7 @@
       type="submit"
       class="btn btn-success"
       (click)="addTravel()"
-      [disabled]="form.invalid || travel.immagini.length === 0 || hasDateErrors()"
+      [disabled]="form.invalid || images.length === 0 || hasDateErrors()"
     >
       Invia
     </button>

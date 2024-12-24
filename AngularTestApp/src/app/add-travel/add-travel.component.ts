@@ -31,6 +31,7 @@ export class AddTravelComponent implements OnInit {
   travel: Travel = {
     id: 0,
     destination: '',
+    isCountry: false,
     startDate: '',
     endDate: '',
     description: '',
@@ -39,10 +40,10 @@ export class AddTravelComponent implements OnInit {
     maxParticipantsNumber: 0,
     travelType: '',
     numeroStelle: 0,
-    immagini: [],
     latitude: 0,
     longitude: 0
   };
+  images: File[] = [];
   dateErrors = {startDateInvalid: false, endDateInvalid: false};
   center: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
   markerPosition: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
@@ -148,6 +149,7 @@ export class AddTravelComponent implements OnInit {
     this.travel = {
       id: 0,
       destination: '',
+      isCountry: false,
       startDate: '',
       endDate: '',
       description: '',
@@ -156,19 +158,17 @@ export class AddTravelComponent implements OnInit {
       maxParticipantsNumber: 0,
       travelType: '',
       numeroStelle: 0,
-      immagini: [],
       latitude: 0,
       longitude: 0
     };
+    this.images = [];
     this.dateErrors = {startDateInvalid: false, endDateInvalid: false};
   }
 
   onSubmit() {
     console.log('Dati del form:', this.travel);
-    console.log('Immagini caricate:', this.travel.immagini);
-
-    // Mostra conferma e chiudi il modale
-    alert(`Form inviato con successo!\nDestinazione: ${this.travel.destination}\nData di Partenza: ${this.travel.startDate}\nData di Ritorno: ${this.travel.endDate}\nDescrizione: ${this.travel.description}\nNumero di immagini: ${this.travel.immagini.length}`);
+    console.log('Immagini caricate:', this.images);
+    alert(`Form inviato con successo!\nDestinazione: ${this.travel.destination}\nData di Partenza: ${this.travel.startDate}\nData di Ritorno: ${this.travel.endDate}\nDescrizione: ${this.travel.description}\nNumero di immagini: ${this.images.length}`);
     this.closeModal.emit();
     this.resetData();
   }
@@ -228,12 +228,12 @@ export class AddTravelComponent implements OnInit {
 
   private addFiles(files: FileList) {
     for (let i = 0; i < files.length; i++) {
-      this.travel.immagini.push(files[i]);
+      this.images.push(files[i]);
     }
   }
 
   removeImage(index: number) {
-    this.travel.immagini.splice(index, 1);
+    this.images.splice(index, 1);
   }
 
   selectType(tipo: string) {
@@ -241,8 +241,7 @@ export class AddTravelComponent implements OnInit {
   }
 
   addTravel() {
-    // TODO aggiungere logica per modificare le date prima di inviarle nel formato dd/mm/yyyy
-    this.travelService.addTravel(this.travel);
-
+    this.travel.travelType = this.travel.travelType.toUpperCase();
+    this.travelService.addTravel(this.travel, this.images).subscribe();
   }
 }
