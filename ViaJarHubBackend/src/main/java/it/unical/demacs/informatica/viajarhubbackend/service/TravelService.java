@@ -100,6 +100,11 @@ public class TravelService implements ITravelService {
         this.travelDAO.delete(id);
     }
 
+    @Override
+    public int getTravelCount() {
+        return travelDAO.countTravels();
+    }
+
     private void checkNotNullFields(Travel travel) {
         if (travel.getDestination() == null || travel.getDestination().isBlank()) {
             throw new InvalidInputException("Destination cannot be null");

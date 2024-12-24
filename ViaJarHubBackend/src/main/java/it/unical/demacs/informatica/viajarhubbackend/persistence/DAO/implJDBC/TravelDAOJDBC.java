@@ -123,6 +123,21 @@ public class TravelDAOJDBC implements TravelDAO {
         }
     }
 
+    @Override
+    public int countTravels() {
+        String query = "SELECT COUNT(*) FROM travel";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.execute();
+            ResultSet resultSet = statement.getResultSet();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+            return 0;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
     private Travel mapResultSetToTravel(ResultSet resultSet) throws SQLException {
         Array array = resultSet.getArray("images_paths");
         List<String> imagesPaths = new ArrayList<>();

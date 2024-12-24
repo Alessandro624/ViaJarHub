@@ -14,4 +14,6 @@ public interface TravelDAO {
     void save(Travel travel);
 
     void delete(Long id);
+
+    int countTravels();
 }

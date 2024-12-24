@@ -20,4 +20,6 @@ public interface ITravelService {
     List<byte[]> getTravelImages(Long id) throws Exception;
 
     void deleteTravel(Long id) throws Exception;
+
+    int getTravelCount();
 }

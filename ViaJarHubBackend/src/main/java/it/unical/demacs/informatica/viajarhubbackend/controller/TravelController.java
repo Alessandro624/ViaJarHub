@@ -56,6 +56,18 @@ public class TravelController {
         }
     }
 
+    @RequestMapping(value = "/travels-count", method = RequestMethod.GET)
+    public ResponseEntity<Integer> getTravelCount() {
+        try {
+            int travelCount = travelService.getTravelCount();
+            return ResponseEntity.ok().body(travelCount);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createTravel(@RequestPart Travel travel, @RequestParam List<MultipartFile> travelImages) {
         try {
