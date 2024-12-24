@@ -26,7 +26,7 @@ export class Body1Component implements OnInit {
 
   ngOnInit() {
     this.loadTravels()
-    this.travelService.getLenghtTravels().subscribe({
+    this.travelService.getTravelsCount().subscribe({
       next: data => {
         this.elementiTot = data;
       }

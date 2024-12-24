@@ -242,15 +242,10 @@ export class TravelService {
   }
 
   getTravelsPaginated(offset: number, limit: number) {
-    return this._http.get<Travel[]>(`${this.APIUrl}/open/v1/travels?offset=${offset}&limit${limit}`);
+    return this._http.get<Travel[]>(`${this.APIUrl}/open/v1/travels-paginated?offset=${offset}&limit=${limit}`);
   }
 
-  getTravels(startIndex: number, count: number): Travel[] {
-    return this.travels.slice(startIndex, startIndex + count);
-  }
-
-  getLenghtTravels() {
-    // return this.travels.length;
+  getTravelsCount() {
     return this._http.get<number>(`${this.APIUrl}/open/v1/travels-count`);
   }
 
@@ -260,6 +255,5 @@ export class TravelService {
 
   getTravelById(id: number) {
     return this._http.get<Travel>(`${this.APIUrl}/open/v1/travel?id=${id}`);
-    // return this.travels.find(travel => travel.id === id);
   }
 }
