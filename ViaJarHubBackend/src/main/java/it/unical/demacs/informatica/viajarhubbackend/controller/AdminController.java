@@ -3,6 +3,7 @@ package it.unical.demacs.informatica.viajarhubbackend.controller;
 
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.service.ITravelService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,21 @@ public class AdminController {
 
     public AdminController(ITravelService travelService) {
         this.travelService = travelService;
+    }
+
+    @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> createTravel(@RequestPart Travel travel, @RequestParam List<MultipartFile> travelImages) {
+        try {
+            Travel createdTravel = travelService.createTravel(travel, travelImages);
+            if (createdTravel == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @RequestMapping(value = "/update-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

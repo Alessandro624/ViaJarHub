@@ -68,21 +68,6 @@ public class TravelController {
         }
     }
 
-    @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> createTravel(@RequestPart Travel travel, @RequestParam List<MultipartFile> travelImages) {
-        try {
-            Travel createdTravel = travelService.createTravel(travel, travelImages);
-            if (createdTravel == null) {
-                return ResponseEntity.badRequest().build();
-            }
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
     @RequestMapping(value = "/travel-images", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<byte[]>> getTravelImages(@RequestParam("id") Long id) {
         try {
