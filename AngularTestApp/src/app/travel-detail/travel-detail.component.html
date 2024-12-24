@@ -1,9 +1,9 @@
 <div class="container mt-5">
   <div class="row align-items-center mt-5">
     <div class="col-md-8 mt-4">
-      <h1 class="display-6">{{ travel?.destinazione }}</h1>
+      <h1 class="display-6">{{ travel?.destination }}</h1>
       <h3 class="text-muted">{{
-          travel?.descrizione
+          travel?.description
         }}
       </h3>
     </div>
@@ -12,21 +12,22 @@
         <div class="row">
           <h4 class="col-12 d-flex flex-row flex-md-column flex-xl-row justify-content-between">
             <span class="text-nowrap fw-bold">Data partenza:</span>
-            <span class="text-nowrap">{{ travel?.dataPartenza }}</span>
+            <span class="text-nowrap">{{ travel?.startDate }}</span>
           </h4>
         </div>
         <div class="row mb-2">
           <h4 class="col-12 d-flex flex-row flex-md-column flex-xl-row justify-content-between">
             <span class="text-nowrap fw-bold">Data ritorno:</span>
-            <span class="text-nowrap">{{ travel?.dataRitorno }}</span>
+            <span class="text-nowrap">{{ travel?.endDate }}</span>
           </h4>
         </div>
         <div class="col-12 d-flex flex-row flex-md-column flex-xl-row justify-content-between mb-2 number-input">
-          <h5 class="fw-bold mt-xl-2">Numero di partecipanti:</h5>
-          <input type="number" class="increment-input" id="incrementInput" min="1" max="{{travel?.postiDisponibile}}"
+          <h5 class="fw-bold">Numero di partecipanti:</h5>
+          <input type="number" class="increment-input" id="incrementInput" min="1"
+                 max="{{travel?.maxParticipantsNumber}}"
                  step="1" [(ngModel)]="postiSelezionati" (input)="modificaPrezzo()">
         </div>
-        <div class="col-12 text-end text-md-start text-lg-start text-xl-end">
+        <div class="col-12 text-end">
           <h5><strong>{{ prezzoFinale }}€</strong></h5>
         </div>
         <div class="col-12 mt-3">
@@ -55,7 +56,7 @@
     </li>
   </ul>
 
-  <div class="mt-3 mx-1">
+  <div class="mt-3 mx-5">
     <router-outlet></router-outlet>
   </div>
 

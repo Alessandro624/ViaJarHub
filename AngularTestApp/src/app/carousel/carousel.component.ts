@@ -42,20 +42,24 @@ export class CarouselComponent implements OnInit, OnDestroy {
     // Esegui l'effetto macchina da scrivere solo dentro Body1
     if (this.inBody) {
       this.typeWriterEffect();
-    }
+    } else {
 
-    const id = Number(this._activatedRoute.snapshot.paramMap.get('id'));
-    if (id == null) {
-      throw new Error("Viaggio non trovato");
+      const id = Number(this._activatedRoute.snapshot.paramMap.get('id'));
+      if (id == null) {
+        throw new Error("Viaggio non trovato");
 
+      }
+      this.travelservice.getTravelById(id).subscribe({
+        next: result => {
+          this.travel = result;
+          if (this.travel?.immagini) {
+            this.immaginiURLs = this.travel.immagini.map((file: File) =>
+              URL.createObjectURL(file)
+            );
+          }
+        }
+      });
     }
-    this.travel = this.travelservice.getTravelById(id);
-    if (this.travel?.immagini) {
-      this.immaginiURLs = this.travel.immagini.map((file: File) =>
-        URL.createObjectURL(file)
-      );
-    }
-
   }
 
   ngOnDestroy(): void {

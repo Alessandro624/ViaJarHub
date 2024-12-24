@@ -7,151 +7,124 @@
         type="text"
         id="title"
         class="form-control"
-        [(ngModel)]="travel.destinazione"
+        [(ngModel)]="travel.destination"
         name="title"
         required
       />
     </div>
 
-    <div>
-      <input type="radio" id="option1" name="options" value="1" required (change)="setOption(false)"
-             [(ngModel)]="selectedOption"> <label
-      class="ms-1" for="option1">Città</label></div>
-    <div class="mb-2"><input type="radio" id="option2" name="options" value="2" required (change)="setOption(true)"
-                             [(ngModel)]="selectedOption"> <label
-      class="ms-1" for="option2">Stato</label></div>
-    <div>
+    <!-- Date Picker: Data di Inizio -->
+    <div class="mb-3">
+      <label for="startDate" class="form-label">Data di Partenza</label>
+      <input
+        type="date"
+        id="startDate"
+        class="form-control"
+        [(ngModel)]="travel.startDate"
+        name="startDate"
+        (change)="validateDates()"
+        [min]="today"
+        required
+      />
 
-
-      <!-- Date Picker: Data di Inizio -->
-      <div class="mb-3">
-        <label for="startDate" class="form-label">Data di Partenza</label>
-        <input
-          type="date"
-          id="startDate"
-          class="form-control"
-          [(ngModel)]="travel.dataPartenza"
-          name="startDate"
-          (change)="validateDates()"
-          [min]="today"
-          required
-        />
-
-      </div>
-
-      <!-- Date Picker: Data di Fine -->
-      <div class="mb-3">
-        <label for="endDate" class="form-label">Data di Ritorno</label>
-        <input
-          type="date"
-          id="endDate"
-          class="form-control"
-          [(ngModel)]="travel.dataRitorno"
-          name="endDate"
-          (change)="validateDates()"
-          [min]="travel.dataPartenza || today"
-          required
-        />
-
-      </div>
-
-      <!-- Campo di testo: Prezzo -->
-      <div class="mb-3"><label for="price" class="form-label">Prezzo</label> <input type="number" id="price"
-                                                                                    class="form-control"
-                                                                                    [(ngModel)]="travel.prezzo"
-                                                                                    name="price"
-                                                                                    required/>
-      </div>
-
-      <div class="mb-4"><label for="seats" class="form-label">Numero Posti</label> <input type="number" id="seats"
-                                                                                          class="form-control"
-                                                                                          [(ngModel)]="travel.postiDisponibile"
-                                                                                          name="seats" min="1"
-                                                                                          required/>
-      </div>
-      <div class="btn-group dropdown mb-3 w-100 ">
-        <button type="button"
-                class="btn prova border dropdown-toggle d-flex justify-content-between align-items-center"
-                data-bs-toggle="dropdown" aria-expanded="false">
-          <span>{{ travel.tipo || 'Tipo' }}</span>
-        </button>
-        <ul class="dropdown-menu ">
-          <!-- Dropdown menu links -->
-          <li><a class="dropdown-item" (click)="selectType('Cultura')">Cultura</a></li>
-          <li><a class="dropdown-item" (click)="selectType('Relax')">Relax</a></li>
-          <li><a class="dropdown-item" (click)="selectType('Natura')">Natura</a></li>
-          <li><a class="dropdown-item" (click)="selectType('Romantico')">Romantico</a></li>
-          <li><a class="dropdown-item" (click)="selectType('Famiglia')">Famiglia</a></li>
-        </ul>
-      </div>
-      <!-- Textarea: Descrizione -->
-      <div class="mb-3">
-        <label for="description" class="form-label">Descrizione</label>
-        <textarea
-          id="description"
-          class="form-control"
-          [(ngModel)]="travel.descrizione"
-          name="description"
-          rows="4"
-          required
-        ></textarea>
-      </div>
-
-      <!-- Drop area per immagini -->
-      <div class="mb-3">
-        <label for="images" class="form-label">Carica Immagini</label>
-        <div
-          class="drop-area border border-primary p-3 text-center"
-          (click)="triggerFileInput()"
-          (dragover)="onDragOver($event)"
-          (dragleave)="onDragLeave($event)"
-          (drop)="onDrop($event)"
-        >
-          <p>Trascina qui le immagini o clicca per selezionarle</p>
-          <!-- Input file nascosto -->
-          <input
-            #fileInput
-            type="file"
-            id="images"
-            class="d-none"
-            (change)="onFileSelect($event)"
-            multiple
-          />
-        </div>
-        <ul class="mt-2">
-          <li class="mb-2" *ngFor="let image of travel.immagini; let i = index">
-            {{ image.name }}
-            <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
-          </li>
-        </ul>
-        <p class="mt-2">Numero di immagini caricate: <strong>{{ travel.immagini.length }}</strong></p>
-      </div>
-
-      <div class="col-12 my-3">
-
-        <div class="map-container ">
-          <gmpx-api-loader [key]="environment.googleMapsApiKey"
-                           solution-channel="GMP_GE_mapsandplacesautocomplete_v2">
-          </gmpx-api-loader>
-          <gmp-map [center]="center" [zoom]="zoom" map-id="24dfd8a38027bce5">
-            <div slot="control-block-start-inline-start" class="p-3">
-              <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
-            </div>
-            <gmp-advanced-marker [position]="markerPosition" [draggable]="false"></gmp-advanced-marker>
-          </gmp-map>
-        </div>
-      </div>
-
-
-      <!-- Pulsante di invio -->
-      <button
-        type="submit"
-        class="btn btn-success mt-4"
-        (click)="addTravel()"
-        [disabled]="form.invalid || travel.immagini.length === 0 || hasDateErrors()"
-      >
-        Invia
-      </button>
     </div>
+
+    <!-- Date Picker: Data di Fine -->
+    <div class="mb-3">
+      <label for="endDate" class="form-label">Data di Ritorno</label>
+      <input
+        type="date"
+        id="endDate"
+        class="form-control"
+        [(ngModel)]="travel.endDate"
+        name="endDate"
+        (change)="validateDates()"
+        [min]="travel.startDate || today"
+        required
+      />
+
+    </div>
+
+    <!-- Campo di testo: Prezzo -->
+    <div class="mb-3"><label for="price" class="form-label">Prezzo</label> <input type="text" id="price"
+                                                                                  class="form-control"
+                                                                                  [(ngModel)]="travel.price"
+                                                                                  name="price"
+                                                                                  (input)="validateAndFormatPrice($event)"
+                                                                                  required/>
+    </div>
+
+    <div class="mb-4"><label for="seats" class="form-label">Numero Posti</label> <input type="number" id="seats"
+                                                                                        class="form-control"
+                                                                                        [(ngModel)]="travel.maxParticipantsNumber"
+                                                                                        name="seats" min="1" required/>
+    </div>
+    <div class="btn-group dropdown mb-3 w-100 ">
+      <button type="button"
+              class="btn prova border dropdown-toggle d-flex justify-content-between align-items-center"
+              data-bs-toggle="dropdown" aria-expanded="false">
+        <span>{{ travel.travelType || 'Tipo' }}</span>
+      </button>
+      <ul class="dropdown-menu ">
+        <!-- Dropdown menu links -->
+        <li><a class="dropdown-item" (click)="selectType('Cultura')">Cultura</a></li>
+        <li><a class="dropdown-item" (click)="selectType('Relax')">Relax</a></li>
+        <li><a class="dropdown-item" (click)="selectType('Natura')">Natura</a></li>
+        <li><a class="dropdown-item" (click)="selectType('Romantico')">Romantico</a></li>
+        <li><a class="dropdown-item" (click)="selectType('Famiglia')">Famiglia</a></li>
+      </ul>
+    </div>
+    <!-- Textarea: Descrizione -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Descrizione</label>
+      <textarea
+        id="description"
+        class="form-control"
+        [(ngModel)]="travel.description"
+        name="description"
+        rows="4"
+        required
+      ></textarea>
+    </div>
+
+    <!-- Drop area per immagini -->
+    <div class="mb-3">
+      <label for="images" class="form-label">Carica Immagini</label>
+      <div
+        class="drop-area border border-primary p-3 text-center"
+        (click)="triggerFileInput()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+      >
+        <p>Trascina qui le immagini o clicca per selezionarle</p>
+        <!-- Input file nascosto -->
+        <input
+          #fileInput
+          type="file"
+          id="images"
+          class="d-none"
+          (change)="onFileSelect($event)"
+          multiple
+        />
+      </div>
+      <ul class="mt-2">
+        <li class="mb-2" *ngFor="let image of travel.immagini; let i = index">
+          {{ image.name }}
+          <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
+        </li>
+      </ul>
+      <p class="mt-2">Numero di immagini caricate: <strong>{{ travel.immagini.length }}</strong></p>
+    </div>
+
+    <!-- Pulsante di invio -->
+    <button
+      type="submit"
+      class="btn btn-success"
+      (click)="addTravel()"
+      [disabled]="form.invalid || travel.immagini.length === 0 || hasDateErrors()"
+    >
+      Invia
+    </button>
   </form>
 </div>

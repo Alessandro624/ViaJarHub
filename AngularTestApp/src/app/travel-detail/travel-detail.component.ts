@@ -36,13 +36,17 @@ export class TravelDetailComponent implements OnInit {
     if (id == null) {
       throw new Error("Viaggio non trovato");
     }
-    this.travel = this._travelService.getTravelById(id);
-    this.modificaPrezzo();
+    this._travelService.getTravelById(id).subscribe({
+      next: result => {
+        this.travel = result;
+        this.modificaPrezzo();
+      }
+    });
   }
 
   modificaPrezzo() {
     if (this.travel) {
-      this.prezzoFinale = this.travel.prezzo * this.postiSelezionati;
+      this.prezzoFinale = this.travel.price * this.postiSelezionati;
     }
 
   }

@@ -1,12 +1,13 @@
 export interface Travel {
   id: number;
-  destinazione: string;
-  dataPartenza: string;
-  dataRitorno: string;
-  descrizione: string;
-  prezzo: number;
-  postiDisponibile: number;
-  tipo: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+  oldPrice: number;
+  price: number;
+  maxParticipantsNumber: number;
+  travelType: string;
   numeroStelle: number;
   immagini: File[];
   latitude: number;

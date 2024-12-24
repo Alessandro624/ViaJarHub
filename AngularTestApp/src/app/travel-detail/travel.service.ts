@@ -1,14 +1,17 @@
 import {Injectable} from '@angular/core';
-import {Travel} from '../models/travel/travel.model';
+import {Travel} from './models/travel/travel.model';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TravelService {
 
+  APIUrl = "api";
+
   travels: Travel[] = [
 
-    {
+    /*{
       id: 1,
       destinazione: 'Roma, Italia',
       dataPartenza: '10/01/2025',
@@ -231,27 +234,33 @@ export class TravelService {
       immagini: [],
       latitude: 1.3521,
       longitude: 103.8198
-    }
+    }*/
   ];
 
 
-  constructor() {
+  constructor(private _http: HttpClient) {
+  }
+
+  getTravelsPaginated(offset: number, limit: number) {
+    return this._http.get<Travel[]>(`${this.APIUrl}/open/v1/travels?offset=${offset}&limit${limit}`);
   }
 
   getTravels(startIndex: number, count: number): Travel[] {
     return this.travels.slice(startIndex, startIndex + count);
   }
 
-  getLenghtTravels(): number {
-    return this.travels.length;
+  getLenghtTravels() {
+    // return this.travels.length;
+    return this._http.get<number>(`${this.APIUrl}/open/v1/travels-count`);
   }
 
   addTravel(travel: Travel): void {
     this.travels.push(travel);
   }
 
-  getTravelById(id: number): Travel | undefined {
-    return this.travels.find(travel => travel.id === id);
+  getTravelById(id: number) {
+    return this._http.get<Travel>(`${this.APIUrl}/open/v1/travel?id=${id}`);
+    // return this.travels.find(travel => travel.id === id);
   }
 
 }
