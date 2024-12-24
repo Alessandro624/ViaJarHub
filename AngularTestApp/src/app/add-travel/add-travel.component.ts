@@ -82,11 +82,13 @@ export class AddTravelComponent implements OnInit {
         );
         infoWindow.close();
         marker.position = null;
+        this.resetTravelCoordinates();
         return;
       }
       if (!map.innerMap.getBounds().contains(location)) {
         map.innerMap.panTo(location);
       }
+      this.setTravelCoordinates(location.lat(), location.lng());
       marker.position = location;
       map.innerMap.setZoom(this.zoom);
       this.getLocationDetails(location, infoWindow, map, marker);
@@ -101,6 +103,7 @@ export class AddTravelComponent implements OnInit {
         );
         infoWindow.close();
         marker.position = null;
+        this.resetTravelCoordinates();
         return;
       }
 
@@ -110,7 +113,7 @@ export class AddTravelComponent implements OnInit {
         map.center = place.location;
         map.zoom = this.zoom;
       }
-
+      this.setTravelCoordinates(place.location.lat(), place.location.lng());
       marker.position = place.location;
       infoWindow.setContent(
         `<strong>${place.displayName}</strong><br>
@@ -163,6 +166,9 @@ export class AddTravelComponent implements OnInit {
     };
     this.images = [];
     this.dateErrors = {startDateInvalid: false, endDateInvalid: false};
+    this.center = {lat: 51.678418, lng: 7.809007};
+    this.markerPosition = {lat: 51.678418, lng: 7.809007};
+    this.zoom = 15;
   }
 
   onSubmit() {
@@ -243,5 +249,15 @@ export class AddTravelComponent implements OnInit {
   addTravel() {
     this.travel.travelType = this.travel.travelType.toUpperCase();
     this.travelService.addTravel(this.travel, this.images).subscribe();
+  }
+
+  private resetTravelCoordinates() {
+    this.travel.latitude = 0;
+    this.travel.longitude = 0;
+  }
+
+  private setTravelCoordinates(lat: number, lng: number) {
+    this.travel.latitude = lat;
+    this.travel.longitude = lng;
   }
 }
