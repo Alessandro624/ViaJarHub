@@ -1,3 +1,4 @@
+/*TODO cambiare tutti i bottoni mettendo la classe automatica
 /* Modifica per btn-primary */
 .btn-primary {
   background-color: white; /* Sfondo bianco */
@@ -27,4 +28,8 @@
   border-color: var(--bs-primary); /* Mantiene il bordo primary */
   outline: none; /* Rimuove il bordo focus */
   box-shadow: none; /* Rimuove ombre focus */
+}
+
+body, button, input, select, textarea {
+  font-family: Arial, sans-serif !important;
 }

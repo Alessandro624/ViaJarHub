@@ -18,12 +18,14 @@ import {ActivatedRoute} from '@angular/router';
   templateUrl: './infotravel.component.html',
   styleUrl: './infotravel.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
 })
 
 export class InfotravelComponent implements OnInit {
   travel: Travel | undefined;
   center: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
   markerPosition: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
+
   zoom = 15;
   protected readonly environment = environment;
 
@@ -35,13 +37,14 @@ export class InfotravelComponent implements OnInit {
   markerPosition: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
   */
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, /*private mapsService: MapsService*/) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.initMap().then();
     }
+
     const id = Number(this._activatedRoute.parent?.snapshot.paramMap.get('id'));
     this.travel = this._travelService.getTravelById(id);
     if (this.travel) {
@@ -49,6 +52,7 @@ export class InfotravelComponent implements OnInit {
       this.markerPosition = {lat: this.travel.latitude, lng: this.travel.longitude};
       console.log(this.center);
     }
+
     /*let lat = 51.678418;
     let lng = 7.809007;
     this.showMap(this.center.lat, this.center.lng);*/
@@ -76,6 +80,9 @@ export class InfotravelComponent implements OnInit {
     map.innerMap.setOptions({
       mapTypeControl: false
     });
+    marker.setOptions({
+      draggable: false,
+    })
 
     /* DOPO 3 secondi ti riporta al marker
     map.innerMap.addListener("center_changed", () => {
@@ -125,7 +132,7 @@ export class InfotravelComponent implements OnInit {
       marker.position = place.location;
       infoWindow.setContent(
         `<strong>${place.displayName}</strong><br>
-         <span>${place.formattedAddress}</span>`
+             <span>${place.formattedAddress}</span>`
       );
       infoWindow.open(map.innerMap, marker);
     });
@@ -155,4 +162,5 @@ export class InfotravelComponent implements OnInit {
       }
     }).then();
   }
+
 }

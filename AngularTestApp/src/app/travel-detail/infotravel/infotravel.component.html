@@ -1,6 +1,6 @@
 <div class="row d-flex align-items-center mx-auto">
   <!-- Colonna 1 -->
-  <div class="col-12 col-lg-6 my-3">
+  <div class="col-12 col-xl-6 my-3">
     <div class="container mt-2">
       <!-- Card container -->
       <div class="card shadow-sm p-4">
@@ -32,21 +32,16 @@
   </div>
 
   <!-- Colonna 2 -->
-  <div class="col-12 col-lg-6 my-3">
-    <!--div *ngIf="center.lat && center.lng" style="width: 100%; height: 400px;">
-      <google-map [center]="center" [zoom]="zoom" style="width: 100%; height: 100%;">
-        <map-marker *ngIf="markerPosition.lat && markerPosition.lng" [position]="markerPosition"
-                    [options]="markerOptions"></map-marker>
-      </google-map>
-    </div-->
-    <div class="map-container">
+  <div class="col-12 col-xl-6 my-3">
+
+    <div class="map-container ">
       <gmpx-api-loader [key]="environment.googleMapsApiKey"
                        solution-channel="GMP_GE_mapsandplacesautocomplete_v2">
       </gmpx-api-loader>
       <gmp-map [center]="center" [zoom]="zoom" map-id="24dfd8a38027bce5">
-        <div slot="control-block-start-inline-start" class="p-3">
+        <!--<div slot="control-block-start-inline-start" class="p-3">
           <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
-        </div>
+        </div>-->
         <gmp-advanced-marker [position]="markerPosition" [draggable]="false"></gmp-advanced-marker>
       </gmp-map>
     </div>
