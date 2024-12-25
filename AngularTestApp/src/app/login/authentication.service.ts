@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {User} from '../models/user/user.model';
-import {BehaviorSubject, catchError, of, switchMap} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject, catchError, of, switchMap, throwError} from 'rxjs';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,8 @@ export class AuthenticationService {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       withCredentials: true
     }).pipe(
-      switchMap(() => this.getUser())
+      switchMap(() => this.getUser()),
+      catchError(this.handleError)
     );
   }
 
@@ -35,12 +36,13 @@ export class AuthenticationService {
       lastName: lastName,
       birthDate: birthDate
     };
-    return this._http.post<void>(`${this.APIUrl}/open/v1/register`, body, {withCredentials: true});
+    return this._http.post<void>(`${this.APIUrl}/open/v1/register`, body, {withCredentials: true}).pipe(catchError(this.handleError));
   }
 
   onGoogleLogin(token: string) {
     return this._http.post<void>(`${this.APIUrl}/open/v1/google-login`, {token}, {withCredentials: true}).pipe(
-      switchMap(() => this.getUser())
+      switchMap(() => this.getUser()),
+      catchError(this.handleError)
     );
   }
 
@@ -70,7 +72,7 @@ export class AuthenticationService {
   }
 
   sendVerificationToken(token: string) {
-    return this._http.get<void>(`${this.APIUrl}/open/v1/verify-email?token=${token}`, {withCredentials: true});
+    return this._http.get<void>(`${this.APIUrl}/open/v1/verify-email?token=${token}`, {withCredentials: true}).pipe(catchError(this.handleError));
   }
 
   onForgotPassword(email: string) {
@@ -79,11 +81,11 @@ export class AuthenticationService {
     return this._http.post<void>(`${this.APIUrl}/open/v1/forgot-password`, body.toString(), {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       withCredentials: true
-    });
+    }).pipe(catchError(this.handleError));
   }
 
   validatePasswordResetToken(token: string) {
-    return this._http.get<void>(`${this.APIUrl}/open/v1/check-reset-token?token=${token}`, {withCredentials: true});
+    return this._http.get<void>(`${this.APIUrl}/open/v1/check-reset-token?token=${token}`, {withCredentials: true}).pipe(catchError(this.handleError));
   }
 
   onResetPassword(token: string, newPassword: string) {
@@ -92,6 +94,30 @@ export class AuthenticationService {
     return this._http.post<void>(`${this.APIUrl}/open/v1/reset-password?token=${token}`, body.toString(), {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       withCredentials: true
-    });
+    }).pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Si è verificato un errore, riprovare più tardi';
+    switch (error.status) {
+      case 400:
+        errorMessage = 'Impossibile effettuare la richiesta, riprovare più tardi';
+        break;
+      case 401:
+        errorMessage = 'Credenziali errate';
+        break;
+      case 404:
+        errorMessage = 'Errore nell\'accesso';
+        break;
+      case 409:
+        errorMessage = 'Errore nella registrazione';
+        break;
+      case 503:
+        errorMessage = 'Servizio non disponibile, riprovare più tardi';
+        break;
+      default:
+        errorMessage = 'Si è verificato un errore, riprovare più tardi';
+    }
+    return throwError(() => new Error(errorMessage));
   }
 }

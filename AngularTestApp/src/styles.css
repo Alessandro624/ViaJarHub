@@ -39,6 +39,7 @@ body, button, input, select, textarea {
 .pac-container {
   display: block !important;
   z-index: 9999 !important;
+  border-top: none !important;
 }
 
 .pac-container::after {
