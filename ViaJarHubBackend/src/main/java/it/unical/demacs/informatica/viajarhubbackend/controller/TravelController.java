@@ -1,7 +1,10 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller;
 
+import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.service.ITravelService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +26,8 @@ public class TravelController {
         try {
             List<Travel> travels = travelService.findAll();
             return ResponseEntity.ok().body(travels);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -35,8 +36,6 @@ public class TravelController {
         try {
             List<Travel> travels = travelService.findAllPaginated(offset, limit);
             return ResponseEntity.ok().body(travels);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -47,8 +46,6 @@ public class TravelController {
         try {
             Optional<Travel> travel = travelService.findById(id);
             return travel.map(value -> ResponseEntity.ok().body(value)).orElseGet(() -> ResponseEntity.badRequest().build());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -59,8 +56,6 @@ public class TravelController {
         try {
             int travelCount = travelService.getTravelCount();
             return ResponseEntity.ok().body(travelCount);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -72,10 +67,12 @@ public class TravelController {
             List<byte[]> imagesBytes = this.travelService.getTravelImages(id);
             return ResponseEntity.ok()
                     .body(imagesBytes);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidInputException e) {
             return ResponseEntity.badRequest().build();
+        } catch (TravelNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

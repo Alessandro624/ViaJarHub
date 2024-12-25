@@ -1,6 +1,6 @@
 package it.unical.demacs.informatica.viajarhubbackend.service;
 
-import jakarta.mail.MessagingException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.EmailNotSentException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,7 +12,6 @@ import java.util.Objects;
 
 @Service
 public class EmailService implements IEmailService {
-    // TODO gestione errori da delegare ai controller, try catch da eliminare e mettere throws nella firma del metodo
 
     private final JavaMailSender mailSender;
 
@@ -23,7 +22,6 @@ public class EmailService implements IEmailService {
     @Override
     public void sendEmail(String to, String subject, String body) {
         try {
-            // System.out.println("prova");
             // Creazione del MimeMessage
             MimeMessage message = mailSender.createMimeMessage();
 
@@ -37,8 +35,8 @@ public class EmailService implements IEmailService {
             ClassPathResource logo = new ClassPathResource("static/images/ViaJar-Hub.png");
             helper.addInline("logo", logo);           // Invio dell'email
             mailSender.send(message);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Errore durante l'invio dell'email: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new EmailNotSentException("Errore durante l'invio dell'email: " + e.getMessage());
         }
     }
 
@@ -84,7 +82,7 @@ public class EmailService implements IEmailService {
             }
             sendEmail(to, subject, template);
         } catch (Exception e) {
-            throw new RuntimeException("Errore durante l'invio dell'email con template: " + e.getMessage(), e);
+            throw new EmailNotSentException("Errore durante l'invio dell'email con template: " + e.getMessage());
         }
     }
 }

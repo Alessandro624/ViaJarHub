@@ -1,6 +1,9 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller;
 
 
+import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.TravelAlreadyExistsException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.service.ITravelService;
 import org.springframework.http.HttpStatus;
@@ -31,10 +34,12 @@ public class AdminController {
                 return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidInputException e) {
             return ResponseEntity.badRequest().build();
+        } catch (TravelAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -46,10 +51,12 @@ public class AdminController {
                 return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidInputException e) {
             return ResponseEntity.badRequest().build();
+        } catch (TravelNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -58,10 +65,10 @@ public class AdminController {
         try {
             travelService.deleteTravel(id);
             return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+        } catch (TravelNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

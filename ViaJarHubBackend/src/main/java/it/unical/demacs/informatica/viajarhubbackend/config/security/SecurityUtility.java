@@ -1,5 +1,7 @@
 package it.unical.demacs.informatica.viajarhubbackend.config.security;
 
+import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,10 +17,10 @@ public class SecurityUtility {
             if (principal instanceof UserDetails) {
                 return (UserDetails) principal;
             } else {
-                throw new RuntimeException("Authentication principal must be an instance of UserDetails");
+                throw new InvalidInputException("Authentication principal must be an instance of UserDetails");
             }
         }
-        return null;
+        throw new UserNotFoundException("User not found");
     }
 
     public static void updateCurrentUser(UserDetails user, String credentials, HttpSession session) {

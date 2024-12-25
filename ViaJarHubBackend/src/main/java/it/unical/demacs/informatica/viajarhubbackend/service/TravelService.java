@@ -17,7 +17,6 @@ import java.util.Optional;
 
 @Service
 public class TravelService implements ITravelService {
-    // TODO gestione messaggi di errore da usare nel FRONTEND
     private final TravelDAO travelDAO;
     private static final String TRAVEL_IMAGES_DIR = "travelImages/";
 
@@ -79,7 +78,7 @@ public class TravelService implements ITravelService {
         Travel travel = checkTravelExistence(id);
         List<String> travelImagesPaths = travel.getImagesPaths();
         if (travelImagesPaths == null || travelImagesPaths.isEmpty()) {
-            throw new IllegalArgumentException("Travel images paths cannot be null or empty");
+            throw new InvalidInputException("Travel images paths cannot be null or empty");
         }
         List<byte[]> travelImages = new ArrayList<>();
         for (String imagePath : travelImagesPaths) {

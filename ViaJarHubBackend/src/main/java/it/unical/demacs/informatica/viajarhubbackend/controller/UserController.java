@@ -1,9 +1,12 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller;
 
 import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
+import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.UserNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
 import it.unical.demacs.informatica.viajarhubbackend.service.IUserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +32,12 @@ public class UserController {
             }
             SecurityUtility.updateCurrentUser(updatedUser, updatedUser.getPassword(), session);
             return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidInputException e) {
             return ResponseEntity.badRequest().build();
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -42,10 +47,12 @@ public class UserController {
             byte[] imageBytes = this.userService.getProfileImage(Objects.requireNonNull(SecurityUtility.getCurrentUser()).getUsername());
             return ResponseEntity.ok()
                     .body(imageBytes);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidInputException e) {
             return ResponseEntity.badRequest().build();
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
