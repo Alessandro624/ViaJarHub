@@ -1,7 +1,9 @@
 package it.unical.demacs.informatica.viajarhubbackend.persistence;
 
+import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.ReviewDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.TravelDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.UserDAO;
+import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC.ReviewDAOJDBC;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC.TravelDAOJDBC;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC.UserDAOJDBC;
 
@@ -14,6 +16,7 @@ public class DBManager {
     private Connection connection = null;
     private UserDAO userDAO = null;
     private TravelDAO travelDAO = null;
+    private ReviewDAO reviewDAO = null;
 
     private DBManager() {
     }
@@ -48,5 +51,12 @@ public class DBManager {
             travelDAO = new TravelDAOJDBC();
         }
         return travelDAO;
+    }
+    public ReviewDAO getReviewDAO() {
+        if (reviewDAO == null) {
+            reviewDAO = new ReviewDAOJDBC();
+
+        }
+        return reviewDAO;
     }
 }
