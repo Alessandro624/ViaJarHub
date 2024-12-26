@@ -166,7 +166,7 @@ public class TravelDAOJDBC implements TravelDAO {
             params.add(filters.getMaxPrice());
         }
         if (filters.getTravelType() != null) {
-            query.append(" AND travel_type = ?");
+            query.append(" AND type = ?");
             params.add(filters.getTravelType().toString());
         }
         return params;

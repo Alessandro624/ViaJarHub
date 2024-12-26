@@ -35,6 +35,16 @@ public class AdminController {
         }
     }
 
+    @RequestMapping(value = "/travels-count", method = RequestMethod.POST)
+    public ResponseEntity<Integer> getTravelCount(@RequestBody TravelRequest travelRequest) {
+        try {
+            int travelCount = travelService.getTravelCount(travelRequest.getFilters());
+            return ResponseEntity.ok().body(travelCount);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createTravel(@RequestPart Travel travel, @RequestParam List<MultipartFile> travelImages) {
         try {
