@@ -2,7 +2,7 @@ import {Component, Output, EventEmitter, ElementRef, ViewChild} from '@angular/c
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {Travel} from '../models/travel/travel.model';
-import {TravelService} from '../travel.service';
+import {TravelService} from '../travel-detail/travel.service';
 
 @Component({
   selector: 'app-add-travel',
