@@ -1,13 +1,18 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller;
 
 
+import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.TravelAlreadyExistsException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.service.ITravelService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,6 +24,25 @@ public class AdminController {
         this.travelService = travelService;
     }
 
+    @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> createTravel(@RequestPart Travel travel, @RequestParam List<MultipartFile> travelImages) {
+        try {
+            travel.setId(null);
+            travel.setImagesPaths(new ArrayList<>());
+            Travel createdTravel = travelService.createTravel(travel, travelImages);
+            if (createdTravel == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (TravelAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @RequestMapping(value = "/update-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateTravel(@RequestParam("id") Long id, @RequestPart Travel travel, @RequestParam(required = false) List<MultipartFile> travelImages) {
         try {
@@ -27,10 +51,12 @@ public class AdminController {
                 return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidInputException e) {
             return ResponseEntity.badRequest().build();
+        } catch (TravelNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -39,10 +65,10 @@ public class AdminController {
         try {
             travelService.deleteTravel(id);
             return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+        } catch (TravelNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

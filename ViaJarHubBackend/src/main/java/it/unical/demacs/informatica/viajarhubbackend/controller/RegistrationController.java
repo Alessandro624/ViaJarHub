@@ -1,5 +1,8 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller;
 
+import it.unical.demacs.informatica.viajarhubbackend.exception.EmailNotSentException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.UserAlreadyExistsException;
 import it.unical.demacs.informatica.viajarhubbackend.model.AuthProvider;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
 import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
@@ -25,10 +28,14 @@ public class RegistrationController {
                 return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidInputException e) {
             return ResponseEntity.badRequest().build();
+        } catch (UserAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (EmailNotSentException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

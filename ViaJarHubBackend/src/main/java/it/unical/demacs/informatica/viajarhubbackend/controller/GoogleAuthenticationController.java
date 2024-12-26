@@ -5,6 +5,9 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
+import it.unical.demacs.informatica.viajarhubbackend.exception.EmailNotSentException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
+import it.unical.demacs.informatica.viajarhubbackend.exception.UserAlreadyExistsException;
 import it.unical.demacs.informatica.viajarhubbackend.model.AuthProvider;
 import it.unical.demacs.informatica.viajarhubbackend.model.GoogleTokenRequest;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
@@ -44,8 +47,14 @@ public class GoogleAuthenticationController {
             User user = fetchOrCreateUser(payload, email);
             SecurityUtility.updateCurrentUser(user, null, session);
             return ResponseEntity.ok().build();
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (UserAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (EmailNotSentException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -53,7 +62,7 @@ public class GoogleAuthenticationController {
         Optional<User> user = userService.findByEmail(email, AuthProvider.GOOGLE);
         return user.orElseGet(() -> {
             String firstName = (String) payload.get("given_name");
-            String lastName = (String) payload.get("family_name");
+            String lastName = (String) payload.getOrDefault("family_name", "NA");
             LocalDate birthDate = (LocalDate) payload.getOrDefault("birth_date", LocalDate.parse("1999-01-01"));
             return userService.createUser(firstName, lastName, birthDate, email, UUID.randomUUID().toString(), UserRole.ROLE_USER, AuthProvider.GOOGLE);
         });

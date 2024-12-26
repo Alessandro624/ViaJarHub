@@ -24,7 +24,6 @@ import java.util.UUID;
 
 @Service
 public class UserService implements IUserService {
-    // TODO gestione messaggi di errore da usare nel FRONTEND
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
     private final IEmailService emailService;
@@ -52,6 +51,8 @@ public class UserService implements IUserService {
         checkNotNullFields(firstName, lastName, birthDate, email, password, role, provider);
         checkPasswordValidity(password, provider);
         checkEmailValidity(email, provider);
+        checkNameValidity(firstName);
+        checkNameValidity(lastName);
         checkNotDuplicate(email);
         boolean isEnabled = provider != AuthProvider.LOCAL;
         String token = !isEnabled ? generateVerificationToken() : null;
@@ -70,10 +71,14 @@ public class UserService implements IUserService {
             throw new InvalidInputException("User cannot be null");
         }
         User existingUser = checkUserExistence(email);
-        if (user.getFirstName() != null && !user.getFirstName().isBlank())
+        if (user.getFirstName() != null && !user.getFirstName().isBlank()) {
+            checkNameValidity(user.getFirstName());
             existingUser.setFirstName(user.getFirstName());
-        if (user.getLastName() != null && !user.getLastName().isBlank())
+        }
+        if (user.getLastName() != null && !user.getLastName().isBlank()) {
+            checkNameValidity(user.getLastName());
             existingUser.setLastName(user.getLastName());
+        }
         if (profileImage != null && !profileImage.isEmpty())
             saveProfileImage(existingUser, profileImage);
         userDAO.save(existingUser);
@@ -135,7 +140,7 @@ public class UserService implements IUserService {
         }
         String profileImagePath = user.getProfileImagePath();
         if (profileImagePath == null || profileImagePath.isEmpty()) {
-            throw new IllegalArgumentException("Profile image path cannot be null or empty");
+            throw new InvalidInputException("Profile image path cannot be null or empty");
         }
         Path imagePath = Path.of(PROFILE_IMAGE_DIR + profileImagePath);
         return Files.readAllBytes(imagePath);
@@ -161,7 +166,7 @@ public class UserService implements IUserService {
             throw new InvalidInputException("Last name cannot be null");
         }
         if (birthDate == null) {
-            throw new InvalidInputException("Telephone number cannot be null");
+            throw new InvalidInputException("Birthdate cannot be null");
         }
     }
 
@@ -174,6 +179,12 @@ public class UserService implements IUserService {
     private void checkEmailValidity(String email, AuthProvider provider) {
         if (provider == AuthProvider.LOCAL && !isValidEmail(email)) {
             throw new InvalidInputException("Incorrect email format");
+        }
+    }
+
+    private void checkNameValidity(String name) {
+        if (!name.matches("^[a-zA-Zà-üÀ-Ü ]*$")) {
+            throw new InvalidInputException("Invalid name");
         }
     }
 
