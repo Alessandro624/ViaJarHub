@@ -19,9 +19,9 @@ public class AuthenticationController {
         } catch (InvalidInputException e) {
             return ResponseEntity.badRequest().build();
         } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

@@ -53,6 +53,7 @@ public class UserService implements IUserService {
         checkEmailValidity(email, provider);
         checkNameValidity(firstName);
         checkNameValidity(lastName);
+        checkDateValidity(birthDate);
         checkNotDuplicate(email);
         boolean isEnabled = provider != AuthProvider.LOCAL;
         String token = !isEnabled ? generateVerificationToken() : null;
@@ -81,6 +82,8 @@ public class UserService implements IUserService {
         }
         if (profileImage != null && !profileImage.isEmpty())
             saveProfileImage(existingUser, profileImage);
+        else
+            deleteProfileImage(existingUser);
         userDAO.save(existingUser);
         return userDAO.findByEmail(email);
     }
@@ -170,6 +173,12 @@ public class UserService implements IUserService {
         }
     }
 
+    private void checkDateValidity(LocalDate birthDate) {
+        if (birthDate.isAfter(LocalDate.now())) {
+            throw new InvalidInputException("Birth date cannot be after today");
+        }
+    }
+
     private void checkPasswordValidity(String password, AuthProvider provider) {
         if (provider == AuthProvider.LOCAL && !isPasswordComplex(password)) {
             throw new InvalidInputException("Password does not meet complexity requirements");
@@ -237,13 +246,18 @@ public class UserService implements IUserService {
         String baseFileName = user.getEmail();
         String fileName = baseFileName + Objects.requireNonNull(profileImage.getOriginalFilename()).substring(profileImage.getOriginalFilename().lastIndexOf("."));
         Path path = Path.of(PROFILE_IMAGE_DIR, fileName);
+        deleteProfileImage(user);
+        Files.copy(profileImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        user.setProfileImagePath(fileName);
+    }
+
+    private void deleteProfileImage(User user) throws Exception {
         File directory = new File(PROFILE_IMAGE_DIR);
         if (!directory.exists() && !directory.mkdirs()) {
             throw new Exception("Could not create directory");
         }
-        deleteExistingFiles(directory.listFiles((dir, name) -> name.startsWith(baseFileName)));
-        Files.copy(profileImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-        user.setProfileImagePath(fileName);
+        deleteExistingFiles(directory.listFiles((dir, name) -> name.startsWith(user.getEmail())));
+        user.setProfileImagePath(null);
     }
 
     private void deleteExistingFiles(File[] existingFiles) throws Exception {
