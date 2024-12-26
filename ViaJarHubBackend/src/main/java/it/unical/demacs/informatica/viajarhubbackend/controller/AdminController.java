@@ -5,6 +5,7 @@ import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputExcep
 import it.unical.demacs.informatica.viajarhubbackend.exception.TravelAlreadyExistsException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
+import it.unical.demacs.informatica.viajarhubbackend.model.TravelRequest;
 import it.unical.demacs.informatica.viajarhubbackend.service.ITravelService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +23,16 @@ public class AdminController {
 
     public AdminController(ITravelService travelService) {
         this.travelService = travelService;
+    }
+
+    @RequestMapping(value = "/travels-paginated", method = RequestMethod.POST)
+    public ResponseEntity<List<Travel>> getAllTravelsPaginated(@RequestBody TravelRequest travelRequest) {
+        try {
+            List<Travel> travels = travelService.findAllPaginated(travelRequest.getOffset(), travelRequest.getLimit(), travelRequest.getFilters());
+            return ResponseEntity.ok().body(travels);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

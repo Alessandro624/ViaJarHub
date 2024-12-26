@@ -1,6 +1,7 @@
 package it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC;
 
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
+import it.unical.demacs.informatica.viajarhubbackend.model.TravelFilter;
 import it.unical.demacs.informatica.viajarhubbackend.model.TravelType;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.TravelDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
@@ -33,11 +34,16 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
-    public List<Travel> findAllPaginated(int offset, int limit) {
-        String query = "SELECT * FROM travel ORDER BY id LIMIT ? OFFSET ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, limit);
-            statement.setInt(2, offset);
+    public List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters) {
+        StringBuilder query = new StringBuilder("SELECT * FROM travel WHERE 1=1");
+        List<Object> params = applyFilters(filters, query);
+        query.append(" ORDER BY id LIMIT ? OFFSET ?");
+        params.add(limit);
+        params.add(offset);
+        try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                statement.setObject(i + 1, params.get(i));
+            }
             ResultSet resultSet = statement.executeQuery();
             List<Travel> travels = new ArrayList<>();
             while (resultSet.next()) {
@@ -124,11 +130,14 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
-    public int countTravels() {
-        String query = "SELECT COUNT(*) FROM travel";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.execute();
-            ResultSet resultSet = statement.getResultSet();
+    public int countTravels(TravelFilter filters) {
+        StringBuilder query = new StringBuilder("SELECT COUNT(*) FROM travel WHERE 1=1");
+        List<Object> params = applyFilters(filters, query);
+        try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                statement.setObject(i + 1, params.get(i));
+            }
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
@@ -136,6 +145,31 @@ public class TravelDAOJDBC implements TravelDAO {
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
+    }
+
+    private List<Object> applyFilters(TravelFilter filters, StringBuilder query) {
+        List<Object> params = new ArrayList<>();
+        if (filters.getStartDate() != null) {
+            query.append(" AND start_date >= ?");
+            params.add(filters.getStartDate());
+        }
+        if (filters.getEndDate() != null) {
+            query.append(" AND end_date <= ?");
+            params.add(filters.getEndDate());
+        }
+        if (filters.getMinPrice() > 0) {
+            query.append(" AND price >= ?");
+            params.add(filters.getMinPrice());
+        }
+        if (filters.getMaxPrice() > 0) {
+            query.append(" AND price <= ?");
+            params.add(filters.getMaxPrice());
+        }
+        if (filters.getTravelType() != null) {
+            query.append(" AND travel_type = ?");
+            params.add(filters.getTravelType().toString());
+        }
+        return params;
     }
 
     private Travel mapResultSetToTravel(ResultSet resultSet) throws SQLException {

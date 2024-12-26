@@ -2,6 +2,7 @@ package it.unical.demacs.informatica.viajarhubbackend.service;
 
 import it.unical.demacs.informatica.viajarhubbackend.exception.*;
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
+import it.unical.demacs.informatica.viajarhubbackend.model.TravelFilter;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.TravelDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,9 @@ public class TravelService implements ITravelService {
     }
 
     @Override
-    public List<Travel> findAllPaginated(int offset, int limit) {
-        return travelDAO.findAllPaginated(offset, limit);
+    public List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters) {
+        checkFilterValidity(filters);
+        return travelDAO.findAllPaginated(offset, limit, filters);
     }
 
     @Override
@@ -108,8 +110,9 @@ public class TravelService implements ITravelService {
     }
 
     @Override
-    public int getTravelCount() {
-        return travelDAO.countTravels();
+    public int getTravelCount(TravelFilter filters) {
+        checkFilterValidity(filters);
+        return travelDAO.countTravels(filters);
     }
 
     private void checkNotNullFields(Travel travel) {
@@ -142,7 +145,6 @@ public class TravelService implements ITravelService {
         }
     }
 
-
     private void checkPriceValidity(double price, double oldPrice) {
         if (price <= 0) {
             throw new InvalidInputException("Price cannot be less than 0");
@@ -155,6 +157,27 @@ public class TravelService implements ITravelService {
     private void checkParticipantValidity(int maxParticipantsNumber) {
         if (maxParticipantsNumber <= 0) {
             throw new InvalidInputException("Max number of participants cannot be less than 0");
+        }
+    }
+
+    private void checkFilterValidity(TravelFilter filters) {
+        if (filters == null) {
+            throw new InvalidInputException("Filters cannot be null");
+        }
+        if (filters.getStartDate() != null && filters.getStartDate().isBefore(LocalDate.now())) {
+            throw new InvalidInputException("Start date cannot be before today");
+        }
+        if (filters.getEndDate() != null && filters.getEndDate().isBefore(LocalDate.now())) {
+            throw new InvalidInputException("End date cannot be before today");
+        }
+        if (filters.getStartDate() != null && filters.getEndDate() != null && filters.getEndDate().isBefore(filters.getStartDate())) {
+            throw new InvalidInputException("End date cannot be before start date");
+        }
+        if (filters.getMinPrice() < 0) {
+            throw new InvalidInputException("Min price cannot be less than 0");
+        }
+        if (filters.getMaxPrice() < 0) {
+            throw new InvalidInputException("Max price cannot be less than 0");
         }
     }
 

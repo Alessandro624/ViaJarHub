@@ -87,10 +87,19 @@
 		{
 			"name": "GetAllTravelsPaginated",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"offset\": 0,\r\n    \"limit\": 10,\r\n    \"filters\": {\r\n        \"startDate\":\"\",\r\n        \"endDate\":\"\",\r\n        \"minPrice\":0,\r\n        \"maxPrice\":10,\r\n        \"travelType\":null\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:8080/api/open/v1/travels-paginated?offset=3&limit=8",
+					"raw": "http://localhost:8080/api/open/v1/travels-paginated",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -101,16 +110,6 @@
 						"open",
 						"v1",
 						"travels-paginated"
-					],
-					"query": [
-						{
-							"key": "offset",
-							"value": "3"
-						},
-						{
-							"key": "limit",
-							"value": "8"
-						}
 					]
 				}
 			},

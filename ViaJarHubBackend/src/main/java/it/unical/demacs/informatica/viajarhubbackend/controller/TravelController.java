@@ -3,11 +3,13 @@ package it.unical.demacs.informatica.viajarhubbackend.controller;
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
+import it.unical.demacs.informatica.viajarhubbackend.model.TravelRequest;
 import it.unical.demacs.informatica.viajarhubbackend.service.ITravelService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,10 +32,13 @@ public class TravelController {
         }
     }
 
-    @RequestMapping(value = "/travels-paginated", method = RequestMethod.GET)
-    public ResponseEntity<List<Travel>> getAllTravelsPaginated(@RequestParam("offset") int offset, @RequestParam("limit") int limit) {
+    @RequestMapping(value = "/travels-paginated", method = RequestMethod.POST)
+    public ResponseEntity<List<Travel>> getAllTravelsPaginated(@RequestBody TravelRequest travelRequest) {
         try {
-            List<Travel> travels = travelService.findAllPaginated(offset, limit);
+            if (travelRequest.getFilters().getStartDate() == null) {
+                travelRequest.getFilters().setStartDate(LocalDate.now());
+            }
+            List<Travel> travels = travelService.findAllPaginated(travelRequest.getOffset(), travelRequest.getLimit(), travelRequest.getFilters());
             return ResponseEntity.ok().body(travels);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -50,10 +55,13 @@ public class TravelController {
         }
     }
 
-    @RequestMapping(value = "/travels-count", method = RequestMethod.GET)
-    public ResponseEntity<Integer> getTravelCount() {
+    @RequestMapping(value = "/travels-count", method = RequestMethod.POST)
+    public ResponseEntity<Integer> getTravelCount(@RequestBody TravelRequest travelRequest) {
         try {
-            int travelCount = travelService.getTravelCount();
+            if (travelRequest.getFilters().getStartDate() == null) {
+                travelRequest.getFilters().setStartDate(LocalDate.now());
+            }
+            int travelCount = travelService.getTravelCount(travelRequest.getFilters());
             return ResponseEntity.ok().body(travelCount);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
