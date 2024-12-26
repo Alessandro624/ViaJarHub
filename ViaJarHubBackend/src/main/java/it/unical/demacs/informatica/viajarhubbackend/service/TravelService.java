@@ -11,6 +11,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,9 @@ public class TravelService implements ITravelService {
     @Override
     public Travel createTravel(Travel travel, List<MultipartFile> travelImages) throws Exception {
         checkNotNullFields(travel);
+        checkDateValidity(travel.getStartDate(), travel.getEndDate());
+        checkPriceValidity(travel.getPrice(), travel.getOldPrice());
+        checkParticipantValidity(travel.getMaxParticipantsNumber());
         if (travelImages == null || travelImages.isEmpty()) {
             throw new InvalidInputException("Images cannot be null");
         }
@@ -59,6 +63,7 @@ public class TravelService implements ITravelService {
         return savedTravel.orElse(null);
     }
 
+
     @Override
     public Travel updateTravel(Long id, Travel travel, List<MultipartFile> travelImages) throws Exception {
         if (travel == null) {
@@ -66,6 +71,9 @@ public class TravelService implements ITravelService {
         }
         travel.setId(id);
         checkNotNullFields(travel);
+        checkDateValidity(travel.getStartDate(), travel.getEndDate());
+        checkPriceValidity(travel.getPrice(), travel.getOldPrice());
+        checkParticipantValidity(travel.getMaxParticipantsNumber());
         if (travelImages != null && !travelImages.isEmpty()) {
             saveTravelImages(travel, travelImages);
         }
@@ -119,6 +127,34 @@ public class TravelService implements ITravelService {
         }
         if (travel.getTravelType() == null) {
             throw new InvalidInputException("Type cannot be null");
+        }
+    }
+
+    private void checkDateValidity(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isBefore(LocalDate.now())) {
+            throw new InvalidInputException("Start date cannot be before today");
+        }
+        if (endDate.isBefore(LocalDate.now())) {
+            throw new InvalidInputException("End date cannot be before today");
+        }
+        if (endDate.isBefore(startDate)) {
+            throw new InvalidInputException("End date cannot be before start date");
+        }
+    }
+
+
+    private void checkPriceValidity(double price, double oldPrice) {
+        if (price <= 0) {
+            throw new InvalidInputException("Price cannot be less than 0");
+        }
+        if (oldPrice < 0) {
+            throw new InvalidInputException("Old price cannot be less than 0");
+        }
+    }
+
+    private void checkParticipantValidity(int maxParticipantsNumber) {
+        if (maxParticipantsNumber <= 0) {
+            throw new InvalidInputException("Max number of participants cannot be less than 0");
         }
     }
 
