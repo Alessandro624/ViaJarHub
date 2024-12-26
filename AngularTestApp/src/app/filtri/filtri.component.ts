@@ -1,10 +1,10 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 
 import {LabelType, NgxSliderModule, Options} from '@angular-slider/ngx-slider';
 import {TravelType} from '../models/travel/travel-type.enum';
-import {Travel} from '../models/travel/travel.model';
+import {TravelFilter} from '../models/travel/travel-filter.model';
 
 @Component({
   selector: 'app-filtri',
@@ -51,6 +51,17 @@ export class FiltriComponent {
   startDate: string = ''; // Valore per il primo date picker
   endDate: string = ''; // Valore per il secondo date picker
   endDateMin: string = this.minDate; // Valore minimo per il secondo date picker
+  filters: TravelFilter = {
+    startDate: '',
+    endDate: '',
+    minPrice: 0,
+    maxPrice: 0,
+    travelType: null,
+  }
+  isLoading: boolean = false;
+  alertMessage: string = '';
+  type: TravelType = TravelType.NESSUNO;
+  @Output() loadTravel = new EventEmitter<{ offset: number, filters: TravelFilter }>();
 
   // Aggiorna la data minima per il secondo date picker e controlla il valore
   onStartDateChange(event: Event): void {
@@ -87,29 +98,55 @@ export class FiltriComponent {
     return `${day}-${month}-${year}`;
   }
 
-  filters = {
-    date: new Date(),
-    priceRange: {
-      min: 100,
-      max: 500,
-    },
-    type: TravelType.NESSUNO,
-  };
-
   // Funzione per alternare lo stato di apertura
   toggleFilters(): void {
     console.log('Stato corrente:', this.isExpanded); // Aggiungi un log per verificare
-
     this.isExpanded = !this.isExpanded; // Cambia lo stato tra true e false
   }
 
   selectType(type: TravelType): void {
-    this.filters.type = type;
-    console.log('Tipo selezionato:', this.filters.type); // Log per verificare
+    this.type = type;
+    console.log('Tipo selezionato:', this.filters.travelType); // Log per verificare
   }
 
-// Per testare l'applicazione dei filtri
+  // Per testare l'applicazione dei filtri
   applyFilters(): void {
+    // TODO rivedere il loading, andrebbe passato nella funzione
+    this.isLoading = true;
+    this.checkFiltersValidity();
+    this.filters.startDate = this.startDate;
+    this.filters.endDate = this.endDate;
+    this.filters.minPrice = this.minValue;
+    this.filters.maxPrice = this.maxValue;
+    if (this.type === TravelType.NESSUNO) {
+      this.filters.travelType = null;
+    } else {
+      this.filters.travelType = <TravelType>this.type.toUpperCase();
+    }
     console.log('Filtri applicati:', this.filters);
+    this.loadTravel.emit({offset: 0, filters: this.filters});
+    this.isLoading = false;
+  }
+
+  private checkFiltersValidity() {
+
+  }
+
+  resetFilters(): void {
+    this.today = new Date(); // Data di oggi
+    this.minDate = this.formatDate(this.today); // Formatta la data in "YYYY-MM-DD"
+    this.startDate = ''; // Valore per il primo date picker
+    this.endDate = ''; // Valore per il secondo date picker
+    this.endDateMin = this.minDate; // Valore minimo per il secondo date picker
+    this.type = TravelType.NESSUNO;
+    this.filters = {
+      startDate: '',
+      endDate: '',
+      minPrice: 0,
+      maxPrice: 0,
+      travelType: TravelType.NESSUNO,
+    }
+    this.isLoading = false;
+    this.alertMessage = '';
   }
 }

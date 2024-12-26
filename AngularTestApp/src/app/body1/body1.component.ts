@@ -6,6 +6,7 @@ import {CardComponent} from '../card/card.component';
 import {FiltriComponent} from '../filtri/filtri.component';
 import {Travel} from '../models/travel/travel.model';
 import {TravelService} from '../travel-detail/travel.service';
+import {TravelFilter} from '../models/travel/travel-filter.model';
 
 @Component({
   selector: 'app-body1',
@@ -20,25 +21,39 @@ export class Body1Component implements OnInit {
   travelsMatrix: Travel[][] = []
   index: number = 0;//indice per caricare 9 viaggi alla volta
   elementiTot: number = 0;
+  filters: TravelFilter = {
+    startDate: '',
+    endDate: '',
+    minPrice: 0,
+    maxPrice: 0,
+    travelType: null,
+  }
 
   constructor(private travelService: TravelService) {
   }
 
   ngOnInit() {
-    this.loadTravels()
-    this.travelService.getTravelsCount().subscribe({
-      next: data => {
-        this.elementiTot = data;
-      }
-    });
+    this.loadTravels({offset: this.index, filters: this.filters});
   }
 
-  loadTravels() {
-    this.travelService.getTravelsPaginated(this.index, 9).subscribe({
+  loadTravels(requestData: { offset: number, filters: TravelFilter }) {
+    this.index = requestData.offset;
+    this.filters = requestData.filters;
+    console.log(this.filters);
+    if (this.index == 0) {
+      this.travels = [];
+    }
+    this.countTravels().subscribe({
       next: data => {
-        this.travels = [...this.travels, ...data];
-        this.travelsMatrix = this.chunkArray(this.travels, 3);
-        this.index += 9;
+        this.elementiTot = data;
+        this.travelService.getTravelsPaginated(this.index, 9, this.filters).subscribe({
+          next: travels => {
+            this.travels = [...this.travels, ...travels];
+            this.travelsMatrix = this.chunkArray(this.travels, 3);
+            this.index += 9;
+            console.log(this.travels);
+          }
+        });
       }
     });
   }
@@ -49,5 +64,9 @@ export class Body1Component implements OnInit {
       chunks.push(array.slice(i, i + chunkSize));
     }
     return chunks;
+  }
+
+  private countTravels() {
+    return this.travelService.getTravelsCount(this.filters);
   }
 }

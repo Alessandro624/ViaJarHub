@@ -11,7 +11,7 @@
         <strong>Prezzo:</strong> {{ minValue }} - {{ maxValue }} €
     </span>
     <span class="me-3 text-nowrap">
-        <strong>Tipo:</strong> {{ filters.type }}
+        <strong>Tipo:</strong> {{ type }}
     </span>
   </div>
 
@@ -31,6 +31,9 @@
 @if (isExpanded) {
   <!-- Pannello di modifica filtri -->
   <div class="filter-panel mt-3 border p-3 rounded bg-light">
+    <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+      {{ alertMessage }}
+    </div>
     <!-- Data Range Picker -->
     <div class="container mt-3">
       <!-- Primo Date Picker -->
@@ -92,7 +95,15 @@
           </div>
         </div>
         <div class="col-12">
-          <button class="btn btn-success " (click)="applyFilters()">Applica</button>
+          <button class="btn btn-success me-2" (click)="applyFilters()" [disabled]="isLoading">
+            <span *ngIf="isLoading"
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"></span>
+            <span *ngIf="!isLoading">Applica</span></button>
+          <button type="button" class="btn btn-secondary" (click)="resetFilters()" [disabled]="isLoading">
+            <span *ngIf="!isLoading">Ripristina</span>
+          </button>
         </div>
       </div>
     </div>

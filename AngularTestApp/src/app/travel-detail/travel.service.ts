@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Travel} from '../models/travel/travel.model';
 import {catchError, throwError} from 'rxjs';
+import {TravelFilter} from '../models/travel/travel-filter.model';
 
 @Injectable({
   providedIn: 'root'
@@ -243,12 +244,16 @@ export class TravelService {
   constructor(private _http: HttpClient) {
   }
 
-  getTravelsPaginated(offset: number, limit: number) {
-    return this._http.get<Travel[]>(`${this.APIUrl}/open/v1/travels-paginated?offset=${offset}&limit=${limit}`).pipe(catchError(this.handleError));
+  getTravelsPaginated(offset: number, limit: number, filters: TravelFilter) {
+    return this._http.post<Travel[]>(`${this.APIUrl}/open/v1/travels-paginated`,
+      {offset, limit, filters})
+      .pipe(catchError(this.handleError));
   }
 
-  getTravelsCount() {
-    return this._http.get<number>(`${this.APIUrl}/open/v1/travels-count`).pipe(catchError(this.handleError));
+  getTravelsCount(filters: TravelFilter) {
+    return this._http.post<number>(`${this.APIUrl}/open/v1/travels-count`,
+      {filters})
+      .pipe(catchError(this.handleError));
   }
 
   addTravel(travel: Travel, images: File[]) {
