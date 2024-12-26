@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {switchMap} from 'rxjs';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {catchError, switchMap, throwError} from 'rxjs';
 import {AuthenticationService} from '../../login/authentication.service';
 
 @Injectable({
@@ -21,13 +21,29 @@ export class ClientService {
     }
     console.log(formData);
     return this._http.post<void>(`${this.APIUrl}/auth/v1/update-user`, formData, {withCredentials: true}).pipe(
-      switchMap(() => this._authenticationService.getUser())
+      switchMap(() => this._authenticationService.getUser()),
+      catchError(this.handleError)
     );
   }
 
   getUserProfileImage() {
     return this._http.get(`${this.APIUrl}/auth/v1/profile-image`, {
       responseType: 'blob'
-    });
+    }).pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Si è verificato un errore, riprovare più tardi';
+    switch (error.status) {
+      case 400:
+        errorMessage = 'Impossibile effettuare la richiesta, riprovare più tardi';
+        break;
+      case 404:
+        errorMessage = 'Errore nella modifica delle informazioni';
+        break;
+      default:
+        errorMessage = 'Si è verificato un errore, riprovare più tardi';
+    }
+    return throwError(() => new Error(errorMessage));
   }
 }

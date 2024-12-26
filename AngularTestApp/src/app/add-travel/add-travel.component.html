@@ -1,8 +1,10 @@
 <div>
   <form (ngSubmit)="onSubmit()" #form="ngForm">
+    <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+      {{ alertMessage }}
+    </div>
     <!-- Campo di testo: Titolo -->
-    <div class="mb-3">
-      <label for="title" class="form-label">Titolo</label>
+    <div class="mb-3 form-floating flex-grow-1">
       <input
         type="text"
         id="title"
@@ -10,12 +12,14 @@
         [(ngModel)]="travel.destination"
         name="title"
         required
+        placeholder="Titolo"
+        (input)="alertMessage='';"
       />
+      <label for="title" class="form-label">Titolo</label>
     </div>
 
     <!-- Date Picker: Data di Inizio -->
-    <div class="mb-3">
-      <label for="startDate" class="form-label">Data di Partenza</label>
+    <div class="mb-3 form-floating flex-grow-1">
       <input
         type="date"
         id="startDate"
@@ -25,13 +29,16 @@
         (change)="validateDates()"
         [min]="today"
         required
+        placeholder="Data di Partenza"
+        (input)="alertMessage='';"
+        [class.is-invalid]="dateErrors.startDateInvalid"
       />
-
+      <label for="startDate" class="form-label">Data di Partenza</label>
+      <div *ngIf="dateErrors.startDateInvalid" class="invalid-feedback d-block">{{ dateErrors.startDateInvalid }}</div>
     </div>
 
     <!-- Date Picker: Data di Fine -->
-    <div class="mb-3">
-      <label for="endDate" class="form-label">Data di Ritorno</label>
+    <div class="mb-3 form-floating flex-grow-1">
       <input
         type="date"
         id="endDate"
@@ -41,50 +48,69 @@
         (change)="validateDates()"
         [min]="travel.startDate || today"
         required
+        placeholder="Data di Ritorno"
+        (input)="alertMessage='';"
+        [class.is-invalid]="dateErrors.endDateInvalid"
       />
-
+      <label for="endDate" class="form-label">Data di Ritorno</label>
+      <div *ngIf="dateErrors.endDateInvalid" class="invalid-feedback d-block">{{ dateErrors.endDateInvalid }}</div>
     </div>
 
     <!-- Campo di testo: Prezzo -->
-    <div class="mb-3"><label for="price" class="form-label">Prezzo</label> <input type="text" id="price"
-                                                                                  class="form-control"
-                                                                                  [(ngModel)]="travel.price"
-                                                                                  name="price"
-                                                                                  (input)="validateAndFormatPrice($event)"
-                                                                                  required/>
+    <div class="mb-3 form-floating flex-grow-1">
+      <input
+        type="number"
+        step="0.01"
+        id="price"
+        class="form-control"
+        [(ngModel)]="travel.price"
+        name="price"
+        min="1"
+        required
+        placeholder="Prezzo"
+        (input)="alertMessage='';"/>
+      <label for="price" class="form-label">Prezzo</label>
     </div>
 
-    <div class="mb-4"><label for="seats" class="form-label">Numero Posti</label> <input type="number" id="seats"
-                                                                                        class="form-control"
-                                                                                        [(ngModel)]="travel.maxParticipantsNumber"
-                                                                                        name="seats" min="1" required/>
+    <div class="mb-4 form-floating flex-grow-1">
+      <input type="number" id="seats"
+             class="form-control"
+             [(ngModel)]="travel.maxParticipantsNumber"
+             name="seats" min="1" required placeholder="Numero Posti" (input)="alertMessage='';"/>
+      <label for="seats" class="form-label">Numero Posti</label>
     </div>
-    <div class="btn-group dropdown mb-3 w-100 ">
-      <button type="button"
-              class="btn prova border dropdown-toggle d-flex justify-content-between align-items-center"
-              data-bs-toggle="dropdown" aria-expanded="false">
-        <span>{{ travel.travelType || 'Tipo' }}</span>
-      </button>
-      <ul class="dropdown-menu ">
-        <!-- Dropdown menu links -->
-        <li><a class="dropdown-item" (click)="selectType('Cultura')">Cultura</a></li>
-        <li><a class="dropdown-item" (click)="selectType('Relax')">Relax</a></li>
-        <li><a class="dropdown-item" (click)="selectType('Natura')">Natura</a></li>
-        <li><a class="dropdown-item" (click)="selectType('Romantico')">Romantico</a></li>
-        <li><a class="dropdown-item" (click)="selectType('Famiglia')">Famiglia</a></li>
-      </ul>
+
+    <div class="mb-3 w-100">
+      <label for="type" class="form-label">Tipo viaggio</label>
+      <div class="btn-group dropdown w-100">
+        <button type="button"
+                id="type"
+                class="btn prova border dropdown-toggle d-flex justify-content-between align-items-center"
+                data-bs-toggle="dropdown" aria-expanded="false">
+          <span>{{ travel.travelType }}</span>
+        </button>
+        <ul class="dropdown-menu ">
+          <!-- Dropdown menu links -->
+          <li *ngFor="let type of travelTypes">
+            <a class="dropdown-item" (click)="selectType(type); alertMessage = '';">{{ type }}</a>
+          </li>
+        </ul>
+      </div>
     </div>
+
     <!-- Textarea: Descrizione -->
-    <div class="mb-3">
-      <label for="description" class="form-label">Descrizione</label>
+    <div class="mb-3 form-floating flex-grow-1">
       <textarea
         id="description"
-        class="form-control"
+        class="form-control description-area"
         [(ngModel)]="travel.description"
         name="description"
         rows="4"
         required
-      ></textarea>
+        placeholder="Descrizione"
+        (input)="alertMessage='';">
+      </textarea>
+      <label for="description" class="form-label">Descrizione</label>
     </div>
 
     <div class="map-container mb-5">
@@ -106,6 +132,7 @@
         (dragover)="onDragOver($event)"
         (dragleave)="onDragLeave($event)"
         (drop)="onDrop($event)"
+        (input)="imageError = ''; alertMessage='';"
       >
         <p>Trascina qui le immagini o clicca per selezionarle</p>
         <!-- Input file nascosto -->
@@ -115,26 +142,33 @@
           id="images"
           class="d-none"
           (change)="onFileSelect($event)"
+          accept="image/*"
           multiple
+          (input)="imageError = ''; alertMessage='';"
         />
       </div>
       <ul class="mt-2">
         <li class="mb-2" *ngFor="let image of images; let i = index">
-          {{ image.name }}
+          <img [src]="imagesUrl[i]" alt="Anteprima" class="me-2 preview">
+          <span>{{ image.name }}</span>
           <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
         </li>
       </ul>
+      <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
       <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
     </div>
 
     <!-- Pulsante di invio -->
     <button
       type="submit"
-      class="btn btn-success"
-      (click)="addTravel()"
-      [disabled]="form.invalid || images.length === 0 || hasDateErrors()"
-    >
-      Invia
+      class="btn btn-success me-2"
+      [disabled]="isLoading || form.invalid || images.length === 0 || dateErrors.startDateInvalid || dateErrors.endDateInvalid || travel.travelType === TravelType.NESSUNO">
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+      <span *ngIf="!isLoading">Invia</span>
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="resetData()" [disabled]="isLoading">
+      <span *ngIf="!isLoading">Ripristina</span>
     </button>
   </form>
 </div>

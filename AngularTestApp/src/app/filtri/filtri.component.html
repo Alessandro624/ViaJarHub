@@ -11,7 +11,7 @@
         <strong>Prezzo:</strong> {{ minValue }} - {{ maxValue }} €
     </span>
     <span class="me-3 text-nowrap">
-        <strong>Tipo:</strong> {{ filters.type || 'Nessuno' }}
+        <strong>Tipo:</strong> {{ filters.type }}
     </span>
   </div>
 
@@ -85,11 +85,9 @@
             </button>
             <ul class="dropdown-menu ">
               <!-- Dropdown menu links -->
-              <li><a class="dropdown-item" (click)="selectType('Cultura')">Cultura</a></li>
-              <li><a class="dropdown-item" (click)="selectType('Relax')">Relax</a></li>
-              <li><a class="dropdown-item" (click)="selectType('Natura')">Natura</a></li>
-              <li><a class="dropdown-item" (click)="selectType('Romantico')">Romantico</a></li>
-              <li><a class="dropdown-item" (click)="selectType('Famiglia')">Famiglia</a></li>
+              <li *ngFor="let type of travelTypes">
+                <a class="dropdown-item" (click)="selectType(type)">{{ type }}</a>
+              </li>
             </ul>
           </div>
         </div>

@@ -1,3 +1,5 @@
+import {TravelType} from './travel-type.enum';
+
 export interface Travel {
   id: number;
   destination: string;
@@ -8,7 +10,7 @@ export interface Travel {
   oldPrice: number;
   price: number;
   maxParticipantsNumber: number;
-  travelType: string;
+  travelType: TravelType;
   numeroStelle: number;
   latitude: number;
   longitude: number;

@@ -33,6 +33,7 @@ export class ClientComponent implements OnInit {
   user!: User;
   birthdate: String | undefined;
   profileImageUrl: string = '';
+  profileImageBlob!: Blob | null;
   isPopupVisible2 = false;
   isPopupVisible = false;
   isPopupVisible3 = false;
@@ -127,9 +128,13 @@ export class ClientComponent implements OnInit {
       {
         next: data => {
           this.profileImageUrl = URL.createObjectURL(data);
+          this.profileImageBlob = data;
+          console.log(this.profileImageUrl);
         },
         error: error => {
           console.log(error);
+          this.profileImageUrl = '';
+          this.profileImageBlob = null;
         }
       }
     )

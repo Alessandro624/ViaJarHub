@@ -1,4 +1,11 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input, NgZone, OnChanges,
+  Output, SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {ClientService} from '../profile/client/client.service';
@@ -14,24 +21,32 @@ import {ClientService} from '../profile/client/client.service';
   templateUrl: './update-user.component.html',
   styleUrl: './update-user.component.css'
 })
-export class UpdateUserComponent implements OnInit {
+export class UpdateUserComponent implements OnChanges {
   @Input() user!: any;
+  @Input() profileImage!: Blob | null;
   @Output() closeModal = new EventEmitter<void>();
+  @Output() showImage = new EventEmitter<void>();
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   firstName: string = '';
   lastName: string = '';
   image: File | null = null;
+  imageUrl: string = '';
   alertMessage: string = '';
   firstNameError: string = '';
   lastNameError: string = '';
   isLoading: boolean = false;
-  @Output() showImage = new EventEmitter<void>();
+  imageError: string = '';
+  profileImageChanged: boolean = false;
 
-  constructor(private _clientService: ClientService) {
+  constructor(private _clientService: ClientService, private ngZone: NgZone) {
   }
 
-  ngOnInit(): void {
-    this.resetData();
+  ngOnChanges(changes: SimpleChanges): void {
+    this.ngZone.runOutsideAngular(() => {
+      if (changes['user'] || changes['profileImage']) {
+        this.resetData();
+      }
+    });
   }
 
   validateName(name: string) {
@@ -41,10 +56,11 @@ export class UpdateUserComponent implements OnInit {
   resetData() {
     this.firstName = this.user.firstName;
     this.lastName = this.user.lastName;
+    this.resetProfileImage();
     this.alertMessage = '';
     this.firstNameError = '';
     this.lastNameError = '';
-    this.image = null;
+    this.imageError = '';
   }
 
   onSubmit() {
@@ -62,9 +78,9 @@ export class UpdateUserComponent implements OnInit {
             this.resetData();
             this.closeModal.emit();
           },
-          error: () => {
+          error: (error) => {
             this.isLoading = false;
-            this.alertMessage = "Errore nella modifica";
+            this.alertMessage = error.message;
           }
         }
       );
@@ -72,15 +88,7 @@ export class UpdateUserComponent implements OnInit {
   }
 
   onFileSelect(event: any) {
-    const input = event.target as HTMLInputElement;
-    if (input?.files?.length) {
-      const file = input.files[0];
-      if (file.type.startsWith('image/')) {
-        this.image = file;
-      } else {
-        alert('Sono consentite solo immagini');
-      }
-    }
+    this.checkAndAddImage(event.target.files[0]);
   }
 
   onDragOver(event: DragEvent) {
@@ -96,12 +104,7 @@ export class UpdateUserComponent implements OnInit {
   onDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    const file = event.dataTransfer?.files[0];
-    if (file?.type.startsWith('image/')) {
-      this.image = file;
-    } else {
-      alert('Sono consentite solo immagini');
-    }
+    this.checkAndAddImage(event.dataTransfer?.files[0]);
   }
 
   triggerFileInput() {
@@ -128,5 +131,33 @@ export class UpdateUserComponent implements OnInit {
     this.user.firstName = this.firstName;
     this.user.lastName = this.lastName;
     this.showImage.emit();
+  }
+
+  private checkAndAddImage(file: File | undefined) {
+    if (file?.type.startsWith('image/')) {
+      this.image = file;
+      this.imageUrl = URL.createObjectURL(file);
+      this.profileImageChanged = true;
+    } else {
+      this.imageError = 'Sono consentite solo immagini';
+    }
+  }
+
+  removeImage() {
+    this.image = null;
+    this.imageUrl = '';
+    this.profileImageChanged = true;
+  }
+
+  private resetProfileImage() {
+    if (this.profileImage) {
+      const file = new File([this.profileImage], 'profile-image');
+      this.image = file;
+      this.imageUrl = URL.createObjectURL(file);
+    } else {
+      this.image = null;
+      this.imageUrl = '';
+    }
+    this.profileImageChanged = false;
   }
 }
