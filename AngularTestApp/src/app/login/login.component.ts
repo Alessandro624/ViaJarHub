@@ -1,4 +1,14 @@
-import {Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Inject,
+  Input,
+  NgZone,
+  OnInit,
+  Output,
+  PLATFORM_ID
+} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from './authentication.service';
@@ -38,7 +48,7 @@ export class LoginComponent implements OnInit {
   isLoading: boolean = false;
   @Output() setCurrentForm = new EventEmitter<void>();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
+  constructor(@Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
   }
 
   ngOnInit(): void {
@@ -87,7 +97,7 @@ export class LoginComponent implements OnInit {
           //this.sendUserHome();
         }, error: error => {
           this.isLoading = false;
-          this.alertMessage = 'Email o password errati'
+          this.alertMessage = error.message;
           console.log(error);
         }
       });
@@ -131,7 +141,7 @@ export class LoginComponent implements OnInit {
         }, error: error => {
           this.isLoading = false;
           console.log(error);
-          this.alertMessage = 'Errore nella registrazione'
+          this.alertMessage = error.message;
         }
       });
     }
@@ -151,7 +161,7 @@ export class LoginComponent implements OnInit {
           }, error: error => {
             this.isLoading = false;
             console.log(error);
-            this.alertMessage = 'Errore nell\'invio';
+            this.alertMessage = error.message;
           }
         }
       );
@@ -265,13 +275,14 @@ export class LoginComponent implements OnInit {
   }
 
   private waitForButtonAndRender() {
-    const interval = setInterval(() => {
-      const buttonElement = document.getElementById("google-signin-button");
-      if (buttonElement) {
-        clearInterval(interval);
-        this.renderGoogleButton();
-      }
-    }, 100);
+    const interval = this.ngZone.runOutsideAngular(() =>
+      setInterval(() => {
+        const buttonElement = document.getElementById("google-signin-button");
+        if (buttonElement) {
+          clearInterval(interval);
+          this.renderGoogleButton();
+        }
+      }, 100));
   }
 
   private initGoogleButton() {
@@ -328,7 +339,7 @@ export class LoginComponent implements OnInit {
         error: error => {
           this.isLoading = false;
           console.error('Errore nel Google login:', error);
-          this.alertMessage = 'Errore nell\'accesso';
+          this.alertMessage = error.message;
         }
       }
     );

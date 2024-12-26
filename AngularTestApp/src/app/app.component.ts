@@ -1,17 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {LoginComponent} from './login/login.component';
 import {UserRole} from './models/user/user-role.enum';
 import {AuthenticationService} from './login/authentication.service';
 import {User} from './models/user/user.model';
+import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterModule, LoginComponent],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
 export class AppComponent implements OnInit {
@@ -19,6 +21,7 @@ export class AppComponent implements OnInit {
   protected readonly UserRole = UserRole;
   isDropdownOpened: boolean = false;
   currentFrom: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail' = 'login';
+  protected readonly environment = environment;
 
   constructor(private _authenticationService: AuthenticationService, private _router: Router, private _activatedRoute: ActivatedRoute) {
   }

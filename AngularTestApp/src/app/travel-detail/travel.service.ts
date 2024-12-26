@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Travel} from './models/travel/travel.model';
 import {HttpClient} from '@angular/common/http';
+import {Travel} from '../models/travel/travel.model';
 
 @Injectable({
   providedIn: 'root'
@@ -242,25 +242,27 @@ export class TravelService {
   }
 
   getTravelsPaginated(offset: number, limit: number) {
-    return this._http.get<Travel[]>(`${this.APIUrl}/open/v1/travels?offset=${offset}&limit${limit}`);
+    return this._http.get<Travel[]>(`${this.APIUrl}/open/v1/travels-paginated?offset=${offset}&limit=${limit}`);
   }
 
-  getTravels(startIndex: number, count: number): Travel[] {
-    return this.travels.slice(startIndex, startIndex + count);
-  }
-
-  getLenghtTravels() {
-    // return this.travels.length;
+  getTravelsCount() {
     return this._http.get<number>(`${this.APIUrl}/open/v1/travels-count`);
   }
 
-  addTravel(travel: Travel): void {
-    this.travels.push(travel);
+  addTravel(travel: Travel, images: File[]) {
+    const formData = new FormData();
+    formData.append('travel', new Blob([JSON.stringify(travel)], {type: 'application/json'}));
+    images.forEach((image) => {
+      formData.append(`travelImages`, image);
+    });
+    return this._http.post(`${this.APIUrl}/admin/v1/create-travel`, formData);
   }
 
   getTravelById(id: number) {
     return this._http.get<Travel>(`${this.APIUrl}/open/v1/travel?id=${id}`);
-    // return this.travels.find(travel => travel.id === id);
   }
 
+  getTravelImages(id: number) {
+    return this._http.get<string[]>(`${this.APIUrl}/open/v1/travel-images?id=${id}`);
+  }
 }

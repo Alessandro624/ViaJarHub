@@ -33,15 +33,8 @@
 
   <!-- Colonna 2 -->
   <div class="col-12 col-xl-6 my-3">
-
-    <div class="map-container ">
-      <gmpx-api-loader [key]="environment.googleMapsApiKey"
-                       solution-channel="GMP_GE_mapsandplacesautocomplete_v2">
-      </gmpx-api-loader>
+    <div class="map-container" *ngIf="travel">
       <gmp-map [center]="center" [zoom]="zoom" map-id="24dfd8a38027bce5">
-        <!--<div slot="control-block-start-inline-start" class="p-3">
-          <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
-        </div>-->
         <gmp-advanced-marker [position]="markerPosition" [draggable]="false"></gmp-advanced-marker>
       </gmp-map>
     </div>

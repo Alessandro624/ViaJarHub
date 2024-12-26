@@ -28,7 +28,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   isExpanded: boolean = false;
   searchQuery: string = '';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private travelservice: TravelService, private _activatedRoute: ActivatedRoute) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -44,19 +44,20 @@ export class CarouselComponent implements OnInit, OnDestroy {
       this.typeWriterEffect();
     } else {
 
-      const id = Number(this._activatedRoute.snapshot.paramMap.get('id'));
+      const id = Number(this._activatedRoute.parent?.snapshot.paramMap.get('id'));
       if (id == null) {
         throw new Error("Viaggio non trovato");
 
       }
-      this.travelservice.getTravelById(id).subscribe({
+      this._travelService.getTravelById(id).subscribe({
         next: result => {
           this.travel = result;
-          if (this.travel?.immagini) {
-            this.immaginiURLs = this.travel.immagini.map((file: File) =>
-              URL.createObjectURL(file)
-            );
-          }
+          this._travelService.getTravelImages(this.travel.id).subscribe({
+            next: data => {
+              console.log(data);
+              this.immaginiURLs = data.map(image => `data:image/jpeg;base64,${image}`);
+            }
+          });
         }
       });
     }

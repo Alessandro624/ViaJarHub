@@ -109,7 +109,6 @@ export class ClientComponent implements OnInit {
       next: data => {
         if (data) {
           this.user = data;
-          console.log(this.user);
         }
       }, error: error => console.log(error)
     });

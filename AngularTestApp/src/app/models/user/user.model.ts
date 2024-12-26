@@ -6,7 +6,6 @@ export interface User {
   birthDate: Date;
   email: string;
   password: string;
-  profileImagePath: string;
   role: UserRole;
   authorities: any;
 }

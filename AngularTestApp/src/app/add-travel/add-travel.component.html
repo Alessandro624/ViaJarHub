@@ -2,7 +2,7 @@
   <form (ngSubmit)="onSubmit()" #form="ngForm">
     <!-- Campo di testo: Titolo -->
     <div class="mb-3">
-      <label for="title" class="form-label">Destinazione</label>
+      <label for="title" class="form-label">Titolo</label>
       <input
         type="text"
         id="title"
@@ -87,6 +87,16 @@
       ></textarea>
     </div>
 
+    <div class="map-container mb-5">
+      <label for="title" class="form-label">Destinazione</label>
+      <gmp-map [center]="center" [zoom]="zoom" map-id="24dfd8a38027bce5">
+        <div slot="control-block-start-inline-start" class="p-3">
+          <gmpx-place-picker placeholder="Inserisci la destinazione"></gmpx-place-picker>
+        </div>
+        <gmp-advanced-marker [position]="markerPosition" [draggable]="false"></gmp-advanced-marker>
+      </gmp-map>
+    </div>
+
     <!-- Drop area per immagini -->
     <div class="mb-3">
       <label for="images" class="form-label">Carica Immagini</label>
@@ -109,12 +119,12 @@
         />
       </div>
       <ul class="mt-2">
-        <li class="mb-2" *ngFor="let image of travel.immagini; let i = index">
+        <li class="mb-2" *ngFor="let image of images; let i = index">
           {{ image.name }}
           <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
         </li>
       </ul>
-      <p class="mt-2">Numero di immagini caricate: <strong>{{ travel.immagini.length }}</strong></p>
+      <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
     </div>
 
     <!-- Pulsante di invio -->
@@ -122,7 +132,7 @@
       type="submit"
       class="btn btn-success"
       (click)="addTravel()"
-      [disabled]="form.invalid || travel.immagini.length === 0 || hasDateErrors()"
+      [disabled]="form.invalid || images.length === 0 || hasDateErrors()"
     >
       Invia
     </button>

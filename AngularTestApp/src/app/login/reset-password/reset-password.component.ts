@@ -89,10 +89,10 @@ export class ResetPasswordComponent implements OnInit {
             console.log('Password reset successful:', {token: this.resetToken, password: this.password});
             alert('Password modificata correttamente:');
             this.onClose();
-          }, error: err => {
+          }, error: error => {
             this.isLoading = false;
-            console.log(err);
-            this.alertMessage = "Errore nella modifica della password";
+            console.log(error);
+            this.alertMessage = error.message;
           }
         });
       }

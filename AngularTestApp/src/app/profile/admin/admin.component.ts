@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, NgZone, OnInit, ViewChild} from '@angular/core';
 import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {FormsModule} from '@angular/forms';
 import {AddTravelComponent} from '../../add-travel/add-travel.component';
@@ -59,7 +59,7 @@ export class AdminComponent implements OnInit {
   birthdate: String | undefined;
   isPopupVisible = false;
 
-  constructor(private _clientService: ClientService, private _authenticationService: AuthenticationService) {
+  constructor(@Inject(NgZone) private ngZone: NgZone, private _clientService: ClientService, private _authenticationService: AuthenticationService) {
   }
 
 
@@ -78,7 +78,6 @@ export class AdminComponent implements OnInit {
       next: data => {
         if (data) {
           this.user = data;
-          console.log(this.user);
         }
       }, error: error => console.log(error)
     });
@@ -133,7 +132,7 @@ export class AdminComponent implements OnInit {
 
     let currentStep = 0;
 
-    const intervalId = setInterval(() => {
+    const intervalId = this.ngZone.runOutsideAngular(() => setInterval(() => {
       if (currentStep >= steps) {
         clearInterval(intervalId); // Ferma l'animazione quando completa
         this.animatedData = this.data.map(bar => bar.value); // Imposta i valori finali
@@ -145,7 +144,7 @@ export class AdminComponent implements OnInit {
       );
 
       currentStep++;
-    }, interval);
+    }, interval));
   }
 
   animateValues(): void {
@@ -161,7 +160,7 @@ export class AdminComponent implements OnInit {
 
     let currentStep = 0;
 
-    const intervalId = setInterval(() => {
+    const intervalId = this.ngZone.runOutsideAngular(() => setInterval(() => {
       if (currentStep >= steps) {
         // Ferma l'animazione e imposta i valori finali
         clearInterval(intervalId);
@@ -185,7 +184,7 @@ export class AdminComponent implements OnInit {
       this.totalIncome = Math.round(this.totalIncome);
 
       currentStep++;
-    }, interval);
+    }, interval));
   }
 
 }
