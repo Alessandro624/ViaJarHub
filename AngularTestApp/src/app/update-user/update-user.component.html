@@ -30,7 +30,7 @@
       [class.is-invalid]="lastNameError"
     />
     <label for="lastName" class="form-label">Cognome</label>
-    <div *ngIf="firstNameError" class="invalid-feedback d-block">{{ lastNameError }}</div>
+    <div *ngIf="lastNameError" class="invalid-feedback d-block">{{ lastNameError }}</div>
   </div>
   <div class="mb-3">
     <label for="images" class="form-label">Carica Immagini</label>
@@ -40,8 +40,9 @@
       (dragover)="onDragOver($event)"
       (dragleave)="onDragLeave($event)"
       (drop)="onDrop($event)"
+      (input)="imageError = ''; alertMessage='';"
     >
-      <p>Trascina qui le immagini o clicca per selezionarle</p>
+      <p>Trascina qui l'immagine o clicca per selezionarla</p>
       <!-- Input file nascosto -->
       <input
         #fileInput
@@ -50,16 +51,23 @@
         class="d-none"
         (change)="onFileSelect($event)"
         accept="image/*"
+        (input)="imageError = ''; alertMessage='';"
       />
     </div>
     <div *ngIf="image" class="mt-2">
-      <p>{{ image.name }}</p>
+      <img [src]="imageUrl" alt="Anteprima" class="me-2 preview">
+      <span>{{ image.name }}</span>
+      <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage()">Rimuovi</button>
     </div>
+    <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
   </div>
-  <button type="submit" class="btn btn-success"
-          [disabled]="isLoading || (firstName===user.firstName && lastName===user.lastName && !image)">
+  <button type="submit" class="btn btn-success me-2"
+          [disabled]="isLoading || (firstName===user.firstName && lastName===user.lastName && !profileImageChanged)">
             <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
                   aria-hidden="true"></span>
     <span *ngIf="!isLoading">Modifica</span>
+  </button>
+  <button type="button" class="btn btn-secondary" (click)="resetData()" [disabled]="isLoading">
+    <span *ngIf="!isLoading">Ripristina</span>
   </button>
 </form>

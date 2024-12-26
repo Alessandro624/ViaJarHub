@@ -3,6 +3,8 @@ import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 
 import {LabelType, NgxSliderModule, Options} from '@angular-slider/ngx-slider';
+import {TravelType} from '../models/travel/travel-type.enum';
+import {Travel} from '../models/travel/travel.model';
 
 @Component({
   selector: 'app-filtri',
@@ -16,6 +18,7 @@ import {LabelType, NgxSliderModule, Options} from '@angular-slider/ngx-slider';
   styleUrl: './filtri.component.css'
 })
 export class FiltriComponent {
+  travelTypes: TravelType[] = Object.values(TravelType).filter(type => type !== TravelType.NESSUNO);
   isExpanded: boolean = false; // Proprietà per mostrare/nascondere il pannello
   minValue: number = 100; // Valore minimo iniziale
   maxValue: number = 400; // Valore massimo iniziale
@@ -90,7 +93,7 @@ export class FiltriComponent {
       min: 100,
       max: 500,
     },
-    type: ''
+    type: TravelType.NESSUNO,
   };
 
   // Funzione per alternare lo stato di apertura
@@ -100,7 +103,7 @@ export class FiltriComponent {
     this.isExpanded = !this.isExpanded; // Cambia lo stato tra true e false
   }
 
-  selectType(type: string): void {
+  selectType(type: TravelType): void {
     this.filters.type = type;
     console.log('Tipo selezionato:', this.filters.type); // Log per verificare
   }

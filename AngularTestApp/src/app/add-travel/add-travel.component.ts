@@ -1,17 +1,19 @@
 import {
   Component,
-  Output,
-  EventEmitter,
-  ElementRef,
-  ViewChild,
   CUSTOM_ELEMENTS_SCHEMA,
-  OnInit, Inject, PLATFORM_ID
+  ElementRef,
+  EventEmitter,
+  Inject, OnInit,
+  Output,
+  PLATFORM_ID,
+  ViewChild
 } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {Travel} from '../models/travel/travel.model';
 import {TravelService} from '../travel-detail/travel.service';
 import {environment} from '../../environments/environment';
+import {TravelType} from '../models/travel/travel-type.enum';
 
 @Component({
   selector: 'app-add-travel',
@@ -38,18 +40,23 @@ export class AddTravelComponent implements OnInit {
     oldPrice: 0,
     price: 0,
     maxParticipantsNumber: 0,
-    travelType: '',
+    travelType: TravelType.NESSUNO,
     numeroStelle: 0,
     latitude: 0,
     longitude: 0
   };
+  alertMessage: string = '';
+  imageError: string = '';
+  isLoading: boolean = false;
   images: File[] = [];
-  dateErrors = {startDateInvalid: false, endDateInvalid: false};
+  imagesUrl: string[] = [];
+  dateErrors = {startDateInvalid: '', endDateInvalid: ''};
   center: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
   markerPosition: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
   zoom = 15;
-
+  travelTypes: TravelType[] = Object.values(TravelType).filter(type => type !== TravelType.NESSUNO);
   protected readonly environment = environment;
+  protected readonly TravelType = TravelType;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private travelService: TravelService) {
   }
@@ -159,27 +166,41 @@ export class AddTravelComponent implements OnInit {
       oldPrice: 0,
       price: 0,
       maxParticipantsNumber: 0,
-      travelType: '',
+      travelType: TravelType.NESSUNO,
       numeroStelle: 0,
       latitude: 0,
       longitude: 0
     };
     this.images = [];
-    this.dateErrors = {startDateInvalid: false, endDateInvalid: false};
+    this.imagesUrl = [];
+    this.dateErrors = {startDateInvalid: '', endDateInvalid: ''};
     this.center = {lat: 51.678418, lng: 7.809007};
     this.markerPosition = {lat: 51.678418, lng: 7.809007};
     this.zoom = 15;
+    this.alertMessage = '';
+    this.isLoading = false;
+    this.imageError = '';
   }
 
   onSubmit() {
+    this.isLoading = true;
     console.log('Dati del form:', this.travel);
     console.log('Immagini caricate:', this.images);
-    alert(`Form inviato con successo!\nDestinazione: ${this.travel.destination}\nData di Partenza: ${this.travel.startDate}\nData di Ritorno: ${this.travel.endDate}\nDescrizione: ${this.travel.description}\nNumero di immagini: ${this.images.length}`);
-    this.closeModal.emit();
-    this.resetData();
+    this.travel.travelType = <TravelType>this.travel.travelType.toUpperCase();
+    this.travelService.addTravel(this.travel, this.images).subscribe({
+      next: () => {
+        this.isLoading = false;
+        alert(`Form inviato con successo!\nDestinazione: ${this.travel.destination}\nData di Partenza: ${this.travel.startDate}\nData di Ritorno: ${this.travel.endDate}\nDescrizione: ${this.travel.description}\nNumero di immagini: ${this.images.length}`);
+        this.closeModal.emit();
+        this.resetData();
+      }, error: error => {
+        this.alertMessage = error.message;
+        this.isLoading = false;
+      }
+    });
   }
 
-  validateAndFormatPrice(event: any) {
+  /*validateAndFormatPrice(event: any) {
     const input = event.target.value;
     const pricePattern = /^\d*\.?\d*$/;
     if (!pricePattern.test(input)) {
@@ -187,11 +208,10 @@ export class AddTravelComponent implements OnInit {
     } else {
       this.travel.price = input;
     }
-  }
+  }*/
 
   onFileSelect(event: any) {
-    const files = event.target.files;
-    this.addFiles(files);
+    this.checkAndAddFiles(event.target.files);
   }
 
   onDragOver(event: DragEvent) {
@@ -207,10 +227,7 @@ export class AddTravelComponent implements OnInit {
   onDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    const files = event.dataTransfer?.files;
-    if (files) {
-      this.addFiles(files);
-    }
+    this.checkAndAddFiles(event.dataTransfer?.files);
   }
 
   triggerFileInput() {
@@ -221,34 +238,37 @@ export class AddTravelComponent implements OnInit {
     const today = new Date();
     const startDate = new Date(this.travel.startDate);
     const endDate = new Date(this.travel.endDate); // Controlla se la data di partenza è minore di oggi (solo se una data di partenza è stata inserita) if (this.formData.startDate) { this.dateErrors.startDateInvalid = startDate < today.setHours(0, 0, 0, 0); } else { this.dateErrors.startDateInvalid = false; } // Controlla se la data di ritorno è minore della data di partenza (solo se entrambe le date sono state inserite)
-    if (this.travel.startDate && this.travel.endDate) {
-      this.dateErrors.endDateInvalid = endDate < startDate;
+    if (startDate && startDate < today) {
+      this.dateErrors.startDateInvalid = 'La data di partenza non può essere precedente ad oggi'
     } else {
-      this.dateErrors.endDateInvalid = false;
+      this.dateErrors.startDateInvalid = '';
     }
-  }
-
-  hasDateErrors(): boolean {
-    return this.dateErrors.startDateInvalid || this.dateErrors.endDateInvalid;
+    if (endDate && endDate < today) {
+      this.dateErrors.endDateInvalid = 'La data di ritorno non può essere precedente ad oggi'
+    } else {
+      this.dateErrors.endDateInvalid = '';
+    }
+    if (startDate && endDate && endDate < startDate) {
+      this.dateErrors.endDateInvalid = 'La data di ritorno non può essere precedente a quella di partenza';
+    } else {
+      this.dateErrors.endDateInvalid = '';
+    }
   }
 
   private addFiles(files: FileList) {
     for (let i = 0; i < files.length; i++) {
       this.images.push(files[i]);
+      this.imagesUrl.push(URL.createObjectURL(files[i]));
     }
   }
 
   removeImage(index: number) {
     this.images.splice(index, 1);
+    this.imagesUrl.splice(index, 1);
   }
 
-  selectType(tipo: string) {
-    this.travel.travelType = tipo;
-  }
-
-  addTravel() {
-    this.travel.travelType = this.travel.travelType.toUpperCase();
-    this.travelService.addTravel(this.travel, this.images).subscribe();
+  selectType(type: TravelType) {
+    this.travel.travelType = type;
   }
 
   private resetTravelCoordinates() {
@@ -259,5 +279,17 @@ export class AddTravelComponent implements OnInit {
   private setTravelCoordinates(lat: number, lng: number) {
     this.travel.latitude = lat;
     this.travel.longitude = lng;
+  }
+
+  private checkAndAddFiles(files: FileList | undefined) {
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        if (!files[i].type.startsWith('image/')) {
+          this.imageError = 'Sono consentite solo immagini';
+          return;
+        }
+      }
+      this.addFiles(files);
+    }
   }
 }
