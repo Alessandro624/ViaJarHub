@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {catchError, Observable, throwError} from 'rxjs';
 import {Review} from '../models/review/review.module';
 
 @Injectable({
@@ -39,9 +39,13 @@ export class ReviewService {
 
   // Crea una nuova recensione
   createReview(review: Review): Observable<void> {
-    return this.http.post<void>(`${this.APIUrl}/open/v1/create-review`, review, {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    });
+    console.log(review);
+    return this.http.post<void>(`${this.APIUrl}/open/v1/create-review`, review).pipe(
+      catchError(error => {
+        console.error('HTTP error response:', error); // Log completo
+        return throwError(() => new Error('Failed to create review. Check the console for details.'));
+      })
+    );
   }
 
   // Aggiorna una recensione esistente
