@@ -69,7 +69,9 @@ public class ReviewController {
 
     @RequestMapping(value = "/create-review", method = RequestMethod.POST)
     public ResponseEntity<Void> createReview(@RequestBody Review review) {
+        System.out.println(review);
         try {
+            System.out.println(review);
             Review createdReview = reviewService.save(review);
             if (createdReview == null) {
                 return ResponseEntity.badRequest().build();

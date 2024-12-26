@@ -46,6 +46,7 @@ public class ReviewService implements IReviewService {
 
     @Override
     public Review save(Review review) {
+
         checkNotNullFields(review);
         checkNotDuplicate(review);
         reviewDAO.save(review);
