@@ -167,8 +167,6 @@
             aria-hidden="true"></span>
       <span *ngIf="!isLoading">Invia</span>
     </button>
-    <button type="button" class="btn btn-secondary" (click)="resetData()" [disabled]="isLoading">
-      <span *ngIf="!isLoading">Ripristina</span>
-    </button>
+    <button type="button" class="btn btn-secondary" (click)="resetData()" [disabled]="isLoading">Ripristina</button>
   </form>
 </div>

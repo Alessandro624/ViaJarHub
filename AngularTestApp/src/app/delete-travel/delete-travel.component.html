@@ -1,0 +1,25 @@
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma Eliminazione</h5>
+        <button type="button" class="btn-close" [disabled]="isLoading" (click)="closeDeleteTravel.emit()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+          {{ alertMessage }}
+        </div>
+        Sei sicuro di voler eliminare il viaggio "<strong>{{ travel.destination }}</strong>"?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteTravel.emit()" [disabled]="isLoading">
+          Annulla
+        </button>
+        <button type="button" class="btn btn-danger" (click)="deleteTravel()" [disabled]="isLoading">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span *ngIf="!isLoading">Elimina</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

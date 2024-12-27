@@ -23,10 +23,13 @@
   transform: scale(1.05); /* Aumenta la dimensione della card al passaggio del mouse */
 }
 
+.card:hover .btn-group {
+  display: flex !important;
+}
+
 a {
   text-decoration: none;
 }
-
 
 .card-text {
   display: -webkit-box;

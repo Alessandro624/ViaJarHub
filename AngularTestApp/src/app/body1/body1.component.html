@@ -6,7 +6,7 @@
   @if (travelsMatrix && travelsMatrix.length > 0) {
     <div class="row" *ngFor="let travelRow of travelsMatrix">
       <div class="col-12 col-lg-4 my-3" *ngFor="let travel of travelRow">
-        <app-card *ngIf="travel" [travel]="travel"></app-card>
+        <app-card *ngIf="travel" [travel]="travel" (localDeleteTravel)="localDeleteTravel(travel.id)"></app-card>
       </div>
     </div>
   } @else {

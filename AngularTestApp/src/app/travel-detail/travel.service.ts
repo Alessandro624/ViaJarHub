@@ -281,7 +281,6 @@ export class TravelService {
     const formData = new FormData();
     formData.append('travel', new Blob([JSON.stringify(travel)], {type: 'application/json'}));
     images.forEach(image => formData.append('travelImages', image));
-
     return this._http.post(`${this.APIUrl}/admin/v1/create-travel`, formData).pipe(
       catchError(this.handleError)
     );
@@ -305,6 +304,21 @@ export class TravelService {
           `${this.APIUrl}/${this.getAPIType(user)}/v1/travel-images?id=${id}`
         )
       ),
+      catchError(this.handleError)
+    );
+  }
+
+  updateTravel(id: number, travel: Travel, images: File[]) {
+    const formData = new FormData();
+    formData.append('travel', new Blob([JSON.stringify(travel)], {type: 'application/json'}));
+    images.forEach(image => formData.append('travelImages', image));
+    return this._http.post(`${this.APIUrl}/admin/v1/update-travel?id=${id}`, formData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteTravel(id: number) {
+    return this._http.delete(`${this.APIUrl}/admin/v1/delete-travel?id=${id}`).pipe(
       catchError(this.handleError)
     );
   }

@@ -85,4 +85,9 @@ export class Body1Component implements OnInit {
     this.travelsMatrix = [];
     this.index = 0;
   }
+
+  localDeleteTravel(id: number): void {
+    this.travels = this.travels.filter(travel => travel.id !== id);
+    this.travelsMatrix = this.chunkArray(this.travels, 3);
+  }
 }
