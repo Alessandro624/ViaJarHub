@@ -8,19 +8,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ITravelService {
-    List<Travel> findAll();
+    List<Travel> findAll(boolean isAdmin);
 
-    List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters);
+    List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters, boolean isAdmin);
 
-    Optional<Travel> findById(Long id);
+    Optional<Travel> findById(Long id, boolean isAdmin);
 
     Travel createTravel(Travel travel, List<MultipartFile> travelImages) throws Exception;
 
     Travel updateTravel(Long id, Travel travel, List<MultipartFile> travelImages) throws Exception;
 
-    List<byte[]> getTravelImages(Long id) throws Exception;
+    List<byte[]> getTravelImages(Long id, boolean isAdmin) throws Exception;
 
     void deleteTravel(Long id) throws Exception;
 
-    int getTravelCount(TravelFilter filters);
+    int getTravelCount(TravelFilter filters, boolean isAdmin);
 }

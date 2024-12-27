@@ -27,19 +27,22 @@ public class TravelService implements ITravelService {
     }
 
     @Override
-    public List<Travel> findAll() {
-        return travelDAO.findAll();
+    public List<Travel> findAll(boolean isAdmin) {
+        return travelDAO.findAll(!isAdmin ? LocalDate.now() : null);
     }
 
     @Override
-    public List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters) {
-        checkFilterValidity(filters);
+    public List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters, boolean isAdmin) {
+        checkFilterValidity(filters, isAdmin);
+        if (!isAdmin && filters.getStartDate() == null) {
+            filters.setStartDate(LocalDate.now());
+        }
         return travelDAO.findAllPaginated(offset, limit, filters);
     }
 
     @Override
-    public Optional<Travel> findById(Long id) {
-        Travel travel = travelDAO.findById(id);
+    public Optional<Travel> findById(Long id, boolean isAdmin) {
+        Travel travel = travelDAO.findById(id, !isAdmin ? LocalDate.now() : null);
         if (travel == null) {
             return Optional.empty();
         }
@@ -57,7 +60,7 @@ public class TravelService implements ITravelService {
         }
         checkNotDuplicate(travel.getId());
         travelDAO.save(travel);
-        Optional<Travel> savedTravel = findById(travel.getId());
+        Optional<Travel> savedTravel = findById(travel.getId(), true);
         if (savedTravel.isPresent()) {
             saveTravelImages(savedTravel.get(), travelImages);
             travelDAO.save(savedTravel.get());
@@ -80,12 +83,12 @@ public class TravelService implements ITravelService {
             saveTravelImages(travel, travelImages);
         }
         travelDAO.save(travel);
-        return travelDAO.findById(id);
+        return travelDAO.findById(id, null);
     }
 
     @Override
-    public List<byte[]> getTravelImages(Long id) throws Exception {
-        Travel travel = checkTravelExistence(id);
+    public List<byte[]> getTravelImages(Long id, boolean isAdmin) throws Exception {
+        Travel travel = checkTravelExistence(id, isAdmin);
         List<String> travelImagesPaths = travel.getImagesPaths();
         if (travelImagesPaths == null || travelImagesPaths.isEmpty()) {
             throw new InvalidInputException("Travel images paths cannot be null or empty");
@@ -100,7 +103,7 @@ public class TravelService implements ITravelService {
 
     @Override
     public void deleteTravel(Long id) throws Exception {
-        Travel travel = checkTravelExistence(id);
+        Travel travel = checkTravelExistence(id, true);
         Long travelDirectory = travel.getId();
         File directory = new File(TRAVEL_IMAGES_DIR + travelDirectory);
         if (directory.exists()) {
@@ -110,8 +113,11 @@ public class TravelService implements ITravelService {
     }
 
     @Override
-    public int getTravelCount(TravelFilter filters) {
-        checkFilterValidity(filters);
+    public int getTravelCount(TravelFilter filters, boolean isAdmin) {
+        checkFilterValidity(filters, isAdmin);
+        if (!isAdmin && filters.getStartDate() == null) {
+            filters.setStartDate(LocalDate.now());
+        }
         return travelDAO.countTravels(filters);
     }
 
@@ -160,11 +166,11 @@ public class TravelService implements ITravelService {
         }
     }
 
-    private void checkFilterValidity(TravelFilter filters) {
+    private void checkFilterValidity(TravelFilter filters, boolean isAdmin) {
         if (filters == null) {
             throw new InvalidInputException("Filters cannot be null");
         }
-        if (filters.getStartDate() != null && filters.getStartDate().isBefore(LocalDate.now())) {
+        if (!isAdmin && filters.getStartDate() != null && filters.getStartDate().isBefore(LocalDate.now())) {
             throw new InvalidInputException("Start date cannot be before today");
         }
         if (filters.getEndDate() != null && filters.getEndDate().isBefore(LocalDate.now())) {
@@ -187,8 +193,8 @@ public class TravelService implements ITravelService {
         }
     }
 
-    private Travel checkTravelExistence(Long id) {
-        Travel existingTravel = travelDAO.findById(id);
+    private Travel checkTravelExistence(Long id, boolean isAdmin) {
+        Travel existingTravel = travelDAO.findById(id, !isAdmin ? LocalDate.now() : null);
         if (existingTravel == null) {
             throw new TravelNotFoundException("Travel not found");
         }

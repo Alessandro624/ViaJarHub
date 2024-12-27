@@ -7,6 +7,7 @@ import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.TravelDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,9 +20,15 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
-    public List<Travel> findAll() {
+    public List<Travel> findAll(LocalDate startDate) {
         String query = "SELECT * FROM travel";
+        if (startDate != null) {
+            query += " WHERE start_date >= ?";
+        }
         try (PreparedStatement statement = connection.prepareStatement(query)) {
+            if (startDate != null) {
+                statement.setObject(1, startDate);
+            }
             ResultSet resultSet = statement.executeQuery();
             List<Travel> travels = new ArrayList<>();
             while (resultSet.next()) {
@@ -56,10 +63,16 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
-    public Travel findById(Long id) {
+    public Travel findById(Long id, LocalDate startDate) {
         String query = "SELECT * FROM travel WHERE id = ?";
+        if (startDate != null) {
+            query += " AND start_date >= ?";
+        }
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, id);
+            if (startDate != null) {
+                statement.setObject(2, startDate);
+            }
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return mapResultSetToTravel(resultSet);

@@ -1,5 +1,4 @@
-package it.unical.demacs.informatica.viajarhubbackend.controller;
-
+package it.unical.demacs.informatica.viajarhubbackend.controller.travel;
 
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.TravelAlreadyExistsException;
@@ -7,48 +6,82 @@ import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundExc
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.model.TravelRequest;
 import it.unical.demacs.informatica.viajarhubbackend.service.ITravelService;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Getter
 @RestController
-@RequestMapping("/api/admin/v1")
-public class AdminController {
+public abstract class TravelController {
     private final ITravelService travelService;
 
-    public AdminController(ITravelService travelService) {
+    public TravelController(ITravelService travelService) {
         this.travelService = travelService;
     }
 
-    @RequestMapping(value = "/travels-paginated", method = RequestMethod.POST)
-    public ResponseEntity<List<Travel>> getAllTravelsPaginated(@RequestBody TravelRequest travelRequest) {
+    public abstract boolean isAdmin();
+
+    public ResponseEntity<List<Travel>> getAllTravels() {
         try {
-            List<Travel> travels = travelService.findAllPaginated(travelRequest.getOffset(), travelRequest.getLimit(), travelRequest.getFilters());
+            List<Travel> travels = travelService.findAll(isAdmin());
             return ResponseEntity.ok().body(travels);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }
 
-    @RequestMapping(value = "/travels-count", method = RequestMethod.POST)
-    public ResponseEntity<Integer> getTravelCount(@RequestBody TravelRequest travelRequest) {
+    public ResponseEntity<List<Travel>> getAllTravelsPaginated(TravelRequest travelRequest) {
         try {
-            int travelCount = travelService.getTravelCount(travelRequest.getFilters());
+            List<Travel> travels = travelService.findAllPaginated(travelRequest.getOffset(), travelRequest.getLimit(), travelRequest.getFilters(), isAdmin());
+            return ResponseEntity.ok().body(travels);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    public ResponseEntity<Travel> getTravel(Long id) {
+        try {
+            Optional<Travel> travel = travelService.findById(id, isAdmin());
+            return travel.map(value -> ResponseEntity.ok().body(value)).orElseGet(() -> ResponseEntity.badRequest().build());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    public ResponseEntity<Integer> getTravelCount(TravelRequest travelRequest) {
+        try {
+            int travelCount = travelService.getTravelCount(travelRequest.getFilters(), isAdmin());
             return ResponseEntity.ok().body(travelCount);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }
 
-    @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> createTravel(@RequestPart Travel travel, @RequestParam List<MultipartFile> travelImages) {
+    public ResponseEntity<List<byte[]>> getTravelImages(Long id) {
         try {
+            List<byte[]> imagesBytes = this.travelService.getTravelImages(id, isAdmin());
+            return ResponseEntity.ok()
+                    .body(imagesBytes);
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (TravelNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
+    public ResponseEntity<Void> createTravel(Travel travel, List<MultipartFile> travelImages) {
+        try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             travel.setId(null);
             travel.setImagesPaths(new ArrayList<>());
             Travel createdTravel = travelService.createTravel(travel, travelImages);
@@ -65,9 +98,11 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "/update-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> updateTravel(@RequestParam("id") Long id, @RequestPart Travel travel, @RequestParam(required = false) List<MultipartFile> travelImages) {
+    public ResponseEntity<Void> updateTravel(Long id, Travel travel, List<MultipartFile> travelImages) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             Travel updatedTravel = this.travelService.updateTravel(id, travel, travelImages);
             if (updatedTravel == null) {
                 return ResponseEntity.badRequest().build();
@@ -82,9 +117,11 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "/delete-travel", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteTravel(@RequestParam("id") Long id) {
+    public ResponseEntity<Void> deleteTravel(Long id) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             travelService.deleteTravel(id);
             return ResponseEntity.ok().build();
         } catch (TravelNotFoundException e) {
