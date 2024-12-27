@@ -3,14 +3,15 @@ package it.unical.demacs.informatica.viajarhubbackend.persistence.DAO;
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.model.TravelFilter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TravelDAO {
-    List<Travel> findAll();
+    List<Travel> findAll(LocalDate startDate);
 
     List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters);
 
-    Travel findById(Long id);
+    Travel findById(Long id, LocalDate startDate);
 
     void save(Travel travel);
 

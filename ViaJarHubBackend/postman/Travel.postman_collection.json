@@ -7,6 +7,37 @@
 	},
 	"item": [
 		{
+			"name": "GetTravelCount",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"filters\": {\r\n        \"startDate\":\"\",\r\n        \"endDate\":\"\",\r\n        \"minPrice\":0,\r\n        \"maxPrice\":0,\r\n        \"travelType\":null\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/open/v1/travels-count",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"open",
+						"v1",
+						"travels-count"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GetAllTravels",
 			"request": {
 				"method": "GET",
