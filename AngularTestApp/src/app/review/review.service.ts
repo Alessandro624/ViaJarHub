@@ -9,8 +9,7 @@ import {Review} from '../models/review/review.module';
 export class ReviewService {
   private APIUrl = "api";
 
-  constructor(private http: HttpClient,) {
-
+  constructor(private http: HttpClient) {
   }
 
   getAllReviews(): Observable<Review[]> {
@@ -68,6 +67,4 @@ export class ReviewService {
     const params = new HttpParams().set('email', email);
     return this.http.get<number>(`${this.APIUrl}/open/v1/reviews-count`, {params});
   }
-
-
 }
