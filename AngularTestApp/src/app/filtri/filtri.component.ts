@@ -21,6 +21,8 @@ export class FiltriComponent {
   @Input() filters!: TravelFilter;
   @Output() loadTravel = new EventEmitter<void>();
   @Output() resetTravels = new EventEmitter<void>();
+  @Input() alertMessage!: string;
+  @Input() isLoading!: boolean;
   travelTypes: TravelType[] = Object.values(TravelType).filter(type => type !== TravelType.NESSUNO);
   isExpanded: boolean = false; // Proprietà per mostrare/nascondere il pannello
   minValue: number = 100; // Valore minimo iniziale
@@ -54,8 +56,6 @@ export class FiltriComponent {
   startDate: string = ''; // Valore per il primo date picker
   endDate: string = ''; // Valore per il secondo date picker
   endDateMin: string = this.minDate; // Valore minimo per il secondo date picker
-  isLoading: boolean = false;
-  alertMessage: string = '';
   type: TravelType = TravelType.NESSUNO;
 
   // Aggiorna la data minima per il secondo date picker e controlla il valore
@@ -105,26 +105,62 @@ export class FiltriComponent {
 
   // Per testare l'applicazione dei filtri
   applyFilters(): void {
-    // TODO rivedere il loading, andrebbe passato nella funzione
-    this.isLoading = true;
-    this.checkFiltersValidity();
-    this.filters.startDate = this.startDate;
-    this.filters.endDate = this.endDate;
-    this.filters.minPrice = this.minValue;
-    this.filters.maxPrice = this.maxValue;
-    if (this.type === TravelType.NESSUNO) {
-      this.filters.travelType = null;
-    } else {
-      this.filters.travelType = <TravelType>this.type.toUpperCase();
+    if (this.checkFiltersValidity()) {
+      this.filters.startDate = this.startDate;
+      this.filters.endDate = this.endDate;
+      this.filters.minPrice = this.minValue;
+      this.filters.maxPrice = this.maxValue;
+      if (this.type === TravelType.NESSUNO) {
+        this.filters.travelType = null;
+      } else {
+        this.filters.travelType = <TravelType>this.type.toUpperCase();
+      }
+      this.resetTravels.emit();
+      this.loadTravel.emit();
     }
-    console.log('Filtri applicati:', this.filters);
-    this.resetTravels.emit();
-    this.loadTravel.emit();
-    this.isLoading = false;
   }
 
   private checkFiltersValidity() {
-    // TODO
+    this.alertMessage = '';
+    if (this.startDate) {
+      const start = new Date(this.startDate);
+      if (start < this.today) {
+        this.alertMessage = 'La data di partenza non può essere precedente alla data di oggi';
+        return false;
+      }
+    }
+    if (this.endDate) {
+      const end = new Date(this.endDate);
+      if (end < this.today) {
+        this.alertMessage = 'La data di ritorno non può essere precedente alla data di oggi';
+        return false;
+      }
+    }
+    if (this.startDate && this.endDate) {
+      const start = new Date(this.startDate);
+      const end = new Date(this.endDate);
+      if (end < start) {
+        this.alertMessage = 'La data di ritorno non può essere precedente alla data di partenza.';
+        return false;
+      }
+    }
+    if (this.minValue < 0) {
+      this.alertMessage = 'Il prezzo minimo non può essere negativo.';
+      return false;
+    }
+    if (this.maxValue < 0) {
+      this.alertMessage = 'Il prezzo massimo non può essere negativo.';
+      return false;
+    }
+    if (this.minValue > this.maxValue) {
+      this.alertMessage = 'Il prezzo minimo non può essere superiore al prezzo massimo.';
+      return false;
+    }
+    if (!Object.values(TravelType).includes(this.type)) {
+      this.alertMessage = 'Il tipo di viaggio selezionato non è valido.';
+      return false;
+    }
+    return true;
   }
 
   resetFilters(): void {
@@ -134,13 +170,8 @@ export class FiltriComponent {
     this.endDate = '';
     this.endDateMin = this.minDate;
     this.type = TravelType.NESSUNO;
-    this.filters = {
-      startDate: '',
-      endDate: '',
-      minPrice: 0,
-      maxPrice: 0,
-      travelType: TravelType.NESSUNO,
-    }
+    this.minValue = 100;
+    this.maxValue = 400;
     this.isLoading = false;
     this.alertMessage = '';
   }
