@@ -117,6 +117,7 @@ public class TravelDAOJDBC implements TravelDAO {
             statement.setInt(9, travel.getMaxParticipantsNumber());
             statement.setString(10, travel.getTravelType().toString());
             List<String> imagesPaths = travel.getImagesPaths();
+            System.out.println(imagesPaths);
             Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
             statement.setArray(11, sqlArray);
             statement.setDouble(12, travel.getLatitude());

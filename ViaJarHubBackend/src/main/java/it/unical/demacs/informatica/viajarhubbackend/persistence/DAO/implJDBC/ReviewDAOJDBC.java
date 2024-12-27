@@ -4,11 +4,9 @@ import it.unical.demacs.informatica.viajarhubbackend.model.Review;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.ReviewDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ReviewDAOJDBC implements ReviewDAO {
@@ -107,13 +105,33 @@ public class ReviewDAOJDBC implements ReviewDAO {
 
     @Override
     public void save(Review review) {
-        String query = "INSERT INTO review (idtravel, email, stars, comment) VALUES (?, ?, ?, ?) " +
-                "ON CONFLICT (idtravel, email) DO UPDATE SET stars = EXCLUDED.stars, comment = EXCLUDED.comment";
+        String query = "INSERT INTO review (idtravel, email, stars, comment,images_paths) VALUES (?, ?, ?, ?,?) " +
+                "ON CONFLICT (idtravel, email) DO UPDATE SET stars = EXCLUDED.stars, comment = EXCLUDED.comment,images_paths = EXCLUDED.images_paths" ;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
+            System.out.println("provaSave");
             statement.setInt(1, review.getIdTravel());
+            System.out.println("provaSave");
+
             statement.setString(2, review.getEmailUser());
+            System.out.println("provaSave");
+
             statement.setInt(3, review.getStars());
+            System.out.println("provaSave");
+
             statement.setString(4, review.getComment());
+            System.out.println("provaSave");
+
+            List<String> imagesPaths = review.getImagesPaths();
+
+            System.out.println("provaSave");
+            System.out.println(imagesPaths);
+
+            Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
+            System.out.println("provaSave");
+
+            statement.setArray(5, sqlArray);
+            System.out.println("provaSave");
+
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -135,11 +153,18 @@ public class ReviewDAOJDBC implements ReviewDAO {
 
     }
     private Review mapRowToReview(ResultSet resultSet) throws SQLException {
+        Array array = resultSet.getArray("images_paths");
+        List<String> imagesPaths = new ArrayList<>();
+        if (array != null) {
+            Collections.addAll(imagesPaths, (String[]) array.getArray());
+        }
         return new Review(
                 resultSet.getInt("idtravel"),
                 resultSet.getString("email"),
                 resultSet.getInt("stars"),
-                resultSet.getString("comment")
+                resultSet.getString("comment"),
+                imagesPaths
+
         );
     }
 }
