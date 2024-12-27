@@ -47,7 +47,7 @@ export class AddReviewComponent {
       stars: this.rating,
       comment: this.comment,
     }
-    this.reviewService.createReview(review)
+    console.log(this.reviewService.createReview(review));
 
     this.closeModal.emit();
   }

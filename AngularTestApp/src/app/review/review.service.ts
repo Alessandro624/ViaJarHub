@@ -40,12 +40,7 @@ export class ReviewService {
   // Crea una nuova recensione
   createReview(review: Review): Observable<void> {
     console.log(review);
-    return this.http.post<void>(`${this.APIUrl}/open/v1/create-review`, review).pipe(
-      catchError(error => {
-        console.error('HTTP error response:', error); // Log completo
-        return throwError(() => new Error('Failed to create review. Check the console for details.'));
-      })
-    );
+    return this.http.post<void>(`${this.APIUrl}/open/v1/create-review`, review);
   }
 
   // Aggiorna una recensione esistente
