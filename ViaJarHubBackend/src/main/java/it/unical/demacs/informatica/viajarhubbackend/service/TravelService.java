@@ -82,6 +82,10 @@ public class TravelService implements ITravelService {
         if (travelImages != null && !travelImages.isEmpty()) {
             saveTravelImages(travel, travelImages);
         }
+        Travel existingTravel = checkTravelExistence(id, true);
+        if (travel.getPrice() != existingTravel.getPrice()) {
+            travel.setOldPrice(existingTravel.getPrice());
+        }
         travelDAO.save(travel);
         return travelDAO.findById(id, null);
     }
