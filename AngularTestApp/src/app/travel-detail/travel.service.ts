@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Travel} from '../models/travel/travel.model';
-import {catchError, Observable, switchMap, throwError} from 'rxjs';
+import {catchError, switchMap, throwError} from 'rxjs';
 import {TravelFilter} from '../models/travel/travel-filter.model';
 import {AuthenticationService} from '../login/authentication.service';
 import {UserRole} from '../models/user/user-role.enum';
@@ -245,27 +245,34 @@ export class TravelService {
   constructor(private _http: HttpClient, private _authenticationService: AuthenticationService) {
   }
 
-  checkUserAuthority() {
+  private checkUserAuthority() {
     return this._authenticationService.currentUser$;
+  }
+
+  private getAPIType(user: any): string {
+    return user?.authorities[0].authority === UserRole.ADMIN ? 'admin' : 'open';
   }
 
   getTravelsPaginated(offset: number, limit: number, filters: TravelFilter) {
     return this.checkUserAuthority().pipe(
-      switchMap((user) => {
-        const APIType = user && user.authorities[0].authority === UserRole.ADMIN ? 'admin' : 'open';
-        return this._http.post<Travel[]>(`${this.APIUrl}/${APIType}/v1/travels-paginated`, {offset, limit, filters});
-      }),
+      switchMap(user =>
+        this._http.post<Travel[]>(
+          `${this.APIUrl}/${this.getAPIType(user)}/v1/travels-paginated`,
+          {offset, limit, filters}
+        )
+      ),
       catchError(this.handleError)
     );
   }
 
   getTravelsCount(filters: TravelFilter) {
     return this.checkUserAuthority().pipe(
-      switchMap((user) => {
-        const APIType = user && user.authorities[0].authority === UserRole.ADMIN ? 'admin' : 'open';
-        return this._http.post<number>(`${this.APIUrl}/${APIType}/v1/travels-count`,
-          {filters})
-      }),
+      switchMap(user =>
+        this._http.post<number>(
+          `${this.APIUrl}/${this.getAPIType(user)}/v1/travels-count`,
+          {filters}
+        )
+      ),
       catchError(this.handleError)
     );
   }
@@ -273,28 +280,31 @@ export class TravelService {
   addTravel(travel: Travel, images: File[]) {
     const formData = new FormData();
     formData.append('travel', new Blob([JSON.stringify(travel)], {type: 'application/json'}));
-    images.forEach((image) => {
-      formData.append(`travelImages`, image);
-    });
-    return this._http.post(`${this.APIUrl}/admin/v1/create-travel`, formData).pipe(catchError(this.handleError));
+    images.forEach(image => formData.append('travelImages', image));
+
+    return this._http.post(`${this.APIUrl}/admin/v1/create-travel`, formData).pipe(
+      catchError(this.handleError)
+    );
   }
 
   getTravelById(id: number) {
     return this.checkUserAuthority().pipe(
-      switchMap((user) => {
-        const APIType = user && user.authorities[0].authority === UserRole.ADMIN ? 'admin' : 'open';
-        return this._http.get<Travel>(`${this.APIUrl}/${APIType}/v1/travel?id=${id}`).pipe(catchError(this.handleError));
-      }),
+      switchMap(user =>
+        this._http.get<Travel>(
+          `${this.APIUrl}/${this.getAPIType(user)}/v1/travel?id=${id}`
+        )
+      ),
       catchError(this.handleError)
     );
   }
 
   getTravelImages(id: number) {
     return this.checkUserAuthority().pipe(
-      switchMap((user) => {
-        const APIType = user && user.authorities[0].authority === UserRole.ADMIN ? 'admin' : 'open';
-        return this._http.get<string[]>(`${this.APIUrl}/${APIType}/v1/travel-images?id=${id}`).pipe(catchError(this.handleError));
-      }),
+      switchMap(user =>
+        this._http.get<string[]>(
+          `${this.APIUrl}/${this.getAPIType(user)}/v1/travel-images?id=${id}`
+        )
+      ),
       catchError(this.handleError)
     );
   }
