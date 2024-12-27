@@ -1,14 +1,14 @@
 <app-carousel></app-carousel>
 
 <div class="container my-5">
-  <app-filtri (loadTravel)="loadTravels({offset: index, filters: filters})"></app-filtri>
+  <app-filtri [filters]="filters" (loadTravel)="loadTravels()"
+              (resetTravels)="resetTravels()"></app-filtri>
   <div class="row" *ngFor="let travelRow of travelsMatrix">
     <div class="col-12 col-lg-4 my-3" *ngFor="let travel of travelRow">
       <app-card *ngIf="travel" [travel]="travel"></app-card>
     </div>
   </div>
-
   @if (index < elementiTot) {
-    <button class="btn btn-primary " (click)="loadTravels({offset: index, filters: filters})">View More</button>
+    <button class="btn btn-primary" (click)="loadTravels()">View More</button>
   }
 </div>

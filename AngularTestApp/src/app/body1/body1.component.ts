@@ -7,6 +7,8 @@ import {FiltriComponent} from '../filtri/filtri.component';
 import {Travel} from '../models/travel/travel.model';
 import {TravelService} from '../travel-detail/travel.service';
 import {TravelFilter} from '../models/travel/travel-filter.model';
+import {switchMap, tap} from 'rxjs';
+import {AuthenticationService} from '../login/authentication.service';
 
 @Component({
   selector: 'app-body1',
@@ -29,33 +31,37 @@ export class Body1Component implements OnInit {
     travelType: null,
   }
 
-  constructor(private travelService: TravelService) {
+  constructor(private _travelService: TravelService, private _authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
-    this.loadTravels({offset: this.index, filters: this.filters});
+    this._authenticationService.currentUser$
+      .pipe(
+        tap(() => this.resetTravels()),
+        switchMap(() => this.loadInit())
+      )
+      .subscribe({
+        error: error => console.error('Errore nel caricamento dei viaggi:', error)
+      });
   }
 
-  loadTravels(requestData: { offset: number, filters: TravelFilter }) {
-    this.index = requestData.offset;
-    this.filters = requestData.filters;
-    console.log(this.filters);
-    if (this.index == 0) {
-      this.travels = [];
-    }
-    this.countTravels().subscribe({
-      next: data => {
-        this.elementiTot = data;
-        this.travelService.getTravelsPaginated(this.index, 9, this.filters).subscribe({
-          next: travels => {
-            this.travels = [...this.travels, ...travels];
-            this.travelsMatrix = this.chunkArray(this.travels, 3);
-            this.index += 9;
-            console.log(this.travels);
-          }
-        });
-      }
-    });
+  loadTravels() {
+    this.loadInit().subscribe();
+  }
+
+  loadInit() {
+    return this.countTravels().pipe(
+      tap(data => (this.elementiTot = data)),
+      switchMap(() => this._travelService.getTravelsPaginated(this.index, 9, this.filters)),
+      tap(travels => {
+        if (this.index === 0) {
+          this.resetTravels();
+        }
+        this.travels = [...this.travels, ...travels];
+        this.travelsMatrix = this.chunkArray(this.travels, 3);
+        this.index += 9;
+      })
+    );
   }
 
   private chunkArray(array: Travel[], chunkSize: number): Travel[][] {
@@ -67,6 +73,12 @@ export class Body1Component implements OnInit {
   }
 
   private countTravels() {
-    return this.travelService.getTravelsCount(this.filters);
+    return this._travelService.getTravelsCount(this.filters);
+  }
+
+  resetTravels() {
+    this.travels = [];
+    this.travelsMatrix = [];
+    this.index = 0;
   }
 }

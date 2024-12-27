@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 
@@ -18,6 +18,9 @@ import {TravelFilter} from '../models/travel/travel-filter.model';
   styleUrl: './filtri.component.css'
 })
 export class FiltriComponent {
+  @Input() filters!: TravelFilter;
+  @Output() loadTravel = new EventEmitter<void>();
+  @Output() resetTravels = new EventEmitter<void>();
   travelTypes: TravelType[] = Object.values(TravelType).filter(type => type !== TravelType.NESSUNO);
   isExpanded: boolean = false; // Proprietà per mostrare/nascondere il pannello
   minValue: number = 100; // Valore minimo iniziale
@@ -51,17 +54,9 @@ export class FiltriComponent {
   startDate: string = ''; // Valore per il primo date picker
   endDate: string = ''; // Valore per il secondo date picker
   endDateMin: string = this.minDate; // Valore minimo per il secondo date picker
-  filters: TravelFilter = {
-    startDate: '',
-    endDate: '',
-    minPrice: 0,
-    maxPrice: 0,
-    travelType: null,
-  }
   isLoading: boolean = false;
   alertMessage: string = '';
   type: TravelType = TravelType.NESSUNO;
-  @Output() loadTravel = new EventEmitter<{ offset: number, filters: TravelFilter }>();
 
   // Aggiorna la data minima per il secondo date picker e controlla il valore
   onStartDateChange(event: Event): void {
@@ -79,7 +74,6 @@ export class FiltriComponent {
       this.endDateMin = this.minDate; // Ritorna alla data di oggi se il valore è nullo
     }
   }
-
 
   // Utility per formattare la data in "YYYY-MM-DD" per HTML5
   formatDate(date: Date): string {
@@ -106,7 +100,7 @@ export class FiltriComponent {
 
   selectType(type: TravelType): void {
     this.type = type;
-    console.log('Tipo selezionato:', this.filters.travelType); // Log per verificare
+    console.log('Tipo selezionato:', type); // Log per verificare
   }
 
   // Per testare l'applicazione dei filtri
@@ -124,20 +118,21 @@ export class FiltriComponent {
       this.filters.travelType = <TravelType>this.type.toUpperCase();
     }
     console.log('Filtri applicati:', this.filters);
-    this.loadTravel.emit({offset: 0, filters: this.filters});
+    this.resetTravels.emit();
+    this.loadTravel.emit();
     this.isLoading = false;
   }
 
   private checkFiltersValidity() {
-
+    // TODO
   }
 
   resetFilters(): void {
-    this.today = new Date(); // Data di oggi
-    this.minDate = this.formatDate(this.today); // Formatta la data in "YYYY-MM-DD"
-    this.startDate = ''; // Valore per il primo date picker
-    this.endDate = ''; // Valore per il secondo date picker
-    this.endDateMin = this.minDate; // Valore minimo per il secondo date picker
+    this.today = new Date();
+    this.minDate = this.formatDate(this.today);
+    this.startDate = '';
+    this.endDate = '';
+    this.endDateMin = this.minDate;
     this.type = TravelType.NESSUNO;
     this.filters = {
       startDate: '',

@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Travel} from '../models/travel/travel.model';
-import {catchError, throwError} from 'rxjs';
+import {catchError, Observable, switchMap, throwError} from 'rxjs';
 import {TravelFilter} from '../models/travel/travel-filter.model';
+import {AuthenticationService} from '../login/authentication.service';
+import {UserRole} from '../models/user/user-role.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -240,20 +242,32 @@ export class TravelService {
       }
     ];*/
 
+  constructor(private _http: HttpClient, private _authenticationService: AuthenticationService) {
+  }
 
-  constructor(private _http: HttpClient) {
+  checkUserAuthority() {
+    return this._authenticationService.currentUser$;
   }
 
   getTravelsPaginated(offset: number, limit: number, filters: TravelFilter) {
-    return this._http.post<Travel[]>(`${this.APIUrl}/open/v1/travels-paginated`,
-      {offset, limit, filters})
-      .pipe(catchError(this.handleError));
+    return this.checkUserAuthority().pipe(
+      switchMap((user) => {
+        const APIType = user && user.authorities[0].authority === UserRole.ADMIN ? 'admin' : 'open';
+        return this._http.post<Travel[]>(`${this.APIUrl}/${APIType}/v1/travels-paginated`, {offset, limit, filters});
+      }),
+      catchError(this.handleError)
+    );
   }
 
   getTravelsCount(filters: TravelFilter) {
-    return this._http.post<number>(`${this.APIUrl}/open/v1/travels-count`,
-      {filters})
-      .pipe(catchError(this.handleError));
+    return this.checkUserAuthority().pipe(
+      switchMap((user) => {
+        const APIType = user && user.authorities[0].authority === UserRole.ADMIN ? 'admin' : 'open';
+        return this._http.post<number>(`${this.APIUrl}/${APIType}/v1/travels-count`,
+          {filters})
+      }),
+      catchError(this.handleError)
+    );
   }
 
   addTravel(travel: Travel, images: File[]) {
