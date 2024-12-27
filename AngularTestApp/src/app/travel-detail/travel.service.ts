@@ -280,11 +280,23 @@ export class TravelService {
   }
 
   getTravelById(id: number) {
-    return this._http.get<Travel>(`${this.APIUrl}/open/v1/travel?id=${id}`).pipe(catchError(this.handleError));
+    return this.checkUserAuthority().pipe(
+      switchMap((user) => {
+        const APIType = user && user.authorities[0].authority === UserRole.ADMIN ? 'admin' : 'open';
+        return this._http.get<Travel>(`${this.APIUrl}/${APIType}/v1/travel?id=${id}`).pipe(catchError(this.handleError));
+      }),
+      catchError(this.handleError)
+    );
   }
 
   getTravelImages(id: number) {
-    return this._http.get<string[]>(`${this.APIUrl}/open/v1/travel-images?id=${id}`).pipe(catchError(this.handleError));
+    return this.checkUserAuthority().pipe(
+      switchMap((user) => {
+        const APIType = user && user.authorities[0].authority === UserRole.ADMIN ? 'admin' : 'open';
+        return this._http.get<string[]>(`${this.APIUrl}/${APIType}/v1/travel-images?id=${id}`).pipe(catchError(this.handleError));
+      }),
+      catchError(this.handleError)
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -292,6 +304,9 @@ export class TravelService {
     switch (error.status) {
       case 400:
         errorMessage = 'Impossibile effettuare la richiesta, riprovare più tardi';
+        break;
+      case 403:
+        errorMessage = 'Non autorizzato';
         break;
       case 404:
         errorMessage = 'Viaggio non trovato';
