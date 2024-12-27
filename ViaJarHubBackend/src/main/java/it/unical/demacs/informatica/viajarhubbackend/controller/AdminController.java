@@ -48,6 +48,7 @@ public class AdminController {
     @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createTravel(@RequestPart Travel travel, @RequestParam List<MultipartFile> travelImages) {
         try {
+
             travel.setId(null);
             travel.setImagesPaths(new ArrayList<>());
             Travel createdTravel = travelService.createTravel(travel, travelImages);
