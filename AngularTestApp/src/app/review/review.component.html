@@ -5,7 +5,7 @@
         <i class="fa-solid fa-circle-user fa-2xl ms-lg-3 ms-xl-0 "></i>
       </div>
       <div class="col ms-lg-0 mx-2 mx-md-0 ">
-        <h5 class="card-title mb-0 ms-lg-0  fw-bold">Nome del cliente</h5>
+        <h5 class="card-title mb-0 ms-lg-0  fw-bold">{{ review.emailUser }} </h5>
         <div>
           <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
           <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
@@ -19,7 +19,7 @@
         <i class="fa-solid fa-circle-user fa-2xl "></i>
       </div>
       <div class="col ms-md-2 ms-lg-0">
-        <h6 class="card-title mb-0  fw-bold">Nome del viaggio</h6>
+        <h6 class="card-title mb-0  fw-bold">{{ review.idTravel }}</h6>
         <div>
           <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
           <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
@@ -33,8 +33,8 @@
         <i class="fa-solid fa-circle-user mt-1 fa-2xl ms-lg-3 ms-xl-0 "></i>
       </div>
       <div class="col ms-0">
-        <h5 class="card-title mb-0 fw-bold">Nome del viaggio</h5>
-        <h6 class="card-title mb-0 ">Nome del cliente</h6>
+        <h5 class="card-title mb-0 fw-bold">{{ review.idTravel }}</h5>
+        <h6 class="card-title mb-0 ">{{ review.emailUser }}</h6>
         <div>
           <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
           <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
@@ -46,11 +46,10 @@
     }
 
 
-    <p class="card-text mb-1 ms-1 pe-3 ">Lorem ipsum odor amet, consectetuer adipiscing elit. Natoque porta ipsum
-      hendrerit id libero eleifend tempor odio. Ahac quisque, blandit cursus porttitor vitae feugiat cubilia. Eros
-      tempus mauris ac curabitur magnis lectus nascetur. Netus ut nam ante dolor lacinia semper nunc ligula. Aliquet
-      vestibulum velit parturient consequat aptent fringilla pharetra montes.</p>
-
+    <p class="card-text mb-1 ms-1 pe-3 ">{{ review.comment }}</p>
+    <!--<div *ngFor="let imgURL of immaginiURLs; let i = index" [class.active]="i === 0">
+      <img [src]="imgURL" class="d-block w-100 carousel-img" alt="Slide {{ i + 1 }}">
+    </div>-->
     <div class="row justify-content-end">
       <div class="col-5">
         <p class="text-body-secondary text-end data">01/01/2025</p>

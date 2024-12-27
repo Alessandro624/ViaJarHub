@@ -22,10 +22,16 @@
         <!-- Most Liked Comments Section -->
         <div class="mt-4">
           <h5 class="mb-3">Ultime recensioni</h5>
-          <!-- Comment 1 -->
-          <app-review></app-review>
-          <!-- Comment 2 -->
-          <app-review></app-review>
+          @if (reviews.length == 0) {
+            <p>attesa</p>
+          } @else {
+            <div *ngFor="let review of reviews">
+              
+              <app-review [review]="review"></app-review>
+            </div>
+          }
+
+
         </div>
       </div>
     </div>

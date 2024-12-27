@@ -1,6 +1,7 @@
 export interface Review {
   idTravel: number;
-  emailUser: string | undefined;
+  emailUser: string;
   stars: number;
   comment: string;
+
 }

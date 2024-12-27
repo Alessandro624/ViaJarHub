@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {catchError, Observable, throwError} from 'rxjs';
 import {Review} from '../models/review/review.module';
+import {Travel} from '../models/travel/travel.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,16 +31,32 @@ export class ReviewService {
 
   // Recupera una recensione specifica
   getReview(travelId: number, email: string): Observable<Review> {
+
     const params = new HttpParams()
       .set('travelId', travelId.toString())
       .set('email', email);
     return this.http.get<Review>(`${this.APIUrl}/open/v1/review`, {params});
+
+
   }
 
   // Crea una nuova recensione
-  createReview(review: Review): Observable<void> {
-    console.log(review);
-    return this.http.post<void>(`${this.APIUrl}/open/v1/create-review`, review);
+  createReview(review: Review, images: File[]): Observable<void> {
+    const formData = new FormData();
+    console.log(images);
+
+    formData.append('review', new Blob([JSON.stringify(review)], {type: 'application/json'}));
+
+    images.forEach((image) => {
+      formData.append(`reviewImages`, image);
+    });
+
+    console.log(formData);
+    return this.http.post<void>(`${this.APIUrl}/open/v1/create-review`, formData);
+  }
+
+  getReviewImages(id: number, email: string | undefined): Observable<string[]> {
+    return this.http.get<string[]>(`${this.APIUrl}/open/v1/review-images?id=${id}&email=${email}`).pipe();
   }
 
   // Aggiorna una recensione esistente

@@ -187,6 +187,7 @@ export class AddTravelComponent implements OnInit {
     console.log('Dati del form:', this.travel);
     console.log('Immagini caricate:', this.images);
     this.travel.travelType = <TravelType>this.travel.travelType.toUpperCase();
+
     this.travelService.addTravel(this.travel, this.images).subscribe({
       next: () => {
         this.isLoading = false;
