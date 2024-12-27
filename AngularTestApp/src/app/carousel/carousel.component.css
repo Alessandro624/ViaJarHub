@@ -144,3 +144,46 @@
   }
 }
 
+.carousel-item.home {
+  max-width: 100%; /* Imposta la larghezza massima al 100% del contenitore */
+  max-height: 700px; /* Imposta un'altezza massima per l'immagine */
+  height: auto;
+}
+
+.carousel-img {
+  height: 100%; /* Imposta l'altezza al 100% del contenitore */
+  max-height: 90%;
+  width: auto; /* Mantiene la proporzione dell'immagine */
+  object-fit: contain; /* Assicura che l'intera immagine sia visibile senza tagli */
+}
+
+.carousel-item {
+  height: 500px; /* Imposta l'altezza fissa del carosello */
+}
+
+.carousel-inner {
+  height: 100%; /* Assicura che l'interno del carosello occupi l'intera altezza */
+}
+
+.carousel-control-prev {
+  color: blue !important;
+}
+
+.fa-caret-left {
+  font-size: 3rem;
+}
+
+.carousel-control-next {
+  color: blue !important;
+}
+
+.fa-caret-right {
+  font-size: 3rem;
+}
+
+.caret-div {
+  border-radius: 10px;
+  background: white !important;
+  border: blue !important;
+}
+

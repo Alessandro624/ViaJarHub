@@ -3,10 +3,13 @@ import {Travel} from '../../models/travel/travel.model';
 
 import {ReviewComponent} from '../../review/review.component';
 import {GoogleMapsModule} from '@angular/google-maps';
-import {isPlatformBrowser, NgIf} from '@angular/common';
+import {isPlatformBrowser, NgForOf, NgIf} from '@angular/common';
 import {environment} from '../../../environments/environment';
 import {ActivatedRoute} from '@angular/router';
 import {TravelService} from '../travel.service';
+import {ReviewService} from '../../review/review.service';
+import {Review} from '../../models/review/review.module';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-infotravel',
@@ -14,7 +17,8 @@ import {TravelService} from '../travel.service';
   imports: [
     ReviewComponent,
     GoogleMapsModule,
-    NgIf
+    NgIf,
+    NgForOf
   ],
   templateUrl: './infotravel.component.html',
   styleUrl: './infotravel.component.css',
@@ -27,9 +31,10 @@ export class InfotravelComponent implements OnInit {
   markerPosition: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
   zoom = 15;
   infoWindow: any;
+  reviews: Review[] = [];
   protected readonly environment = environment;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, /*private mapsService: MapsService*/) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private _reviewService: ReviewService) {
   }
 
   ngOnInit() {
@@ -43,9 +48,18 @@ export class InfotravelComponent implements OnInit {
           if (isPlatformBrowser(this.platformId)) {
             this.initMap().then();
           }
+
+
         }
       }
     });
+    this._reviewService.getReviewsByTravel(id).subscribe({
+      next: result => {
+        console.log("prova " + result);
+        this.reviews = result;
+        console.log(this.reviews.length);
+      }
+    })
   }
 
   async initMap() {

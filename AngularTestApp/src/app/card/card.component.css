@@ -37,3 +37,11 @@ a {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.card-img-top {
+  max-width: 100%;
+  max-height: 200px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
