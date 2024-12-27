@@ -1,4 +1,4 @@
-import {OnInit, OnDestroy, Component, ElementRef, PLATFORM_ID, Inject} from '@angular/core';
+import {OnInit, OnDestroy, Component, ElementRef, PLATFORM_ID, Inject, NgZone} from '@angular/core';
 import {isPlatformBrowser, NgClass, NgForOf, NgIf} from '@angular/common';
 import {TravelService} from '../travel-detail/travel.service';
 import {ActivatedRoute} from '@angular/router';
@@ -28,7 +28,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   isExpanded: boolean = false;
   searchQuery: string = '';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
+  constructor(private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -41,7 +41,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
     // Esegui l'effetto macchina da scrivere solo dentro Body1
     if (this.inBody) {
-      this.typeWriterEffect();
+      this.ngZone.runOutsideAngular(() => this.typeWriterEffect());
     } else {
 
       const id = Number(this._activatedRoute.parent?.snapshot.paramMap.get('id'));

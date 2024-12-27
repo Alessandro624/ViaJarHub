@@ -1,13 +1,19 @@
 <app-carousel></app-carousel>
 
 <div class="container my-5">
-  <app-filtri [filters]="filters" (loadTravel)="loadTravels()"
+  <app-filtri [filters]="filters" [alertMessage]="alertMessage" [isLoading]="isLoading" (loadTravel)="loadTravels()"
               (resetTravels)="resetTravels()"></app-filtri>
-  <div class="row" *ngFor="let travelRow of travelsMatrix">
-    <div class="col-12 col-lg-4 my-3" *ngFor="let travel of travelRow">
-      <app-card *ngIf="travel" [travel]="travel"></app-card>
+  @if (travelsMatrix && travelsMatrix.length > 0) {
+    <div class="row" *ngFor="let travelRow of travelsMatrix">
+      <div class="col-12 col-lg-4 my-3" *ngFor="let travel of travelRow">
+        <app-card *ngIf="travel" [travel]="travel"></app-card>
+      </div>
     </div>
-  </div>
+  } @else {
+    <div class="text-center my-5">
+      <p class="text-muted fs-5">Non è presente alcun viaggio con i criteri selezionati.</p>
+    </div>
+  }
   @if (index < elementiTot) {
     <button class="btn btn-primary" (click)="loadTravels()">View More</button>
   }

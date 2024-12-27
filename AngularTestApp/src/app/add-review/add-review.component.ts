@@ -40,17 +40,15 @@ export class AddReviewComponent {
     console.log('Opzione selezionata:', this.selectedOption);
     console.log('Stelle selezionate:', this.rating);
     console.log('Commento:', this.comment);
-
-    let review: Review = {
-      idTravel: Number(this.selectedOption),
-      emailUser: this.authentication.currentUserSubject.getValue()?.email,
-      stars: this.rating,
-      comment: this.comment,
-    }
-    console.log(this.reviewService.createReview(review));
-
-    this.closeModal.emit();
+    this.authentication.currentUser$.subscribe(user => {
+      let review: Review = {
+        idTravel: Number(this.selectedOption),
+        emailUser: user?.email,
+        stars: this.rating,
+        comment: this.comment,
+      }
+      this.reviewService.createReview(review).subscribe();
+      this.closeModal.emit();
+    })
   }
-
-  protected readonly Math = Math;
 }
