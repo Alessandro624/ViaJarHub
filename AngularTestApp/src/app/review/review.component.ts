@@ -23,7 +23,8 @@ export class ReviewComponent implements OnInit {
     idTravel: 0,
     emailUser: '',
     stars: 0,
-    comment: ''
+    comment: '',
+    data: ''
 
   };
 

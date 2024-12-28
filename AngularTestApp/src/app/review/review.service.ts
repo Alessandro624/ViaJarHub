@@ -52,7 +52,7 @@ export class ReviewService {
     });
 
     console.log(formData);
-    return this.http.post<void>(`${this.APIUrl}/open/v1/create-review`, formData);
+    return this.http.post<void>(`${this.APIUrl}/auth/v1/create-review`, formData);
   }
 
   getReviewImages(id: number, email: string | undefined): Observable<string[]> {

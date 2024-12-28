@@ -9,6 +9,8 @@ import {User} from '../../models/user/user.model';
 import {RouterLink} from '@angular/router';
 import {PaymentComponent} from '../../payment/payment.component';
 import {Travel} from '../../models/travel/travel.model';
+import {ReviewService} from '../../review/review.service';
+import {Review} from '../../models/review/review.module';
 
 @Component({
   selector: 'app-client',
@@ -38,9 +40,15 @@ export class ClientComponent implements OnInit {
   isPopupVisible = false;
   isPopupVisible3 = false;
   settedTravel: Travel | undefined = undefined;
+  reviews: Review[] = [];
+  recensioniVisibili: Review[] = [];
+  loadBtnless = false;
+  loadBtnmore = false;
+  startIndex: number = 0;
+  step: number = 3;
+  numrec: number = 0;
 
-
-  constructor(private _authenticationService: AuthenticationService, private _clientService: ClientService) {
+  constructor(private _authenticationService: AuthenticationService, private _clientService: ClientService, private reviewService: ReviewService,) {
   }
 
   ngOnInit() {
@@ -48,6 +56,32 @@ export class ClientComponent implements OnInit {
     this.showBirthdate();
     this.showProfileImage();
     this.animateStrokeDashArray();
+    this.reviewService.getReviewsByUser(this.user.email).subscribe({
+        next: data => {
+          this.reviews = data.reverse();
+          this.aggiornaRecensioniVisibili();
+
+
+        }
+      }
+    )
+    this.reviewService.countReviewsByUser(this.user.email).subscribe({
+      next: data => {
+        this.numrec = data;
+      }
+    })
+
+  }
+
+  aggiornaRecensioniVisibili() {
+    this.recensioniVisibili = this.reviews.slice(this.startIndex, this.startIndex + this.step);
+    this.loadBtnless = this.startIndex != 0;
+    console.log(this.startIndex);
+    console.log(this.reviews.length);
+    this.loadBtnmore = this.startIndex + this.step < this.reviews.length;
+    console.log(this.loadBtnless);
+    console.log(this.loadBtnmore);
+
   }
 
   animateStrokeDashArray() {
@@ -87,11 +121,14 @@ export class ClientComponent implements OnInit {
 
   openPopup2() {
     this.isPopupVisible2 = true;
+
   }
 
   closePopup2() {
-    this.isPopupVisible2 = false;
 
+
+    console.log("prova");
+    this.isPopupVisible2 = false;
   }
 
   openPopup3(/*travel:Travel*/) {
@@ -139,4 +176,31 @@ export class ClientComponent implements OnInit {
       }
     )
   }
+
+  lessReview() {
+    if (this.startIndex - this.step >= 0) {
+      this.startIndex -= this.step;
+      this.aggiornaRecensioniVisibili();
+    }
+
+  }
+
+  moreReview() {
+    if (this.startIndex + this.step < this.reviews.length) {
+      this.startIndex += this.step;
+      this.aggiornaRecensioniVisibili();
+    }
+  }
+
+  aggiornaLista(review: Review) {
+    console.log("mannananan")
+    this.reviews.unshift(review);
+    this.startIndex = 0;
+    this.numrec += 1;
+    this.aggiornaRecensioniVisibili();
+
+
+  }
+
+
 }

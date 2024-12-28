@@ -27,7 +27,7 @@
           <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Viaggi effettuati:</h5>
             <p class="fs-4">120</p></div>
           <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Recensioni effettuate:</h5>
-            <p class="fs-4">20</p></div>
+            <p class="fs-4">{{ numrec }}</p></div>
         </div>
       </div>
     </div>
@@ -98,19 +98,49 @@
     </div>
   </div>
 
-  <!-- Favorite Food and Hobby -->
-  <div class="row mt-4">
-    <!-- Favorite Food -->
-    <div class="col-md-6 mb-4">
-      <div class="card p-3 shadow-sm">
-        <h5 class="fw-bold">Ultime recensioni</h5>
-        <div *ngFor="let card of [1, 2, 3]">
-          <app-review></app-review>
+  <div class="row mt-4 ">
+
+    <div class="col-md-6 mb-4 ">
+
+      <div class="card p-3 shadow-sm rec d-flex flex-column h-100">
+        <div class="row justify-content-between">
+          <div class="col">
+            <h5 class="fw-bold">Ultime recensioni</h5>
+
+          </div>
+
+          @if (this.loadBtnless) {
+            <div class="col-2 ">
+
+              <button (click)="lessReview()" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-minus "></i>
+
+              </button>
+            </div>
+          }
         </div>
-        <div class="row justify-content-center">
+
+
+        <div *ngFor="let review of recensioniVisibili"
+             class="review-container flex-grow-1 d-flex flex-column justify-content-center" [ngClass]="{'show': true}">
+          <app-review [review]="review"></app-review>
+        </div>
+        @if (this.loadBtnmore) {
+          <div class="row justify-content-end mt-0">
+            <div class="col-2">
+              <button (click)="moreReview()" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-plus fa-sm"></i>
+              </button>
+            </div>
+
+          </div>
+        }
+        <div class="row justify-content-center mt-auto ">
           <div class="col-4">
             <button class="btn btn-primary mt-2  " (click)="openPopup2()">aggiungi recensione</button>
+
           </div>
+
         </div>
 
       </div>
@@ -125,7 +155,7 @@
           </div>
           <div class="modal-body shadow-lg ">
             <!-- Contenuto del modale -->
-            <app-add-review (closeModal)="closePopup2()"></app-add-review>
+            <app-add-review (closeModal)="closePopup2()" (reviewAdded)="aggiornaLista($event)"></app-add-review>
           </div>
         </div>
       </div>

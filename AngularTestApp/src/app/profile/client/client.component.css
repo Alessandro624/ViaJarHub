@@ -106,3 +106,17 @@ a {
   text-decoration: none;
   color: black;
 }
+
+.rec {
+  min-height: 374px;
+}
+
+.fa-minus {
+  font-size: 10px;
+}
+
+.fa-plus {
+  font-size: 10px;
+}
+
+

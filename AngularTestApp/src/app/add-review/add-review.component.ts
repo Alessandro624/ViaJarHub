@@ -19,7 +19,7 @@ import {AuthenticationService} from '../login/authentication.service';
 })
 export class AddReviewComponent {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  dropdownOptions: string[] = ['26', '27', 'Opzione 3'];
+  dropdownOptions: string[] = ['26', '27', '28', '29', '30'];
   selectedOption: string = '';
   rating: number = 0
   images: File[] = [];
@@ -32,6 +32,7 @@ export class AddReviewComponent {
 
   comment: string = '';
   @Output() closeModal = new EventEmitter<unknown>();//invia evento al padre
+  @Output() reviewAdded = new EventEmitter<Review>();
 
   rate(star: number) {
     this.rating = star;
@@ -46,6 +47,7 @@ export class AddReviewComponent {
     console.log('Opzione selezionata:', this.selectedOption);
     console.log('Stelle selezionate:', this.rating);
     console.log('Commento:', this.comment);
+
     this.authentication.currentUser$.subscribe(user => {
       if (user) {
         let review: Review = {
@@ -53,9 +55,19 @@ export class AddReviewComponent {
           emailUser: user.email,
           stars: this.rating,
           comment: this.comment,
+          data: this.formatDate(new Date())
         }
-        this.reviewService.createReview(review, this.images).subscribe();
+        this.reviewService.createReview(review, this.images).subscribe(
+          {
+            next: () => {
+              this.reviewAdded.emit(review);
+            }
+          }
+        );
       }
+      this.rating = 0
+      this.images = [];
+      this.imagesUrl = [];
       this.comment = '';
       this.closeModal.emit();
     })
@@ -107,5 +119,12 @@ export class AddReviewComponent {
   removeImage(index: number) {
     this.images.splice(index, 1);
     this.imagesUrl.splice(index, 1);
+  }
+
+  formatDate(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mesi da 0 a 11
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
   }
 }

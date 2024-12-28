@@ -3,5 +3,5 @@ export interface Review {
   emailUser: string;
   stars: number;
   comment: string;
-
+  data: string;
 }
