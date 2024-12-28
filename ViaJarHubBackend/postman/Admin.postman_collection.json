@@ -185,7 +185,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"offset\": 0,\r\n    \"limit\": 10,\r\n    \"filters\": {\r\n        \"searchQuery\":\"\",\r\n        \"startDate\":\"\",\r\n        \"endDate\":\"\",\r\n        \"minPrice\":0,\r\n        \"maxPrice\":100,\r\n        \"travelType\":null\r\n    }\r\n}",
+					"raw": "{\r\n    \"offset\": 0,\r\n    \"limit\": 10,\r\n    \"filters\": {\r\n        \"searchQuery\":\"\",\r\n        \"startDate\":\"\",\r\n        \"endDate\":\"\",\r\n        \"minPrice\":0,\r\n        \"maxPrice\":100,\r\n        \"travelType\":null,\r\n        \"travelOrder\":null,\r\n        \"reverse\":null\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
