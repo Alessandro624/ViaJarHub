@@ -147,7 +147,7 @@
 					"formdata": [
 						{
 							"key": "travel",
-							"value": "{\n    \"destination\": \"example\",\n    \"isCountry\": \"false\",\n    \"startDate\": \"2020-01-01\",\n    \"endDate\": \"2020-01-01\",\n    \"description\": \"example description\",\n    \"price\": 13.99,\n    \"maxParticipantsNumber\": 15,\n    \"travelType\": \"CULTURA\",\n    \"imagesPaths\": [],\n    \"latitude\": 12.1,\n    \"longitude\": 15.1\n}",
+							"value": "{\n    \"destination\": \"example\",\n    \"isCountry\": \"false\",\n    \"startDate\": \"2026-01-01\",\n    \"endDate\": \"2026-01-01\",\n    \"description\": \"example description\",\n    \"price\": 13.99,\n    \"maxParticipantsNumber\": 15,\n    \"travelType\": \"CULTURA\",\n    \"imagesPaths\": [],\n    \"latitude\": 12.1,\n    \"longitude\": 15.1\n}",
 							"contentType": "application/json",
 							"type": "text"
 						},
@@ -185,7 +185,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"offset\": 0,\r\n    \"limit\": 10,\r\n    \"filters\": {\r\n        \"startDate\":\"\",\r\n        \"endDate\":\"\",\r\n        \"minPrice\":0,\r\n        \"maxPrice\":10,\r\n        \"travelType\":null\r\n    }\r\n}",
+					"raw": "{\r\n    \"offset\": 0,\r\n    \"limit\": 10,\r\n    \"filters\": {\r\n        \"searchQuery\":\"\",\r\n        \"startDate\":\"\",\r\n        \"endDate\":\"\",\r\n        \"minPrice\":0,\r\n        \"maxPrice\":100,\r\n        \"travelType\":null\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -313,6 +313,37 @@
 						"admin",
 						"v1",
 						"travels-count"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSuggestions",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchQuery\":\"\",\r\n    \"startDate\":\"\",\r\n    \"endDate\":\"\",\r\n    \"minPrice\":0,\r\n    \"maxPrice\":100,\r\n    \"travelType\":null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/admin/v1/suggestions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"admin",
+						"v1",
+						"suggestions"
 					]
 				}
 			},

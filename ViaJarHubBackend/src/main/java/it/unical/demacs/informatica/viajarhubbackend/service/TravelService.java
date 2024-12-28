@@ -50,6 +50,15 @@ public class TravelService implements ITravelService {
     }
 
     @Override
+    public List<String> getSuggestions(TravelFilter filters, boolean isAdmin) {
+        checkFilterValidity(filters, isAdmin);
+        if (!isAdmin && filters.getStartDate() == null) {
+            filters.setStartDate(LocalDate.now());
+        }
+        return travelDAO.getSuggestions(filters);
+    }
+
+    @Override
     public Travel createTravel(Travel travel, List<MultipartFile> travelImages) throws Exception {
         checkNotNullFields(travel);
         checkDateValidity(travel.getStartDate(), travel.getEndDate());

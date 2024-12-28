@@ -2,6 +2,7 @@ package it.unical.demacs.informatica.viajarhubbackend.controller.travel;
 
 
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
+import it.unical.demacs.informatica.viajarhubbackend.model.TravelFilter;
 import it.unical.demacs.informatica.viajarhubbackend.model.TravelRequest;
 import it.unical.demacs.informatica.viajarhubbackend.service.ITravelService;
 import org.springframework.http.MediaType;
@@ -37,6 +38,11 @@ public class AdminTravelController extends TravelController {
     @RequestMapping(value = "/travel", method = RequestMethod.GET)
     public ResponseEntity<Travel> getTravel(@RequestParam("id") Long id) {
         return super.getTravel(id);
+    }
+
+    @RequestMapping(value = "/suggestions", method = RequestMethod.POST)
+    public ResponseEntity<List<String>> getSuggestions(@RequestBody TravelFilter filters) {
+        return super.getSuggestions(filters);
     }
 
     @RequestMapping(value = "/travels-count", method = RequestMethod.POST)

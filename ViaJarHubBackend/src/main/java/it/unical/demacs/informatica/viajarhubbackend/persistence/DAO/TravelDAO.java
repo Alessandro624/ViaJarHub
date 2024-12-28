@@ -13,6 +13,8 @@ public interface TravelDAO {
 
     Travel findById(Long id, LocalDate startDate);
 
+    List<String> getSuggestions(TravelFilter filters);
+
     void save(Travel travel);
 
     void delete(Long id);

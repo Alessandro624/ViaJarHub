@@ -4,6 +4,7 @@ import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputExcep
 import it.unical.demacs.informatica.viajarhubbackend.exception.TravelAlreadyExistsException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
+import it.unical.demacs.informatica.viajarhubbackend.model.TravelFilter;
 import it.unical.demacs.informatica.viajarhubbackend.model.TravelRequest;
 import it.unical.demacs.informatica.viajarhubbackend.service.ITravelService;
 import lombok.Getter;
@@ -54,10 +55,23 @@ public abstract class TravelController {
         }
     }
 
+    public ResponseEntity<List<String>> getSuggestions(TravelFilter filters) {
+        try {
+            List<String> suggestions = travelService.getSuggestions(filters, isAdmin());
+            return ResponseEntity.ok(suggestions);
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     public ResponseEntity<Integer> getTravelCount(TravelRequest travelRequest) {
         try {
             int travelCount = travelService.getTravelCount(travelRequest.getFilters(), isAdmin());
             return ResponseEntity.ok().body(travelCount);
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
