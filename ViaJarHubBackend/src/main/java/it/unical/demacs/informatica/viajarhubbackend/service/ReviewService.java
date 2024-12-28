@@ -69,21 +69,20 @@ public class ReviewService implements IReviewService {
     public Review save(Review review, List<MultipartFile> reviewImages) throws Exception {
         checkNotNullFields(review);
         System.out.println("provas");
-
         checkNotDuplicate(review);
         System.out.println("provas");
-
-        List<String> reviewImagesPaths = new ArrayList<>();
-        for (MultipartFile multipartFile : reviewImages) {
-            reviewImagesPaths.add(multipartFile.getOriginalFilename());
+        if (reviewImages != null && !reviewImages.isEmpty()) {
+            List<String> reviewImagesPaths = new ArrayList<>();
+            for (MultipartFile multipartFile : reviewImages) {
+                reviewImagesPaths.add(multipartFile.getOriginalFilename());
+            }
+            review.setImagesPaths(reviewImagesPaths);
+            System.out.println("provas" + review.getImagesPaths());
         }
-        review.setImagesPaths(reviewImagesPaths);
-        System.out.println("provas" + review.getImagesPaths());
         reviewDAO.save(review);
         System.out.println("provas");
-
         Optional<Review> savedReview = findReview(review.getIdTravel(), review.getEmailUser());
-        if (savedReview.isPresent()) {
+        if (reviewImages != null && !reviewImages.isEmpty() && savedReview.isPresent()) {
             saveReviewImages(savedReview.get(), reviewImages);
             reviewDAO.save(savedReview.get());
         }
