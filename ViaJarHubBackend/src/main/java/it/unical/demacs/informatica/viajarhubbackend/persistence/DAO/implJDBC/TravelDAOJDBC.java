@@ -43,7 +43,9 @@ public class TravelDAOJDBC implements TravelDAO {
 
     @Override
     public List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters) {
-        StringBuilder query = new StringBuilder("SELECT * FROM travel WHERE 1=1");
+        StringBuilder query = new StringBuilder("SELECT t.* FROM travel t");
+        query.append(" JOIN travel_avg_stars tavg ON t.id = tavg.id");
+        query.append(" WHERE 1=1");
         List<Object> params = applyFilters(filters, query);
         applyOrderLogic(query, filters.getTravelOrder(), filters.getReverse());
         query.append(" LIMIT ? OFFSET ?");
@@ -73,9 +75,9 @@ public class TravelDAOJDBC implements TravelDAO {
                 case BY_PRICE:
                     query.append(" ORDER BY price");
                     break;
-                /*case BY_STARS:
-                    query.append(" ORDER BY stars");
-                    break;*/
+                case BY_STARS:
+                    query.append(" ORDER BY tavg.avg_stars");
+                    break;
                 default:
                     query.append(" ORDER BY id");
                     break;
