@@ -67,12 +67,12 @@ public class ReviewService implements IReviewService {
 
     @Override
     public Review save(Review review, List<MultipartFile> reviewImages) throws Exception {
-        System.out.println("provas");
         checkNotNullFields(review);
         System.out.println("provas");
 
         checkNotDuplicate(review);
         System.out.println("provas");
+
         List<String> reviewImagesPaths = new ArrayList<>();
         for (MultipartFile multipartFile : reviewImages) {
             reviewImagesPaths.add(multipartFile.getOriginalFilename());

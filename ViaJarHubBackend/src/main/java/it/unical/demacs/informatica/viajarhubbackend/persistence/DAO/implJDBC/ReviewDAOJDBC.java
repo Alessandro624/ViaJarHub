@@ -105,8 +105,8 @@ public class ReviewDAOJDBC implements ReviewDAO {
 
     @Override
     public void save(Review review) {
-        String query = "INSERT INTO review (idtravel, email, stars, comment,images_paths) VALUES (?, ?, ?, ?,?) " +
-                "ON CONFLICT (idtravel, email) DO UPDATE SET stars = EXCLUDED.stars, comment = EXCLUDED.comment,images_paths = EXCLUDED.images_paths" ;
+        String query = "INSERT INTO review (idtravel, email, stars, comment,images_paths,data) VALUES (?, ?, ?, ?,?,?) " +
+                "ON CONFLICT (idtravel, email) DO UPDATE SET stars = EXCLUDED.stars, comment = EXCLUDED.comment,images_paths = EXCLUDED.images_paths,data=EXCLUDED.data" ;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             System.out.println("provaSave");
             statement.setInt(1, review.getIdTravel());
@@ -131,7 +131,7 @@ public class ReviewDAOJDBC implements ReviewDAO {
 
             statement.setArray(5, sqlArray);
             System.out.println("provaSave");
-
+            statement.setObject(6, review.getData());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -163,7 +163,8 @@ public class ReviewDAOJDBC implements ReviewDAO {
                 resultSet.getString("email"),
                 resultSet.getInt("stars"),
                 resultSet.getString("comment"),
-                imagesPaths
+                imagesPaths,
+                resultSet.getDate("data").toLocalDate()
 
         );
     }

@@ -1,11 +1,9 @@
-package it.unical.demacs.informatica.viajarhubbackend.controller;
+package it.unical.demacs.informatica.viajarhubbackend.controller.review;
 
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.Review;
-import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.service.ReviewService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -75,6 +73,7 @@ public class ReviewController {
 
     @RequestMapping(value = "/create-review", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createReview(@RequestPart Review review, @RequestParam List<MultipartFile> reviewImages) {
+        System.out.println("prova");
         System.out.println(review);
         System.out.println(reviewImages);
         try {
