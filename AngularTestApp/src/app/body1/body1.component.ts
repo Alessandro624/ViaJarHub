@@ -10,6 +10,7 @@ import {TravelFilter} from '../models/travel/travel-filter.model';
 import {switchMap, tap} from 'rxjs';
 import {AuthenticationService} from '../login/authentication.service';
 import {ActivatedRoute} from '@angular/router';
+import {translateOrder, TravelOrder} from '../models/travel/travel-order.enum';
 
 @Component({
   selector: 'app-body1',
@@ -31,10 +32,13 @@ export class Body1Component implements OnInit {
     minPrice: 0,
     maxPrice: 0,
     travelType: null,
+    travelOrder: null,
+    reverse: false
   }
   alertMessage: string = '';
   isLoading: boolean = false;
-
+  travelOrders: TravelOrder[] = Object.values(TravelOrder);
+  
   constructor(private _travelService: TravelService, private _authenticationService: AuthenticationService, private _activatedRoute: ActivatedRoute) {
   }
 
@@ -99,5 +103,21 @@ export class Body1Component implements OnInit {
   localDeleteTravel(id: number): void {
     this.travels = this.travels.filter(travel => travel.id !== id);
     this.travelsMatrix = this.chunkArray(this.travels, 3);
+  }
+
+  setOrder(order: TravelOrder) {
+    const input = <TravelOrder>translateOrder(order);
+    if (this.filters.travelOrder !== input)
+      this.filters.travelOrder = input;
+    console.log(this.filters);
+    this.resetTravels();
+    this.loadTravels();
+  }
+
+  toggleReverse() {
+    this.filters.reverse = !this.filters.reverse;
+    console.log(this.filters);
+    this.resetTravels();
+    this.loadTravels();
   }
 }

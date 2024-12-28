@@ -1,4 +1,4 @@
-import {OnInit, OnDestroy, Component, ElementRef, PLATFORM_ID, Inject, NgZone} from '@angular/core';
+import {Component, ElementRef, Inject, NgZone, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser, NgClass, NgForOf, NgIf} from '@angular/common';
 import {TravelService} from '../travel-detail/travel.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -34,6 +34,8 @@ export class CarouselComponent implements OnInit, OnDestroy {
     minPrice: 0,
     maxPrice: 0,
     travelType: null,
+    travelOrder: null,
+    reverse: false,
   }
 
   suggestions: string[] = [];
