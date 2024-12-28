@@ -38,7 +38,7 @@ export class Body1Component implements OnInit {
   alertMessage: string = '';
   isLoading: boolean = false;
   travelOrders: TravelOrder[] = Object.values(TravelOrder);
-  
+
   constructor(private _travelService: TravelService, private _authenticationService: AuthenticationService, private _activatedRoute: ActivatedRoute) {
   }
 
@@ -106,7 +106,7 @@ export class Body1Component implements OnInit {
   }
 
   setOrder(order: TravelOrder) {
-    const input = <TravelOrder>translateOrder(order);
+    const input = this.translateTravelOrder(order);
     if (this.filters.travelOrder !== input)
       this.filters.travelOrder = input;
     console.log(this.filters);
@@ -119,5 +119,9 @@ export class Body1Component implements OnInit {
     console.log(this.filters);
     this.resetTravels();
     this.loadTravels();
+  }
+
+  translateTravelOrder(order: TravelOrder) {
+    return <TravelOrder>translateOrder(order);
   }
 }
