@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 public class TravelFilter {
+    private String searchQuery;
     private LocalDate startDate;
     private LocalDate endDate;
     private double minPrice;

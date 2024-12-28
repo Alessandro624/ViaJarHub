@@ -14,6 +14,8 @@ public interface ITravelService {
 
     Optional<Travel> findById(Long id, boolean isAdmin);
 
+    List<String> getSuggestions(TravelFilter filters, boolean isAdmin);
+
     Travel createTravel(Travel travel, List<MultipartFile> travelImages) throws Exception;
 
     Travel updateTravel(Long id, Travel travel, List<MultipartFile> travelImages) throws Exception;

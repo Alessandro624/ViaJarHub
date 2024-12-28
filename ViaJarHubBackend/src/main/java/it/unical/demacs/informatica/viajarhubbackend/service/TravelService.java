@@ -50,6 +50,15 @@ public class TravelService implements ITravelService {
     }
 
     @Override
+    public List<String> getSuggestions(TravelFilter filters, boolean isAdmin) {
+        checkFilterValidity(filters, isAdmin);
+        if (!isAdmin && filters.getStartDate() == null) {
+            filters.setStartDate(LocalDate.now());
+        }
+        return travelDAO.getSuggestions(filters);
+    }
+
+    @Override
     public Travel createTravel(Travel travel, List<MultipartFile> travelImages) throws Exception {
         checkNotNullFields(travel);
         checkDateValidity(travel.getStartDate(), travel.getEndDate());
@@ -81,6 +90,10 @@ public class TravelService implements ITravelService {
         checkParticipantValidity(travel.getMaxParticipantsNumber());
         if (travelImages != null && !travelImages.isEmpty()) {
             saveTravelImages(travel, travelImages);
+        }
+        Travel existingTravel = checkTravelExistence(id, true);
+        if (travel.getPrice() != existingTravel.getPrice()) {
+            travel.setOldPrice(existingTravel.getPrice());
         }
         travelDAO.save(travel);
         return travelDAO.findById(id, null);

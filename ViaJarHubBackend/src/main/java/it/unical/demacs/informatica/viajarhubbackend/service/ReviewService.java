@@ -2,7 +2,6 @@ package it.unical.demacs.informatica.viajarhubbackend.service;
 
 import it.unical.demacs.informatica.viajarhubbackend.exception.*;
 import it.unical.demacs.informatica.viajarhubbackend.model.Review;
-import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.ReviewDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 import org.springframework.stereotype.Service;
@@ -38,8 +37,8 @@ public class ReviewService implements IReviewService {
     }
 
     public Optional<Review> findReview(int travelId, String email) {
-        Review reviews=reviewDAO.findReview(travelId,email);
-        if(reviews==null) {
+        Review reviews = reviewDAO.findReview(travelId, email);
+        if (reviews == null) {
             return Optional.empty();
         }
 
@@ -47,26 +46,23 @@ public class ReviewService implements IReviewService {
     }
 
 
-
     public int countReviewsByUser(String email) {
         return reviewDAO.countReviewsByUser(email);
     }
 
     @Override
-    public List<byte[]> getTravelImages(int id,String email) throws Exception {
-
-            Review review = checkReviewExistence(id,email);
-            List<String> reviewImagesPaths = review.getImagesPaths();
-            if (reviewImagesPaths == null ||reviewImagesPaths.isEmpty()) {
-                throw new InvalidInputException("Travel images paths cannot be null or empty");
-            }
-            List<byte[]> reviewImages = new ArrayList<>();
-            for (String imagePath : reviewImagesPaths) {
-                Path path = Path.of(REVIEW_IMAGES_DIR + id + '/' + imagePath);
-                reviewImages.add(Files.readAllBytes(path));
-            }
-            return reviewImages;
-
+    public List<byte[]> getTravelImages(int id, String email) throws Exception {
+        Review review = checkReviewExistence(id, email);
+        List<String> reviewImagesPaths = review.getImagesPaths();
+        if (reviewImagesPaths == null || reviewImagesPaths.isEmpty()) {
+            throw new InvalidInputException("Travel images paths cannot be null or empty");
+        }
+        List<byte[]> reviewImages = new ArrayList<>();
+        for (String imagePath : reviewImagesPaths) {
+            Path path = Path.of(REVIEW_IMAGES_DIR + id + '-' + email + '/' + imagePath);
+            reviewImages.add(Files.readAllBytes(path));
+        }
+        return reviewImages;
     }
 
     @Override
@@ -77,23 +73,22 @@ public class ReviewService implements IReviewService {
 
         checkNotDuplicate(review);
         System.out.println("provas");
-        List<String> reviewImagesPaths =new ArrayList<>();
+        List<String> reviewImagesPaths = new ArrayList<>();
         for (MultipartFile multipartFile : reviewImages) {
             reviewImagesPaths.add(multipartFile.getOriginalFilename());
         }
         review.setImagesPaths(reviewImagesPaths);
-        System.out.println("provas"+review.getImagesPaths());
+        System.out.println("provas" + review.getImagesPaths());
         reviewDAO.save(review);
         System.out.println("provas");
 
-        Optional<Review> savedReview = findReview(review.getIdTravel(),review.getEmailUser());
+        Optional<Review> savedReview = findReview(review.getIdTravel(), review.getEmailUser());
         if (savedReview.isPresent()) {
             saveReviewImages(savedReview.get(), reviewImages);
             reviewDAO.save(savedReview.get());
         }
         return review;
     }
-
 
 
     @Override
@@ -132,28 +127,30 @@ public class ReviewService implements IReviewService {
         }
         return existingReview.get();
     }
+
     private void saveReviewImages(Review review, List<MultipartFile> reviewImages) throws Exception {
-        String reviewlDirectory = String.valueOf(review.getIdTravel())+review.getEmailUser();
-        File directory = new File(REVIEW_IMAGES_DIR + reviewlDirectory);
+        String reviewDirectory = review.getIdTravel() + '-' + review.getEmailUser();
+        File directory = new File(REVIEW_IMAGES_DIR + reviewDirectory);
         if (!directory.exists() && !directory.mkdirs()) {
             throw new Exception("Could not create directory");
         }
-        System.out.println("prova gggagagas "+reviewImages.toString());
+        System.out.println("prova gggagagas " + reviewImages.toString());
         deleteExistingFiles(directory.listFiles());
         List<String> imagesPaths = new ArrayList<>();
-        System.out.println("prova gggagagas "+reviewImages.toString());
+        System.out.println("prova gggagagas " + reviewImages);
 
-        for (MultipartFile reviewImage :reviewImages) {
+        for (MultipartFile reviewImage : reviewImages) {
             System.out.println("mannaia");
-            String fileName = review.getIdTravel()+ '-'+review.getEmailUser()+'-' + reviewImage.getOriginalFilename();
-            System.out.println("mannaia"+fileName);
-            Path path = Path.of(REVIEW_IMAGES_DIR + reviewImage, fileName);
+            String fileName = review.getIdTravel() + '-' + review.getEmailUser() + '-' + reviewImage.getOriginalFilename();
+            System.out.println("mannaia" + fileName);
+            Path path = Path.of(REVIEW_IMAGES_DIR + reviewDirectory, fileName);
             Files.copy(reviewImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             imagesPaths.add(fileName);
         }
 
         review.setImagesPaths(imagesPaths);
     }
+
     private void deleteExistingFiles(File[] existingFiles) throws Exception {
         if (existingFiles != null) {
             for (File existingFile : existingFiles) {

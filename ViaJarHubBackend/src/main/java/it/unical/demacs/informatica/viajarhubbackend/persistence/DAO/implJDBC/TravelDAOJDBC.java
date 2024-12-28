@@ -84,6 +84,26 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
+    public List<String> getSuggestions(TravelFilter filters) {
+        StringBuilder query = new StringBuilder("SELECT DISTINCT destination FROM travel WHERE 1=1");
+        List<Object> params = applyFilters(filters, query);
+        query.append(" LIMIT 10");
+        try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                statement.setObject(i + 1, params.get(i));
+            }
+            ResultSet resultSet = statement.executeQuery();
+            List<String> suggestions = new ArrayList<>();
+            while (resultSet.next()) {
+                suggestions.add(resultSet.getString("destination"));
+            }
+            return suggestions;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
     public void save(Travel travel) {
         String query = "INSERT INTO travel (id, destination, iscountry, start_date, end_date, description, old_price, price, max_participants_number, type, images_paths, latitude, longitude) " +
                 "VALUES (COALESCE(?, nextval('travel_id_seq')), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
@@ -117,7 +137,6 @@ public class TravelDAOJDBC implements TravelDAO {
             statement.setInt(9, travel.getMaxParticipantsNumber());
             statement.setString(10, travel.getTravelType().toString());
             List<String> imagesPaths = travel.getImagesPaths();
-            System.out.println(imagesPaths);
             Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
             statement.setArray(11, sqlArray);
             statement.setDouble(12, travel.getLatitude());
@@ -163,6 +182,11 @@ public class TravelDAOJDBC implements TravelDAO {
 
     private List<Object> applyFilters(TravelFilter filters, StringBuilder query) {
         List<Object> params = new ArrayList<>();
+        if (filters.getSearchQuery() != null && !filters.getSearchQuery().isBlank()) {
+            query.append(" AND (LOWER(destination) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))");
+            params.add("%" + filters.getSearchQuery() + "%");
+            params.add("%" + filters.getSearchQuery() + "%");
+        }
         if (filters.getStartDate() != null) {
             query.append(" AND start_date >= ?");
             params.add(filters.getStartDate());
