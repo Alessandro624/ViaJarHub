@@ -17,7 +17,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/open/v1")
 public class ReviewController {
-    private final ReviewService reviewService ;
+    private final ReviewService reviewService;
 
     public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
@@ -73,13 +73,13 @@ public class ReviewController {
         }
     }
 
-    @RequestMapping(value = "/create-review", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequestMapping(value = "/create-review", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createReview(@RequestPart Review review, @RequestParam List<MultipartFile> reviewImages) {
         System.out.println(review);
         System.out.println(reviewImages);
         try {
             System.out.println(review);
-            Review createdReview = reviewService.save(review,reviewImages);
+            Review createdReview = reviewService.save(review, reviewImages);
             System.out.println(createdReview);
             if (createdReview == null) {
                 return ResponseEntity.badRequest().build();
@@ -91,11 +91,12 @@ public class ReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
     @RequestMapping(value = "/review-images", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<byte[]>> getTravelImages(@RequestParam("id") int id ,
+    public ResponseEntity<List<byte[]>> getTravelImages(@RequestParam("id") int id,
                                                         @RequestParam("email") String email) {
         try {
-            List<byte[]> imagesBytes =reviewService.getTravelImages(id, email);
+            List<byte[]> imagesBytes = reviewService.getTravelImages(id, email);
             return ResponseEntity.ok()
                     .body(imagesBytes);
         } catch (InvalidInputException e) {
@@ -103,6 +104,7 @@ public class ReviewController {
         } catch (TravelNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }

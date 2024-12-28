@@ -129,7 +129,9 @@ public class ReviewService implements IReviewService {
     }
 
     private void saveReviewImages(Review review, List<MultipartFile> reviewImages) throws Exception {
-        String reviewDirectory = review.getIdTravel() + '-' + review.getEmailUser();
+        System.out.println(review.getIdTravel());
+        String reviewDirectory = String.valueOf(review.getIdTravel()) + '-' + review.getEmailUser();
+        System.out.println("Directory " + reviewDirectory);
         File directory = new File(REVIEW_IMAGES_DIR + reviewDirectory);
         if (!directory.exists() && !directory.mkdirs()) {
             throw new Exception("Could not create directory");
@@ -141,7 +143,7 @@ public class ReviewService implements IReviewService {
 
         for (MultipartFile reviewImage : reviewImages) {
             System.out.println("mannaia");
-            String fileName = review.getIdTravel() + '-' + review.getEmailUser() + '-' + reviewImage.getOriginalFilename();
+            String fileName = String.valueOf(review.getIdTravel()) + '-' + review.getEmailUser() + '-' + reviewImage.getOriginalFilename();
             System.out.println("mannaia" + fileName);
             Path path = Path.of(REVIEW_IMAGES_DIR + reviewDirectory, fileName);
             Files.copy(reviewImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
