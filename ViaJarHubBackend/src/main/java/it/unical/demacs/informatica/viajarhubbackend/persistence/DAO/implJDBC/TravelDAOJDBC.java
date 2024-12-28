@@ -2,6 +2,7 @@ package it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC;
 
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.model.TravelFilter;
+import it.unical.demacs.informatica.viajarhubbackend.model.TravelOrder;
 import it.unical.demacs.informatica.viajarhubbackend.model.TravelType;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.TravelDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
@@ -44,7 +45,8 @@ public class TravelDAOJDBC implements TravelDAO {
     public List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters) {
         StringBuilder query = new StringBuilder("SELECT * FROM travel WHERE 1=1");
         List<Object> params = applyFilters(filters, query);
-        query.append(" ORDER BY id LIMIT ? OFFSET ?");
+        applyOrderLogic(query, filters.getTravelOrder(), filters.getReverse());
+        query.append(" LIMIT ? OFFSET ?");
         params.add(limit);
         params.add(offset);
         try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
@@ -59,6 +61,32 @@ public class TravelDAOJDBC implements TravelDAO {
             return travels;
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
+        }
+    }
+
+    private void applyOrderLogic(StringBuilder query, TravelOrder order, Boolean reverse) {
+        if (order != null) {
+            switch (order) {
+                case BY_DESTINATION:
+                    query.append(" ORDER BY destination");
+                    break;
+                case BY_PRICE:
+                    query.append(" ORDER BY price");
+                    break;
+                /*case BY_STARS:
+                    query.append(" ORDER BY stars");
+                    break;*/
+                default:
+                    query.append(" ORDER BY id");
+                    break;
+            }
+        } else {
+            query.append(" ORDER BY id");
+        }
+        if (reverse != null && reverse) {
+            query.append(" DESC");
+        } else {
+            query.append(" ASC");
         }
     }
 
@@ -128,7 +156,7 @@ public class TravelDAOJDBC implements TravelDAO {
                 statement.setNull(1, Types.BIGINT);
             }
             statement.setString(2, travel.getDestination());
-            statement.setBoolean(3, travel.isCountry());
+            statement.setBoolean(3, travel.getIsCountry());
             statement.setObject(4, travel.getStartDate());
             statement.setObject(5, travel.getEndDate());
             statement.setString(6, travel.getDescription());

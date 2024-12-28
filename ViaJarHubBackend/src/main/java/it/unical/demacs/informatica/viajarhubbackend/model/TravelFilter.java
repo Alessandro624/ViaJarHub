@@ -16,4 +16,6 @@ public class TravelFilter {
     private double minPrice;
     private double maxPrice;
     private TravelType travelType;
+    private TravelOrder travelOrder;
+    private Boolean reverse;
 }
