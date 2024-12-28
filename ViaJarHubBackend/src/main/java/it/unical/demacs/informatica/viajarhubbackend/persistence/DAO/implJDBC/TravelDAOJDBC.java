@@ -128,7 +128,7 @@ public class TravelDAOJDBC implements TravelDAO {
                 statement.setNull(1, Types.BIGINT);
             }
             statement.setString(2, travel.getDestination());
-            statement.setBoolean(3, travel.isCountry());
+            statement.setBoolean(3, travel.getIsCountry());
             statement.setObject(4, travel.getStartDate());
             statement.setObject(5, travel.getEndDate());
             statement.setString(6, travel.getDescription());

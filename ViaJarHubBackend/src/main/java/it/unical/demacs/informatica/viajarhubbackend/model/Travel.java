@@ -13,7 +13,7 @@ import java.util.List;
 public class Travel {
     private Long id;
     private String destination;
-    private boolean isCountry;
+    private Boolean isCountry;
     private LocalDate startDate;
     private LocalDate endDate;
     private String description;
