@@ -1,4 +1,5 @@
 import {TravelType} from './travel-type.enum';
+import {TravelOrder} from './travel-order.enum';
 
 export interface TravelFilter {
   searchQuery: string;
@@ -7,4 +8,6 @@ export interface TravelFilter {
   minPrice: number;
   maxPrice: number;
   travelType: TravelType | null;
+  travelOrder: TravelOrder | null;
+  reverse: boolean;
 }

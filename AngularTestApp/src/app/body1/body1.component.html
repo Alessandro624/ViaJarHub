@@ -3,6 +3,25 @@
 <div class="container my-5">
   <app-filtri [filters]="filters" [alertMessage]="alertMessage" [isLoading]="isLoading" (loadTravel)="loadTravels()"
               (resetTravels)="resetTravels()"></app-filtri>
+
+  <div class="my-3 d-flex justify-content-end">
+    <div class="btn-group me-2" role="group" aria-label="Ordinamento Viaggi">
+      <button *ngFor="let order of travelOrders"
+              type="button"
+              class="btn btn-outline-primary"
+              (click)="setOrder(order)"> {{ order }}
+      </button>
+    </div>
+    <button *ngIf="filters.reverse" type="button" class="btn btn-outline-secondary" (click)="toggleReverse()">
+      <i class="fa-solid fa-arrow-up-wide-short"></i>
+      Ordinamento Decrescente
+    </button>
+    <button *ngIf="!filters.reverse" type="button" class="btn btn-outline-secondary" (click)="toggleReverse()">
+      <i class="fa-solid fa-arrow-down-wide-short"></i>
+      Ordinamento Crescente
+    </button>
+  </div>
+  
   @if (travelsMatrix && travelsMatrix.length > 0) {
     <div class="row" *ngFor="let travelRow of travelsMatrix">
       <div class="col-12 col-lg-4 my-3" *ngFor="let travel of travelRow">
@@ -16,6 +35,12 @@
     </div>
   }
   @if (index < elementiTot) {
-    <button class="btn btn-primary" (click)="loadTravels()">View More</button>
+    <button class="btn btn-primary" (click)="loadTravels()" [disabled]="isLoading">
+      <span *ngIf="isLoading"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"></span>
+      <span *ngIf="!isLoading">Mostra altri</span>
+    </button>
   }
 </div>
