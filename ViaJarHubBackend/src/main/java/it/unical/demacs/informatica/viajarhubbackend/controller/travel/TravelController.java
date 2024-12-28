@@ -65,6 +65,7 @@ public abstract class TravelController {
 
     public ResponseEntity<List<byte[]>> getTravelImages(Long id) {
         try {
+
             List<byte[]> imagesBytes = this.travelService.getTravelImages(id, isAdmin());
             return ResponseEntity.ok()
                     .body(imagesBytes);
