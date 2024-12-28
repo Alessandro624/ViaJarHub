@@ -24,6 +24,7 @@ export class Body1Component implements OnInit {
   index: number = 0;//indice per caricare 9 viaggi alla volta
   elementiTot: number = 0;
   filters: TravelFilter = {
+    searchQuery: '',
     startDate: '',
     endDate: '',
     minPrice: 0,
@@ -54,6 +55,10 @@ export class Body1Component implements OnInit {
   loadTravels() {
     this.isLoading = true;
     this.loadInit().subscribe(() => this.isLoading = false);
+  }
+
+  setSearchQuery(query: string) {
+    this.filters.searchQuery = query;
   }
 
   loadInit() {

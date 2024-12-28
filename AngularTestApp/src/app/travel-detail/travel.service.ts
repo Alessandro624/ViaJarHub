@@ -297,6 +297,14 @@ export class TravelService {
     );
   }
 
+  getSuggestions(filters: TravelFilter) {
+    return this.checkUserAuthority().pipe(
+      switchMap(user =>
+        this._http.post<string[]>(`${this.APIUrl}/${this.getAPIType(user)}/v1/suggestions`, filters)),
+      catchError(this.handleError)
+    )
+  }
+
   getTravelImages(id: number) {
     return this.checkUserAuthority().pipe(
       switchMap(user =>

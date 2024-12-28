@@ -17,32 +17,34 @@
       <div class="text-container">
         <h5 id="animatedText" class="display-4">Scritta sopra</h5>
       </div>
-      <form class="d-flex mt-2 search-form">
+      <form (ngSubmit)="onSearch()" class="d-flex mt-2 search-form" autocomplete="off">
         <div class="d-flex align-items-center">
-
           <!-- Search Bar -->
-          <div class="input-group search-bar" [ngClass]="{ 'focused': isFocused }">
+          <div class="input-group search-bar position-relative" [ngClass]="{ 'focused': isFocused }">
             <input
               type="text"
               class="form-control"
               placeholder="Cerca..."
-              [(ngModel)]="searchQuery"
+              [(ngModel)]="filters.searchQuery"
               name="searchQuery"
               (focus)="expandSearchBar()"
               (blur)="collapseSearchBar()"
-            />
+              (input)="getAutocompleteSuggestions()"/>
             <button
-              class="btn "
-              type="button"
-              *ngIf="isExpanded"
-              (click)="onSearch()"
-            >
-              <i class="fa-solid  fa-search"></i>
+              class="btn"
+              type="submit"
+              *ngIf="isExpanded">
+              <i class="fa-solid fa-search"></i>
             </button>
+            <!-- Autocomplete Suggestions -->
+            <ul class="suggestions-list" *ngIf="suggestions.length > 0 && isExpanded" role="listbox">
+              <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)" class="suggestion-item"
+                  role="option">
+                {{ suggestion }}
+              </li>
+            </ul>
           </div>
         </div>
-
-
       </form>
     </div>
   } @else {

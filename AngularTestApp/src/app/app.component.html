@@ -7,6 +7,9 @@
         <a routerLink="/body1" class="navbar-brand">
           <img class="img-fluid custom-width" src="ViaJar-Hub.png" alt="Home">
         </a>
+        <div *ngIf="user?.authorities[0]?.authority === UserRole.ADMIN" class="badge bg-warning text-dark px-3 py-2">
+          <span>Modalità Amministratore Attivata</span>
+        </div>
         <ul class="navbar-nav d-flex flex-row ms-auto gap-3">
           @if (!user) {
             <li class="nav-item dropdown">

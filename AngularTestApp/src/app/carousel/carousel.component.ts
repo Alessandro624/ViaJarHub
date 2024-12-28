@@ -4,6 +4,8 @@ import {TravelService} from '../travel-detail/travel.service';
 import {ActivatedRoute} from '@angular/router';
 import {Travel} from '../models/travel/travel.model';
 import {FormsModule} from '@angular/forms';
+import {TravelFilter} from '../models/travel/travel-filter.model';
+import {Body1Component} from '../body1/body1.component';
 
 @Component({
   selector: 'app-carousel',
@@ -26,9 +28,19 @@ export class CarouselComponent implements OnInit, OnDestroy {
   travel!: Travel | undefined;
   immaginiURLs: string[] = [];
   isExpanded: boolean = false;
-  searchQuery: string = '';
 
-  constructor(private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
+  filters: TravelFilter = {
+    searchQuery: '',
+    startDate: '',
+    endDate: '',
+    minPrice: 0,
+    maxPrice: 0,
+    travelType: null,
+  }
+
+  suggestions: string[] = [];
+
+  constructor(private _homeComponent: Body1Component, private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -131,14 +143,38 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   collapseSearchBar(): void {
-    if (!this.searchQuery) {
+    if (!this.filters.searchQuery) {
       this.isExpanded = false;
       this.isFocused = false;
-
     }
   }
 
   onSearch(): void {
-    console.log('Search Query:', this.searchQuery);
+    if (this.isExpanded) {
+      this._homeComponent.resetTravels();
+      this._homeComponent.setSearchQuery(this.filters.searchQuery);
+      this._homeComponent.loadTravels();
+    }
+  }
+
+  getAutocompleteSuggestions() {
+    if (this.filters.searchQuery.length > 2) {
+      this._travelService.getSuggestions(this.filters).subscribe({
+        next: result => {
+          this.suggestions = result;
+        }, error: error => {
+          this.suggestions = [];
+          console.log(error);
+        }
+      });
+    } else {
+      this.suggestions = [];
+    }
+  }
+
+  selectSuggestion(suggestion: string) {
+    this.filters.searchQuery = suggestion;
+    this._homeComponent.setSearchQuery(this.filters.searchQuery);
+    this.suggestions = [];
   }
 }
