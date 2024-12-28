@@ -1,11 +1,10 @@
 import {OnInit, OnDestroy, Component, ElementRef, PLATFORM_ID, Inject, NgZone} from '@angular/core';
 import {isPlatformBrowser, NgClass, NgForOf, NgIf} from '@angular/common';
 import {TravelService} from '../travel-detail/travel.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Travel} from '../models/travel/travel.model';
 import {FormsModule} from '@angular/forms';
 import {TravelFilter} from '../models/travel/travel-filter.model';
-import {Body1Component} from '../body1/body1.component';
 
 @Component({
   selector: 'app-carousel',
@@ -15,8 +14,7 @@ import {Body1Component} from '../body1/body1.component';
     NgClass,
     NgIf,
     FormsModule,
-    NgForOf,
-
+    NgForOf
   ],
   styleUrls: ['./carousel.component.css']
 })
@@ -40,7 +38,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
   suggestions: string[] = [];
 
-  constructor(private _homeComponent: Body1Component, private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
+  constructor(private _router: Router, private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -151,9 +149,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
   onSearch(): void {
     if (this.isExpanded) {
-      this._homeComponent.resetTravels();
+      /*this._homeComponent.resetTravels();
       this._homeComponent.setSearchQuery(this.filters.searchQuery);
-      this._homeComponent.loadTravels();
+      this._homeComponent.loadTravels();*/
+      this._router.navigate(['body1'], {queryParams: {search: this.filters.searchQuery}}).then();
     }
   }
 
@@ -174,7 +173,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
   selectSuggestion(suggestion: string) {
     this.filters.searchQuery = suggestion;
-    this._homeComponent.setSearchQuery(this.filters.searchQuery);
+    // this._homeComponent.setSearchQuery(this.filters.searchQuery);
     this.suggestions = [];
   }
 }

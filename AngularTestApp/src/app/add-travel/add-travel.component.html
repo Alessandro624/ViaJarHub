@@ -18,6 +18,17 @@
       <label for="title" class="form-label">Titolo</label>
     </div>
 
+    <div class="mb-3 form-check">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        id="isCountry"
+        [(ngModel)]="travel.isCountry"
+        name="isCountry"
+        (input)="alertMessage='';">
+      <label class="form-check-label" for="isCountry">Nazione?</label>
+    </div>
+
     <!-- Date Picker: Data di Inizio -->
     <div class="mb-3 form-floating flex-grow-1">
       <input

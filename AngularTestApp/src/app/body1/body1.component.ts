@@ -9,6 +9,7 @@ import {TravelService} from '../travel-detail/travel.service';
 import {TravelFilter} from '../models/travel/travel-filter.model';
 import {switchMap, tap} from 'rxjs';
 import {AuthenticationService} from '../login/authentication.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-body1',
@@ -34,22 +35,26 @@ export class Body1Component implements OnInit {
   alertMessage: string = '';
   isLoading: boolean = false;
 
-  constructor(private _travelService: TravelService, private _authenticationService: AuthenticationService) {
+  constructor(private _travelService: TravelService, private _authenticationService: AuthenticationService, private _activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this._authenticationService.currentUser$
-      .pipe(
-        tap(() => this.resetTravels()),
-        switchMap(() => this.loadInit())
-      )
-      .subscribe({
-        error: error => {
-          this.alertMessage = error.message;
-          console.error('Errore nel caricamento dei viaggi:', error);
-          this.isLoading = false;
-        }
-      });
+    this._activatedRoute.queryParams.subscribe(params => {
+      const searchQuery = params['search'] || '';
+      this.setSearchQuery(searchQuery);
+      this._authenticationService.currentUser$
+        .pipe(
+          tap(() => this.resetTravels()),
+          switchMap(() => this.loadInit())
+        )
+        .subscribe({
+          error: error => {
+            this.alertMessage = error.message;
+            console.error('Errore nel caricamento dei viaggi:', error);
+            this.isLoading = false;
+          }
+        });
+    });
   }
 
   loadTravels() {
