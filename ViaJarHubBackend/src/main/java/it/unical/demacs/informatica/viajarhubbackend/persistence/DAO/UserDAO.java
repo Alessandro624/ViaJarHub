@@ -20,4 +20,6 @@ public interface UserDAO {
     void delete(String email);
 
     void removeExpiredPasswordResetTokens(int minutes);
+
+    void removeTravelFromWishlist(String email, Long travelId);
 }

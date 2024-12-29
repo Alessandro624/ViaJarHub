@@ -42,6 +42,22 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
+    public List<Travel> findAllByUserWishlist(String email) {
+        String query = "SELECT t.* FROM travel t JOIN wishlist w ON t.id = w.travel_id WHERE w.user_email = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            List<Travel> travels = new ArrayList<>();
+            while (resultSet.next()) {
+                travels.add(mapResultSetToTravel(resultSet));
+            }
+            return travels;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
     public List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters) {
         StringBuilder query = new StringBuilder("SELECT t.* FROM travel t");
         query.append(" JOIN travel_avg_stars tavg ON t.id = tavg.id");
@@ -63,32 +79,6 @@ public class TravelDAOJDBC implements TravelDAO {
             return travels;
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
-        }
-    }
-
-    private void applyOrderLogic(StringBuilder query, TravelOrder order, Boolean reverse) {
-        if (order != null) {
-            switch (order) {
-                case BY_DESTINATION:
-                    query.append(" ORDER BY destination");
-                    break;
-                case BY_PRICE:
-                    query.append(" ORDER BY price");
-                    break;
-                case BY_STARS:
-                    query.append(" ORDER BY tavg.avg_stars");
-                    break;
-                default:
-                    query.append(" ORDER BY id");
-                    break;
-            }
-        } else {
-            query.append(" ORDER BY id");
-        }
-        if (reverse != null && reverse) {
-            query.append(" DESC");
-        } else {
-            query.append(" ASC");
         }
     }
 
@@ -187,6 +177,7 @@ public class TravelDAOJDBC implements TravelDAO {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, id);
             statement.executeUpdate();
+            resetRelationInWishListTable(id);
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -259,5 +250,38 @@ public class TravelDAOJDBC implements TravelDAO {
                 imagesPaths,
                 resultSet.getDouble("latitude"),
                 resultSet.getDouble("longitude"));
+    }
+
+    private void applyOrderLogic(StringBuilder query, TravelOrder order, Boolean reverse) {
+        if (order != null) {
+            switch (order) {
+                case BY_DESTINATION:
+                    query.append(" ORDER BY destination");
+                    break;
+                case BY_PRICE:
+                    query.append(" ORDER BY price");
+                    break;
+                case BY_STARS:
+                    query.append(" ORDER BY tavg.avg_stars");
+                    break;
+                default:
+                    query.append(" ORDER BY id");
+                    break;
+            }
+        } else {
+            query.append(" ORDER BY id");
+        }
+        if (reverse != null && reverse) {
+            query.append(" DESC");
+        } else {
+            query.append(" ASC");
+        }
+    }
+
+    private void resetRelationInWishListTable(Long id) throws SQLException {
+        String query = "DELETE FROM wishlist WHERE travel_id = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setLong(1, id);
+        statement.execute();
     }
 }

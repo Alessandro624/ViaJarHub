@@ -9,6 +9,8 @@ import java.util.List;
 public interface TravelDAO {
     List<Travel> findAll(LocalDate startDate);
 
+    List<Travel> findAllByUserWishlist(String email);
+
     List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters);
 
     Travel findById(Long id, LocalDate startDate);

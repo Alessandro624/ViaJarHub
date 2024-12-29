@@ -2,6 +2,8 @@ package it.unical.demacs.informatica.viajarhubbackend.config.security;
 
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.UserNotFoundException;
+import it.unical.demacs.informatica.viajarhubbackend.model.User;
+import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC.proxy.UserProxy;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,5 +29,9 @@ public class SecurityUtility {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, credentials, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+    }
+
+    public static UserProxy getCurrentUserProxy() {
+        return new UserProxy((User) getCurrentUser());
     }
 }

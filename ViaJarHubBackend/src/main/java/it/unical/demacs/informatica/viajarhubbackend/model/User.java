@@ -28,6 +28,26 @@ public class User implements UserDetails {
     private String passwordResetToken;
     private LocalDateTime passwordResetTokenCreationTime;
     private String profileImagePath;
+    private List<Travel> wishlist;
+
+    public User(String firstName, String lastName, LocalDate birthDate, String email, String password,
+                UserRole role, AuthProvider authProvider, boolean enabled, String verificationToken,
+                LocalDateTime verificationTokenCreationTime, String passwordResetToken, LocalDateTime passwordResetTokenCreationTime,
+                String profileImagePath) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.authProvider = authProvider;
+        this.enabled = enabled;
+        this.verificationToken = verificationToken;
+        this.verificationTokenCreationTime = verificationTokenCreationTime;
+        this.passwordResetToken = passwordResetToken;
+        this.passwordResetTokenCreationTime = passwordResetTokenCreationTime;
+        this.profileImagePath = profileImagePath;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

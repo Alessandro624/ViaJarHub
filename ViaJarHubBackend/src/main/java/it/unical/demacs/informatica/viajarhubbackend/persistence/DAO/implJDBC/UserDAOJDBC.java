@@ -1,8 +1,10 @@
 package it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC;
 
 import it.unical.demacs.informatica.viajarhubbackend.model.AuthProvider;
+import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
 import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
+import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.TravelDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.UserDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 
@@ -70,6 +72,16 @@ public class UserDAOJDBC implements UserDAO {
             statement.setString(12, user.getPasswordResetToken());
             statement.setTimestamp(13, user.getPasswordResetTokenCreationTime() != null ? Timestamp.valueOf(user.getPasswordResetTokenCreationTime()) : null);
             statement.executeUpdate();
+            List<Travel> wishlistTravels = user.getWishlist();
+            if (wishlistTravels == null || wishlistTravels.isEmpty()) {
+                return;
+            }
+            resetRelationInWishListTable(user.getEmail());
+            TravelDAO travelDAO = DBManager.getInstance().getTravelDAO();
+            for (Travel travel : wishlistTravels) {
+                travelDAO.save(travel);
+                insertRelationInWishlistTable(user.getEmail(), travel.getId());
+            }
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -93,6 +105,7 @@ public class UserDAOJDBC implements UserDAO {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
             statement.executeUpdate();
+            resetRelationInWishListTable(email);
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -104,6 +117,18 @@ public class UserDAOJDBC implements UserDAO {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, minutes);
             statement.executeUpdate();
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public void removeTravelFromWishlist(String email, Long travelId) {
+        String query = "DELETE FROM wishlist WHERE user_email = ?  AND travel_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            statement.setLong(2, travelId);
+            statement.execute();
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -138,5 +163,20 @@ public class UserDAOJDBC implements UserDAO {
                 resultSet.getString("password_reset_token"),
                 passwordResetTokenCreationTime != null ? passwordResetTokenCreationTime.toLocalDateTime() : null,
                 resultSet.getString("profile_image_path"));
+    }
+
+    private void insertRelationInWishlistTable(String email, Long travelId) throws SQLException {
+        String query = "INSERT INTO wishlist(user_email, travel_id) VALUES(?, ?)";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, email);
+        statement.setLong(2, travelId);
+        statement.execute();
+    }
+
+    private void resetRelationInWishListTable(String email) throws SQLException {
+        String query = "DELETE FROM wishlist WHERE user_email = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, email);
+        statement.execute();
     }
 }

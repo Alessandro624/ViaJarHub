@@ -3,15 +3,19 @@ package it.unical.demacs.informatica.viajarhubbackend.controller;
 import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.UserNotFoundException;
+import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
+import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
+import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC.proxy.UserProxy;
 import it.unical.demacs.informatica.viajarhubbackend.service.IUserService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -51,6 +55,37 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @RequestMapping(value = "/wishlist", method = RequestMethod.GET)
+    public ResponseEntity<List<Travel>> getWishlist() {
+        try {
+            return ResponseEntity.ok(SecurityUtility.getCurrentUserProxy().getWishlist());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @RequestMapping(value = "/add-to-wishlist", method = RequestMethod.POST)
+    public ResponseEntity<Void> addToWishlist(@RequestParam Long travelId) {
+        try {
+            UserProxy userProxy = SecurityUtility.getCurrentUserProxy();
+            userProxy.addToWishlist(travelId, userProxy.getUser().getRole() != UserRole.ROLE_ADMIN ? LocalDate.now() : null);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @RequestMapping(value = "/remove-from-wishlist", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> removeFromWishlist(@RequestParam Long travelId) {
+        try {
+            UserProxy userProxy = SecurityUtility.getCurrentUserProxy();
+            userProxy.removeFromWishlist(travelId);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
