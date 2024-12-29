@@ -74,8 +74,7 @@ public class ReviewController {
     @RequestMapping(value = "/create-review", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createReview(@RequestPart Review review, @RequestParam(required = false) List<MultipartFile> reviewImages) {
         System.out.println("prova");
-        // System.out.println(review);
-        // System.out.println(reviewImages);
+
         try {
             System.out.println(review);
             Review createdReview = reviewService.save(review, reviewImages);

@@ -2,6 +2,7 @@ package it.unical.demacs.informatica.viajarhubbackend.service;
 
 import it.unical.demacs.informatica.viajarhubbackend.exception.*;
 import it.unical.demacs.informatica.viajarhubbackend.model.Review;
+import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.ReviewDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 import org.springframework.stereotype.Service;
@@ -63,6 +64,32 @@ public class ReviewService implements IReviewService {
             reviewImages.add(Files.readAllBytes(path));
         }
         return reviewImages;
+    }
+
+    @Override
+    public Review updateReview(Long id, Review review, List<MultipartFile> reviewImages) throws Exception {
+        /*if (review == null) {
+            throw new InvalidInputException("Travel cannot be null");
+        }
+        checkNotNullFields(review);
+        System.out.println("provas");
+        checkNotDuplicate(review);
+        System.out.println("provas");
+        if (reviewImages != null && !reviewImages.isEmpty()) {
+            List<String> reviewImagesPaths = new ArrayList<>();
+            for (MultipartFile multipartFile : reviewImages) {
+                reviewImagesPaths.add(multipartFile.getOriginalFilename());
+            }
+            review.setImagesPaths(reviewImagesPaths);
+            System.out.println("provas" + review.getImagesPaths());
+        }
+        Travel existingTravel = checkReviewExistence(id, true);
+        if (travel.getPrice() != existingTravel.getPrice()) {
+            travel.setOldPrice(existingTravel.getPrice());
+        }
+        travelDAO.save(travel);
+        return travelDAO.findById(id, null);*/
+        return review;
     }
 
     @Override
