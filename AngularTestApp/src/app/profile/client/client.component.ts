@@ -6,11 +6,9 @@ import {AddReviewComponent} from '../../add-review/add-review.component';
 import {AuthenticationService} from '../../login/authentication.service';
 import {ClientService} from './client.service';
 import {User} from '../../models/user/user.model';
-import {RouterLink} from '@angular/router';
-import {PaymentComponent} from '../../payment/payment.component';
-import {Travel} from '../../models/travel/travel.model';
 import {ReviewService} from '../../review/review.service';
 import {Review} from '../../models/review/review.module';
+import {WishlistComponent} from '../../wishlist/wishlist.component';
 
 @Component({
   selector: 'app-client',
@@ -23,8 +21,7 @@ import {Review} from '../../models/review/review.module';
     ReviewComponent,
     AddReviewComponent,
     NgIf,
-    RouterLink,
-    PaymentComponent
+    WishlistComponent
   ],
   templateUrl: './client.component.html',
   styleUrl: './client.component.css'
@@ -38,8 +35,6 @@ export class ClientComponent implements OnInit {
   profileImageBlob!: Blob | null;
   isPopupVisible2 = false;
   isPopupVisible = false;
-  isPopupVisible3 = false;
-  settedTravel: Travel | undefined = undefined;
   reviews: Review[] = [];
   recensioniVisibili: Review[] = [];
   loadBtnless = false;
@@ -129,17 +124,6 @@ export class ClientComponent implements OnInit {
 
     console.log("prova");
     this.isPopupVisible2 = false;
-  }
-
-  openPopup3(/*travel:Travel*/) {
-    this.isPopupVisible3 = true;
-    /* this.settedTravel = travel;*/
-  }
-
-  closePopup3() {
-    this.isPopupVisible3 = false;
-    this.settedTravel = undefined;
-
   }
 
   private setUser() {

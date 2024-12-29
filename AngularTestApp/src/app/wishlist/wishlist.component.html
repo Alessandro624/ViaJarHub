@@ -1,0 +1,46 @@
+<!--TODO show confirmation message before elimination form wishlist-->
+<div class="row mt-4 mb-3">
+  <div class="col-12">
+    <div class="card  p-3 shadow-sm">
+      <h5 class="fw-bold">La tua lista dei desideri!</h5>
+      <div class="card-data m-3" *ngFor="let travel of wishlist">
+        <div class="row">
+          <div class="col-8 ms-2">
+            <a routerLink="/body1/{{travel.id}}/info"><h5
+              class="card-title  mt-2 mb-0 fw-bold">{{ travel.destination }}</h5></a>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+            <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
+            <span class="card-date ms-3 no-wrap">{{ travel.startDate }} - {{ travel.endDate }}</span>
+          </div>
+          <div class="col-2 d-flex align-items-center">
+            <button class="btn btn-outline-success me-3" (click)="openPayment()">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </button>
+            <button class="btn btn-outline-danger" (click)="removeFromWishlist(travel.id)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" [ngClass]="{'show': isPaymentVisible}"
+     [ngStyle]="{'display': isPaymentVisible ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Acquista</h5>
+        <button type="button" class="btn-close" (click)="closePayment()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body shadow-lg ">
+        <!-- Contenuto del modale -->
+        <app-payment (closeModal)="closePayment() " [prezzo]="100" [travel]=""
+                     [numeroPartecipanti]="1"></app-payment>
+      </div>
+    </div>
+  </div>
+</div>

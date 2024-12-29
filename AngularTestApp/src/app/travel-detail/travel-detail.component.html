@@ -31,14 +31,22 @@
           <h5><strong>{{ prezzoFinale }}€</strong></h5>
         </div>
         <div class="col-12 mt-3">
-          <button type="submit" class="btn btn-success w-100" (click)="openPopup()"><i
+          <button type="button" class="btn btn-success w-100" (click)="openPopup()"><i
             class="fa-solid fa-cart-shopping me-2"></i>
             Prenota ora
           </button>
         </div>
-        <div class="col-12 my-2">
-          <button type="submit" class="btn btn-primary w-100"><i class="fa-regular fa-heart me-2"></i>
+        <div *ngIf="!isInWishlist" class="col-12 my-2">
+          <button type="button" class="btn btn-primary w-100" (click)="addToWishlist()"><i
+            class="fa-regular fa-heart me-2"></i>
             Aggiungi alla lista dei desideri
+          </button>
+        </div>
+        <div *ngIf="isInWishlist" class="col-12 my-2">
+          <button type="button" class="btn btn-outline-danger w-100"
+                  (click)="removeFromWishlist()"><i
+            class="fa-solid fa-trash me-2"></i>
+            Rimuovi dalla lista dei desideri
           </button>
         </div>
       </div>

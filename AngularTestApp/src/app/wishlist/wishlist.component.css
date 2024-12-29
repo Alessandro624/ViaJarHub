@@ -1,0 +1,47 @@
+.card-img-top {
+  border-radius: 50%;
+}
+
+.card {
+  border-radius: 15px;
+  transition: transform 0.5s ease; /* Transizione per l'effetto hover */
+
+}
+
+.card:hover {
+  transform: scale(1.005); /* Aumenta la dimensione della card al passaggio del mouse */
+}
+
+.card-data {
+  border: 1px solid #E9E9E9;
+  background-color: #F5F5F5;
+  border-radius: 15px;
+}
+
+.card-date {
+  color: #6c757d; /* Colore disabilitato */
+  font-size: 0.9em;
+
+}
+
+.star {
+  color: #ffcc00;
+}
+
+.edit-btn {
+  display: inline-block; /* Necessario per la transizione */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Mostra il pulsante quando il cursore si trova sulla card */
+.card:hover .edit-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
