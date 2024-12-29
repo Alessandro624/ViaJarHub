@@ -107,11 +107,12 @@ export class Body1Component implements OnInit {
 
   setOrder(order: TravelOrder) {
     const input = this.translateTravelOrder(order);
-    if (this.filters.travelOrder !== input)
+    if (this.filters.travelOrder !== input) {
       this.filters.travelOrder = input;
-    console.log(this.filters);
-    this.resetTravels();
-    this.loadTravels();
+      console.log(this.filters);
+      this.resetTravels();
+      this.loadTravels();
+    }
   }
 
   toggleReverse() {

@@ -3,9 +3,10 @@ import {ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet} from '@angul
 import {Travel} from '../models/travel/travel.model';
 import {TravelService} from './travel.service';
 import {FormsModule} from '@angular/forms';
-import {NgClass, NgStyle} from '@angular/common';
+import {NgClass, NgIf, NgStyle} from '@angular/common';
 import {PaymentComponent} from '../payment/payment.component';
 import {AuthenticationService} from '../login/authentication.service';
+import {WishlistService} from '../wishlist/wishlist.service';
 
 @Component({
   selector: 'app-travel-detail',
@@ -17,7 +18,8 @@ import {AuthenticationService} from '../login/authentication.service';
     FormsModule,
     NgClass,
     NgStyle,
-    PaymentComponent
+    PaymentComponent,
+    NgIf
   ],
   templateUrl: './travel-detail.component.html',
   styleUrl: './travel-detail.component.css'
@@ -27,8 +29,9 @@ export class TravelDetailComponent implements OnInit {
   postiSelezionati: number = 1;
   prezzoFinale: number = 0;
   isPopupVisible: boolean = false;
+  isInWishlist: boolean = false;
 
-  constructor(private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
+  constructor(private _wishlistService: WishlistService, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -36,19 +39,14 @@ export class TravelDetailComponent implements OnInit {
     if (id == null) {
       throw new Error("Viaggio non trovato");
     }
-    this._travelService.getTravelById(id).subscribe({
-      next: result => {
-        this.travel = result;
-        this.modificaPrezzo();
-      }
-    });
+    this.setTravel(id);
+    this.checkIsInWishlist(id);
   }
 
   modificaPrezzo() {
     if (this.travel) {
       this.prezzoFinale = this.travel.price * this.postiSelezionati;
     }
-
   }
 
   openPopup() {
@@ -64,4 +62,46 @@ export class TravelDetailComponent implements OnInit {
     this.isPopupVisible = false;
   }
 
+  addToWishlist() {
+    this._wishlistService.addToWishlist(this.travel!.id).subscribe({
+        next: () => {
+          alert("Added");
+        }, error: error => {
+          console.log(error);
+        }
+      }
+    )
+  }
+
+  checkIsInWishlist(id: number) {
+    this._wishlistService.wishlist$.subscribe({
+      next: result => {
+        this.isInWishlist = (!!result) && result.filter(item => item.id === id).length > 0;
+      }, error: error => {
+        console.log(error);
+        this.isInWishlist = false;
+      }
+    });
+  }
+
+  removeFromWishlist() {
+    this._wishlistService.removeFromWishlist(this.travel!.id).subscribe({
+      next: (result) => {
+        alert("Removed");
+        console.log(result);
+      },
+      error: error => {
+        console.log(error);
+      }
+    });
+  }
+
+  private setTravel(id: number) {
+    this._travelService.getTravelById(id).subscribe({
+      next: result => {
+        this.travel = result;
+        this.modificaPrezzo();
+      }
+    });
+  }
 }

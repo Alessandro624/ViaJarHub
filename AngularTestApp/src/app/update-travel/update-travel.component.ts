@@ -89,6 +89,7 @@ export class UpdateTravelComponent implements OnInit {
     this.travel.destination = this.selectedTravel.destination;
     this.travel.startDate = this.selectedTravel.startDate;
     this.travel.endDate = this.selectedTravel.endDate;
+    this.travel.oldPrice = this.travel.price;
     this.travel.price = this.selectedTravel.price;
     this.travel.maxParticipantsNumber = this.selectedTravel.maxParticipantsNumber;
     this.travel.description = this.selectedTravel.description;
