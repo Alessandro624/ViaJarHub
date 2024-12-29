@@ -16,13 +16,13 @@
         </div>
       </h5>
       <!--TODO capire perchè le stelle creano problemi ed errori-->
-      <!--<div class=" mb-2">
+      <div class=" mb-2">
         <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
         <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
         <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
         <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
         <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
-      </div>-->
+      </div>
       <div *ngIf="isAdmin" class="btn-group position-absolute top-0 end-0 m-2" style="display: none;">
         <button class="btn btn-primary" (click)="handleMouse($event); showUpdateTravel=true;">Modifica
         </button>

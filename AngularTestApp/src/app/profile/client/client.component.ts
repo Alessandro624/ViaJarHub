@@ -206,6 +206,23 @@ export class ClientComponent implements OnInit {
 
   }
 
+  rimuoviDaLista(review: Review) {
+    console.log("mannananan")
+    console.log(review.idTravel
+    )
+    console.log(this.reviews)
+    const index = this.reviews.findIndex(rev => rev.idTravel === review.idTravel);
+    if (index !== -1) {
+      this.reviews.splice(index, 1);
+    }
+    console.log(this.reviews)
+    this.startIndex = 0;
+    this.numrec += 1;
+    this.aggiornaRecensioniVisibili();
+
+
+  }
+
 
   openPopup4(review: Review) {
     this.isPopupVisible4 = true;
@@ -215,5 +232,12 @@ export class ClientComponent implements OnInit {
 
   closePopup4() {
     this.isPopupVisible4 = false;
+  }
+
+  modificaLista(review: Review) {
+    this.rimuoviDaLista(review);
+    this.aggiornaLista(review);
+
+
   }
 }

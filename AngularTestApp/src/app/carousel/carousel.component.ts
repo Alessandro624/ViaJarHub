@@ -62,15 +62,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
     // Esegui l'effetto macchina da scrivere solo dentro Body1
     if (this.inBody) {
       this.ngZone.runOutsideAngular(() => this.typeWriterEffect());
-    } else if (this.inReview && this.review != null) {
-      console.log("prova car")
-      this.reviewService.getReviewImages(this.review.idTravel, this.review.emailUser).subscribe({
-        next: result => {
-          this.immaginiURLs = result.map(image => `data:image/jpeg;base64,${image}`);
-          console.log(this.immaginiURLs);
-
-        }
-      })
     } else {
 
       const id = Number(this._activatedRoute.parent?.snapshot.paramMap.get('id'));

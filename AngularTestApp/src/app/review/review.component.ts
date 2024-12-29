@@ -21,6 +21,7 @@ export class ReviewComponent implements OnInit {
   inDetails: boolean = false;
   travelName: string = '';
   immaginiURLs: string[] = [];
+
   @Input() review: Review = {
     idTravel: 0,
     emailUser: '',
@@ -29,6 +30,7 @@ export class ReviewComponent implements OnInit {
     data: ''
 
   };
+  starsHTML: string = '';
 
 
   constructor(private elementRef: ElementRef, private reviewService: ReviewService, private travelService: TravelService) {
@@ -65,6 +67,7 @@ export class ReviewComponent implements OnInit {
               this.travelService.getTravelById(this.review.idTravel).subscribe(
                 {
                   next: result => {
+                    console.log(result.destination);
                     this.travelName = result.destination;
 
                   }
@@ -76,8 +79,30 @@ export class ReviewComponent implements OnInit {
         }
       )
     }
-
+    this.starsHTML = this.generateStarsHTML(this.roundToHalf(this.review.stars));
 
   }
+
+  generateStarsHTML(rating: number): string {
+    let fullStars = Math.floor(rating);
+    const halfStar = rating % 1 !== 0;
+    let starsHTML = '';
+    for (let i = 0; i < fullStars; i++) {
+      starsHTML += '<i class="fa fa-star" style="color: yellow;"></i>';
+    }
+    if (halfStar) {
+      starsHTML += '<i class="fa fa-star-half-o" style="color: yellow;"></i>';
+      fullStars++;
+    }
+    for (let i = fullStars; i < 5; i++) {
+      starsHTML += '<i class="fa fa-star-o"></i>';
+    }
+    return starsHTML;
+  }
+
+  private roundToHalf(value: number): number {
+    return Math.round(value * 2) / 2;
+  }
+
 
 }

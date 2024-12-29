@@ -29,7 +29,7 @@ export class InfotravelComponent implements OnInit {
   travel: Travel | undefined;
   center: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
   markerPosition: google.maps.LatLngLiteral = {lat: 51.678418, lng: 7.809007};
-  zoom = 15;
+  zoom = 12;
   infoWindow: any;
   reviews: Review[] = [];
   protected readonly environment = environment;
@@ -66,9 +66,7 @@ export class InfotravelComponent implements OnInit {
     await customElements.whenDefined('gmp-map');
     const map = document.querySelector('gmp-map') as any;
     const marker = document.querySelector('gmp-advanced-marker') as any;
-    this.infoWindow = new google.maps.InfoWindow();
-    this.infoWindow.setContent(`<strong>${this.travel?.destination}</strong>`);
-    this.infoWindow.open(map.innerMap, marker);
+
 
     map.innerMap.setOptions({
       mapTypeControl: false,

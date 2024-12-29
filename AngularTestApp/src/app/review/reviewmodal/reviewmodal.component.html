@@ -1,4 +1,141 @@
-<div class="container mt-5">
-  <p>{{ review }}</p>
-  <app-carousel [review]="review"></app-carousel>
-</div>
+@if (viewMode) {
+  <div class="container mt-1">
+    <div class="row justify-content-between">
+      <div class="col">
+        <h4><strong>{{ travel?.destination }}</strong></h4>
+      </div>
+      @if (inClient) {
+        <div class="col text-end">
+          <div class="btn-group dropstart">
+            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="dropdown-menu p-1">
+              <li>
+              <li class="mb-1"><a class="dropdown-item fw-bold" (click)="changeToUpdate()">Modifica</a></li>
+              <li class="mb-1">
+                <button type="button"
+                        class="btn btn-outline-danger w-100 d-flex justify-content-between align-items-center fw-bold"
+                        (click)="delete()">
+                  Elimina <i class="fa-solid fa-trash"></i>
+                </button>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      }
+    </div>
+
+    <p>stelle</p>
+    <p>{{ review?.comment }}</p>
+
+    @if (isLoading) {
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    } @else {
+      @if (errorMessage) {
+        <p class="text-danger">{{ errorMessage }}</p>
+      } @else {
+        <p class="mt-2">Immagini:</p>
+        <div id="carouselExample" class="carousel slide">
+          <div class="carousel-inner">
+            <div class="carousel-item active" *ngFor="let imgURL of immaginiURLs; let i = index"
+                 [class.active]="i === 0">
+              <img [src]="imgURL" class="d-block w-100 carousel-img" alt="Slide {{ i + 1 }}">
+            </div>
+          </div>
+          @if (immaginiURLs.length > 1) {
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          }
+        </div>
+      }
+    }
+  </div>
+} @else {
+  <form>
+    <div class="mb-3">
+      <label class="form-label fw-bold">Voto: {{ rating }}</label>
+      <div class="rating">
+  <span class="star" [ngClass]="{'filled': rating >= 1}" (click)="rate(1)">
+    <i class="fa-solid fa-star"></i>
+  </span>
+        <span class="star" [ngClass]="{'filled': rating >= 2}" (click)="rate(2)">
+    <i class="fa-solid fa-star"></i>
+  </span>
+        <span class="star" [ngClass]="{'filled': rating >= 3}" (click)="rate(3)">
+    <i class="fa-solid fa-star"></i>
+  </span>
+        <span class="star" [ngClass]="{'filled': rating >= 4}" (click)="rate(4)">
+    <i class="fa-solid fa-star"></i>
+  </span>
+        <span class="star" [ngClass]="{'filled': rating >= 5}" (click)="rate(5)">
+    <i class="fa-solid fa-star"></i>
+  </span>
+      </div>
+
+
+    </div>
+
+    <!-- Textarea -->
+    <div class="mb-3">
+      <label for="comment" class="form-label fw-bold">Commento</label>
+      <textarea
+        id="comment"
+        class="form-control"
+        rows="4"
+        placeholder="Scrivi un commento..."
+        [(ngModel)]="comment"
+        name="comment"
+        required
+      ></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="images" class="form-label">Carica Immagini</label>
+      <div
+        class="drop-area border border-primary p-3 text-center"
+        (click)="triggerFileInput()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+        (input)="imageError = ''; "
+      >
+        <p>Trascina qui le immagini o clicca per selezionarle</p>
+        <!-- Input file nascosto -->
+        <input
+          #fileInput
+          type="file"
+          id="images"
+          class="d-none"
+          (change)="onFileSelect($event)"
+          accept="image/*"
+          multiple
+          (input)="imageError = ''; "
+        />
+      </div>
+      <ul class="mt-2">
+        <li class="mb-2" *ngFor="let image of images; let i = index">
+          <span>{{ image.name }}</span>
+          <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
+        </li>
+      </ul>
+      <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
+      <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
+    </div>
+
+    <!-- Pulsante di invio -->
+    <button type="submit" class="btn btn-success" (click)="submitForm()" [disabled]="comment=='' ">
+      Invia
+    </button>
+  </form>
+}

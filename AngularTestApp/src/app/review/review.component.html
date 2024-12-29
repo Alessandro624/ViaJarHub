@@ -20,13 +20,7 @@
       </div>
       <div class="col ms-md-3 ms-lg-1">
         <h6 class="card-title mb-0 ms-lg-0  fw-bold fs-5">{{ travelName }}</h6>
-        <div>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
-        </div>
+        <div [innerHTML]="starsHTML"></div>
       </div>
     } @else {
       <div class="col-1 mt-2 ms-lg-2">
@@ -60,3 +54,4 @@
   </div>
 
 </div>
+

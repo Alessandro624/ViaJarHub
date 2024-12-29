@@ -21,12 +21,16 @@
 
         <!-- Most Liked Comments Section -->
         <div class="mt-4">
-          <h5 class="mb-3">Ultime recensioni</h5>
+
           @if (reviews.length == 0) {
-            <p>attesa</p>
+            <div class="text-center">
+              <strong>Nessuna recensione disponibile</strong>
+            </div>
+
           } @else {
+            <h5 class="mb-3">Ultime recensioni</h5>
             <div *ngFor="let review of reviews">
-              
+
               <app-review [review]="review"></app-review>
             </div>
           }
