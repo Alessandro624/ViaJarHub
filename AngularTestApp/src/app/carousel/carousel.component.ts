@@ -1,10 +1,12 @@
-import {Component, ElementRef, Inject, NgZone, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, ElementRef, Inject, Input, input, NgZone, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser, NgClass, NgForOf, NgIf} from '@angular/common';
 import {TravelService} from '../travel-detail/travel.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Travel} from '../models/travel/travel.model';
 import {FormsModule} from '@angular/forms';
 import {TravelFilter} from '../models/travel/travel-filter.model';
+import {Review} from '../models/review/review.module';
+import {ReviewService} from '../review/review.service';
 
 @Component({
   selector: 'app-carousel',
@@ -20,8 +22,10 @@ import {TravelFilter} from '../models/travel/travel-filter.model';
 })
 
 export class CarouselComponent implements OnInit, OnDestroy {
+  @Input() review: Review | null = null;
   inBody: boolean = false; // Stato per indicare se è in Body1
   isFocused: boolean = false; // Controlla se la barra è illuminata
+  inReview: boolean = false;
 
   travel!: Travel | undefined;
   immaginiURLs: string[] = [];
@@ -40,20 +44,33 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
   suggestions: string[] = [];
 
-  constructor(private _router: Router, private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
+  constructor(private _router: Router, private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private reviewService: ReviewService,) {
   }
 
   ngOnInit(): void {
+    console.log("agasgsg")
     // Controlla se il componente è contenuto all'interno di Body1
     this.inBody = this.isContainedIn('app-body1');
+    this.inReview = this.isContainedIn('app-reviewmodal');
 
     // Configura il carosello con l'intervallo appropriato
     const interval = this.inBody ? 5000 : 20000; // 5 secondi dentro Body1, 20 secondi fuori
     this.enableCarouselTimer(interval);
+    console.log(this.inReview);
+    console.log(this.inBody);
 
     // Esegui l'effetto macchina da scrivere solo dentro Body1
     if (this.inBody) {
       this.ngZone.runOutsideAngular(() => this.typeWriterEffect());
+    } else if (this.inReview && this.review != null) {
+      console.log("prova car")
+      this.reviewService.getReviewImages(this.review.idTravel, this.review.emailUser).subscribe({
+        next: result => {
+          this.immaginiURLs = result.map(image => `data:image/jpeg;base64,${image}`);
+          console.log(this.immaginiURLs);
+
+        }
+      })
     } else {
 
       const id = Number(this._activatedRoute.parent?.snapshot.paramMap.get('id'));
@@ -112,6 +129,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
   // Funzione per verificare se il componente è contenuto in un altro componente
   isContainedIn(parentSelector: string): boolean {
+    console.log("rararar")
     let parent = this.elementRef.nativeElement.parentElement;
     while (parent) {
       if (parent.tagName.toLowerCase() === parentSelector.toLowerCase()) {

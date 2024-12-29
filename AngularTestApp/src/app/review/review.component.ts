@@ -4,6 +4,7 @@ import {NgForOf} from '@angular/common';
 import {Travel} from '../models/travel/travel.model';
 import {User} from '../models/user/user.model';
 import {Review} from '../models/review/review.module';
+import {TravelService} from '../travel-detail/travel.service';
 
 @Component({
   selector: 'app-review',
@@ -18,6 +19,7 @@ export class ReviewComponent implements OnInit {
   inAdmin: boolean = false;
   inClient: boolean = false;
   inDetails: boolean = false;
+  travelName: string = '';
   immaginiURLs: string[] = [];
   @Input() review: Review = {
     idTravel: 0,
@@ -29,7 +31,7 @@ export class ReviewComponent implements OnInit {
   };
 
 
-  constructor(private elementRef: ElementRef, private reviewService: ReviewService) {
+  constructor(private elementRef: ElementRef, private reviewService: ReviewService, private travelService: TravelService) {
   }
 
   // Funzione per verificare se il componente è contenuto in un altro componente
@@ -55,11 +57,19 @@ export class ReviewComponent implements OnInit {
           next: result => {
             console.log(result);
             if (this.review) {
-              this.reviewService.getReviewImages(this.review.idTravel, this.review.emailUser).subscribe({
+              /*this.reviewService.getReviewImages(this.review.idTravel, this.review.emailUser).subscribe({
                 next: data => {
                   this.immaginiURLs = data.map(image => `data:image/jpeg;base64,${image}`);
                 }
-              })
+              })*/
+              this.travelService.getTravelById(this.review.idTravel).subscribe(
+                {
+                  next: result => {
+                    this.travelName = result.destination;
+
+                  }
+                }
+              )
             }
 
           }

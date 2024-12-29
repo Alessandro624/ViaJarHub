@@ -111,30 +111,48 @@
   <div class="row ">
     <!-- Favorite Food -->
     <div class="col-xl-6 mt-2 mb-4">
-      <div class="card p-3 shadow-sm">
-        <h5 class="fw-bold">Ultime recensioni</h5>
-        <div *ngFor="let card of [1, 2, 3]">
-          <app-review></app-review>
+      <div class="card p-3 shadow-sm rec d-flex flex-column h-100">
+        <div class="row justify-content-between">
+          <div class="col">
+            <h5 class="fw-bold">Ultime recensioni</h5>
+          </div>
+          @if (this.loadBtnless) {
+            <div class="col-2 ">
+
+              <button (click)="lessReview()" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-minus "></i>
+
+              </button>
+            </div>
+          }
         </div>
+
+        <div *ngFor="let review of recensioniVisibili"
+             class="review-container flex-grow-1 d-flex flex-column justify-content-center">
+          <app-review [review]="review"></app-review>
+        </div>
+        @if (this.loadBtnmore) {
+          <div class="row justify-content-end mt-0">
+            <div class="col-2">
+              <button (click)="moreReview()" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-plus fa-sm"></i>
+              </button>
+            </div>
+
+          </div>
+        }
       </div>
     </div>
     <!-- Hobby Activity -->
     <div class="col-xl-6 mt-2 justify-content-center">
       <div class="card p-3 shadow-sm container-fluid">
-        <div class="container ">
+        <div class="container">
           <h5 class="fw-bold mb-4">Numero prenotati</h5>
           <div class="d-flex justify-content-between align-items-end histogram">
-            <div
-              *ngFor="let bar of animatedData; let i = index"
-              class="text-center"
-            >
+            <div *ngFor="let bar of animatedData; let i = index" class="text-center">
               <!-- Contenitore della barra per garantire che parta dal basso -->
-              <div class="bar-container">
-                <div
-                  class="bar bg-primary mx-auto"
-                  [style.height]="bar + 'px'"
-                  [attr.title]="'Valore: ' + bar"
-                ></div>
+              <div class="bar-container" style="height: 200px;">
+                <div class="bar bg-primary mx-auto" [style.height]="bar + 'px'" [attr.title]="'Valore: ' + bar"></div>
               </div>
               <!-- Etichetta sotto la barra -->
               <small class="d-block mt-2">{{ data[i].label }}</small>
@@ -143,5 +161,6 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>

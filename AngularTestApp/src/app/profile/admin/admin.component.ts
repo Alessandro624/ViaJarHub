@@ -4,10 +4,11 @@ import {FormsModule} from '@angular/forms';
 import {AddTravelComponent} from '../../add-travel/add-travel.component';
 import {ReviewComponent} from '../../review/review.component';
 
-
 import {User} from '../../models/user/user.model';
 import {ClientService} from '../client/client.service';
 import {AuthenticationService} from '../../login/authentication.service';
+import {ReviewService} from '../../review/review.service';
+import {Review} from '../../models/review/review.module';
 
 @Component({
   selector: 'app-admin',
@@ -22,7 +23,7 @@ import {AuthenticationService} from '../../login/authentication.service';
     NgIf
   ],
   templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css'
+  styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
   @ViewChild(AddTravelComponent) addTravelComponent: AddTravelComponent | undefined;
@@ -52,25 +53,33 @@ export class AdminComponent implements OnInit {
     {label: 'Ott', value: 150},
     {label: 'Nov', value: 200},
     {label: 'Dec', value: 170},
-
   ];
   animatedData: number[] = [];
   profileImageUrl: string = '';
   birthdate: String | undefined;
   isPopupVisible = false;
+  reviews: Review[] = [];
+  recensioniVisibili: Review[] = [];
+  loadBtnless = false;
+  loadBtnmore = false;
+  step: number = 3;
+  startIndex: number = 0;
 
-  constructor(@Inject(NgZone) private ngZone: NgZone, private _clientService: ClientService, private _authenticationService: AuthenticationService) {
+  constructor(@Inject(NgZone) private ngZone: NgZone, private _clientService: ClientService, private _authenticationService: AuthenticationService, private reviewService: ReviewService) {
   }
 
-
   ngOnInit(): void {
-
     this.setUser();
     this.showProfileImage();
     this.showBirthdate();
     this.initializeAnimation();
     this.animateValues();
-
+    this.reviewService.getAllReviews().subscribe({
+      next: data => {
+        this.reviews = data.reverse();
+        this.aggiornaRecensioniVisibili();
+      }
+    })
   }
 
   private setUser() {
@@ -91,20 +100,17 @@ export class AdminComponent implements OnInit {
       }
       console.log(this.birthdate);
     }
-
   }
 
   private showProfileImage() {
-    this._clientService.getUserProfileImage().subscribe(
-      {
-        next: data => {
-          this.profileImageUrl = URL.createObjectURL(data);
-        },
-        error: error => {
-          console.log(error);
-        }
+    this._clientService.getUserProfileImage().subscribe({
+      next: data => {
+        this.profileImageUrl = URL.createObjectURL(data);
+      },
+      error: error => {
+        console.log(error);
       }
-    )
+    })
   }
 
   openPopup() {
@@ -124,7 +130,7 @@ export class AdminComponent implements OnInit {
 
   // Animazione incrementale dei valori
   animateBars(): void {
-    const duration = 1000; // Durata totale dell'animazione in millisecondi
+    const duration = 2000; // Durata totale dell'animazione in millisecondi
     const steps = 60; // Numero di frame dell'animazione
     const interval = duration / steps; // Intervallo tra ogni frame
 
@@ -135,20 +141,24 @@ export class AdminComponent implements OnInit {
     const intervalId = this.ngZone.runOutsideAngular(() => setInterval(() => {
       if (currentStep >= steps) {
         clearInterval(intervalId); // Ferma l'animazione quando completa
-        this.animatedData = this.data.map(bar => bar.value); // Imposta i valori finali
+        this.ngZone.run(() => {
+          this.animatedData = this.data.map(bar => bar.value); // Imposta i valori finali
+        });
         return;
       }
 
-      this.animatedData = this.animatedData.map((value, index) =>
-        Math.min(value + increments[index], this.data[index].value)
-      );
+      this.ngZone.run(() => {
+        this.animatedData = this.animatedData.map((value, index) =>
+          Math.min(value + increments[index], this.data[index].value)
+        );
+      });
 
       currentStep++;
     }, interval));
   }
 
   animateValues(): void {
-    const duration = 1000; // Durata dell'animazione in millisecondi
+    const duration = 2000; // Durata dell'animazione in millisecondi
     const steps = 60; // Numero di frame
     const interval = duration / steps;
 
@@ -164,27 +174,50 @@ export class AdminComponent implements OnInit {
       if (currentStep >= steps) {
         // Ferma l'animazione e imposta i valori finali
         clearInterval(intervalId);
-        this.dailyIncome = this.finalDailyIncome;
-        this.monthlyIncome = this.finalMonthlyIncome;
-        this.yearlyIncome = this.finalYearlyIncome;
-        this.totalIncome = this.finalTotalIncome;
+        this.ngZone.run(() => {
+          this.dailyIncome = this.finalDailyIncome;
+          this.monthlyIncome = this.finalMonthlyIncome;
+          this.yearlyIncome = this.finalYearlyIncome;
+          this.totalIncome = this.finalTotalIncome;
+        });
         return;
       }
 
       // Aggiorna i valori incrementandoli
-      this.dailyIncome += dailyIncrement;
-      this.monthlyIncome += monthlyIncrement;
-      this.yearlyIncome += yearlyIncrement;
-      this.totalIncome += totalIncrement;
+      this.ngZone.run(() => {
+        this.dailyIncome += dailyIncrement;
+        this.monthlyIncome += monthlyIncrement;
+        this.yearlyIncome += yearlyIncrement;
+        this.totalIncome += totalIncrement;
 
-      // Arrotonda i valori per evitare decimali
-      this.dailyIncome = Math.round(this.dailyIncome);
-      this.monthlyIncome = Math.round(this.monthlyIncome);
-      this.yearlyIncome = Math.round(this.yearlyIncome);
-      this.totalIncome = Math.round(this.totalIncome);
+        // Arrotonda i valori per evitare decimali
+        this.dailyIncome = Math.round(this.dailyIncome);
+        this.monthlyIncome = Math.round(this.monthlyIncome);
+        this.yearlyIncome = Math.round(this.yearlyIncome);
+        this.totalIncome = Math.round(this.totalIncome);
+      });
 
       currentStep++;
     }, interval));
   }
 
+  lessReview() {
+    if (this.startIndex - this.step >= 0) {
+      this.startIndex -= this.step;
+      this.aggiornaRecensioniVisibili();
+    }
+  }
+
+  moreReview() {
+    if (this.startIndex + this.step < this.reviews.length) {
+      this.startIndex += this.step;
+      this.aggiornaRecensioniVisibili();
+    }
+  }
+
+  aggiornaRecensioniVisibili() {
+    this.recensioniVisibili = this.reviews.slice(this.startIndex, this.startIndex + this.step);
+    this.loadBtnless = this.startIndex != 0;
+    this.loadBtnmore = this.startIndex + this.step < this.reviews.length;
+  }
 }

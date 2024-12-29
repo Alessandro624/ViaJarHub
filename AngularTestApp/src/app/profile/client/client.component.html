@@ -122,8 +122,8 @@
 
 
         <div *ngFor="let review of recensioniVisibili"
-             class="review-container flex-grow-1 d-flex flex-column justify-content-center" [ngClass]="{'show': true}">
-          <app-review [review]="review"></app-review>
+             class="review-container flex-grow-1 d-flex flex-column justify-content-center">
+          <app-review [review]="review" (click)="openPopup4(review)"></app-review>
         </div>
         @if (this.loadBtnmore) {
           <div class="row justify-content-end mt-0">
@@ -156,6 +156,21 @@
           <div class="modal-body shadow-lg ">
             <!-- Contenuto del modale -->
             <app-add-review (closeModal)="closePopup2()" (reviewAdded)="aggiornaLista($event)"></app-add-review>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" [ngClass]="{'show': isPopupVisible4}"
+         [ngStyle]="{'display': isPopupVisible4 ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modifica profilo</h5>
+            <button type="button" class="btn-close" (click)="closePopup4()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body shadow-lg ">
+            <!-- Contenuto del modale -->
+            <app-reviewmodal (closeModal)="closePopup4()" [review]="selectReview"></app-reviewmodal>
           </div>
         </div>
       </div>

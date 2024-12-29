@@ -11,6 +11,7 @@ import {PaymentComponent} from '../../payment/payment.component';
 import {Travel} from '../../models/travel/travel.model';
 import {ReviewService} from '../../review/review.service';
 import {Review} from '../../models/review/review.module';
+import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.component';
 
 @Component({
   selector: 'app-client',
@@ -24,7 +25,8 @@ import {Review} from '../../models/review/review.module';
     AddReviewComponent,
     NgIf,
     RouterLink,
-    PaymentComponent
+    PaymentComponent,
+    ReviewmodalComponent
   ],
   templateUrl: './client.component.html',
   styleUrl: './client.component.css'
@@ -39,6 +41,7 @@ export class ClientComponent implements OnInit {
   isPopupVisible2 = false;
   isPopupVisible = false;
   isPopupVisible3 = false;
+  isPopupVisible4 = false;
   settedTravel: Travel | undefined = undefined;
   reviews: Review[] = [];
   recensioniVisibili: Review[] = [];
@@ -47,6 +50,7 @@ export class ClientComponent implements OnInit {
   startIndex: number = 0;
   step: number = 3;
   numrec: number = 0;
+  selectReview: Review | null = null;
 
   constructor(private _authenticationService: AuthenticationService, private _clientService: ClientService, private reviewService: ReviewService,) {
   }
@@ -203,4 +207,13 @@ export class ClientComponent implements OnInit {
   }
 
 
+  openPopup4(review: Review) {
+    this.isPopupVisible4 = true;
+    this.selectReview = review;
+
+  }
+
+  closePopup4() {
+    this.isPopupVisible4 = false;
+  }
 }
