@@ -1,29 +1,68 @@
-<!--TODO show confirmation message before elimination form wishlist-->
 <div class="row mt-4 mb-3">
   <div class="col-12">
-    <div class="card  p-3 shadow-sm">
-      <h5 class="fw-bold">La tua lista dei desideri!</h5>
-      <div class="card-data m-3" *ngFor="let travel of wishlist">
-        <div class="row">
-          <div class="col-8 ms-2">
-            <a routerLink="/body1/{{travel.id}}/info"><h5
-              class="card-title  mt-2 mb-0 fw-bold">{{ travel.destination }}</h5></a>
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-            <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
-            <span class="card-date ms-3 no-wrap">{{ travel.startDate }} - {{ travel.endDate }}</span>
-          </div>
-          <div class="col-2 d-flex align-items-center">
-            <button class="btn btn-outline-success me-3" (click)="openPayment()">
-              <i class="fa-solid fa-cart-shopping"></i>
-            </button>
-            <button class="btn btn-outline-danger" (click)="removeFromWishlist(travel.id)">
-              <i class="fa-solid fa-trash"></i>
-            </button>
+    <div class="card p-3 shadow-sm">
+      <h5 class="fw-bold text-center">La tua lista dei desideri!</h5>
+      <div *ngIf="!wishlist || wishlist.length === 0" class="text-center py-4">
+        <p class="text-muted">La tua lista dei desideri è vuota. Inizia ad aggiungere i tuoi viaggi preferiti!</p>
+        <button class="btn btn-primary" routerLink="">
+          <i class="fa-solid fa-plus"></i> Scopri i viaggi
+        </button>
+      </div>
+      <div *ngIf="wishlist && wishlist.length > 0" class="row align-items-center">
+        <div class="col-1 d-flex justify-content-center">
+          <button *ngIf="index > 0" (click)="previewsWishlist()" class="btn btn-primary btn-circle">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+        </div>
+        <div class="col-10">
+          <div class="card-data m-3" *ngFor="let travel of currentWishlist">
+            <div class="row">
+              <div class="col-8 ms-2">
+                <a routerLink="/body1/{{travel.id}}/info"><h5
+                  class="card-title mt-2 mb-0 fw-bold">{{ travel.destination }}</h5></a>
+                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
+                <span class="card-date ms-3 no-wrap">{{ travel.startDate }} - {{ travel.endDate }}</span>
+              </div>
+              <div class="col-2 d-flex align-items-center">
+                <button class="btn btn-outline-success me-3" (click)="openPayment()">
+                  <i class="fa-solid fa-cart-shopping"></i>
+                </button>
+                <button class="btn btn-outline-danger" (click)="confirmRemove(travel)">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
+        <div class="col-1 d-flex justify-content-center">
+          <button *ngIf="index < wishlistLength" (click)="nextWishlist()" class="btn btn-primary btn-circle">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale di conferma -->
+<div class="modal fade" [ngClass]="{'show': isConfirmVisible}"
+     [ngStyle]="{'display': isConfirmVisible ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma Eliminazione</h5>
+        <button type="button" class="btn-close" (click)="closeConfirm()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Sei sicuro di voler rimuovere <b>{{ toRemoveTravel?.destination }}</b> dalla tua lista dei desideri?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeConfirm()">Annulla</button>
+        <button type="button" class="btn btn-danger" (click)="removeFromWishlist(toRemoveTravel!.id)">Conferma</button>
       </div>
     </div>
   </div>
