@@ -9,6 +9,7 @@
       <button *ngFor="let order of travelOrders"
               type="button"
               class="btn btn-outline-primary"
+              [ngClass]="{'active': filters.travelOrder === translateTravelOrder(order)}"
               (click)="setOrder(order)"> {{ order }}
       </button>
     </div>

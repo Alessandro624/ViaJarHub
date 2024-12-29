@@ -8,6 +8,9 @@
             {{ travel.destination }}
           </div>
           <div class="col-5 no-wrap fw-semibold text-end">
+            <span *ngIf="travel.oldPrice > 0" class="text-muted text-decoration-line-through me-2">
+              {{ travel.oldPrice }}€
+            </span>
             {{ travel.price }}€
           </div>
         </div>
