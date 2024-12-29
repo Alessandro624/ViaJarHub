@@ -6,9 +6,12 @@ import {AddReviewComponent} from '../../add-review/add-review.component';
 import {AuthenticationService} from '../../login/authentication.service';
 import {ClientService} from './client.service';
 import {User} from '../../models/user/user.model';
+import {RouterLink} from '@angular/router';
+import {PaymentComponent} from '../../payment/payment.component';
+import {Travel} from '../../models/travel/travel.model';
 import {ReviewService} from '../../review/review.service';
 import {Review} from '../../models/review/review.module';
-import {WishlistComponent} from '../../wishlist/wishlist.component';
+import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.component';
 
 @Component({
   selector: 'app-client',
@@ -21,7 +24,9 @@ import {WishlistComponent} from '../../wishlist/wishlist.component';
     ReviewComponent,
     AddReviewComponent,
     NgIf,
-    WishlistComponent
+    RouterLink,
+    PaymentComponent,
+    ReviewmodalComponent
   ],
   templateUrl: './client.component.html',
   styleUrl: './client.component.css'
@@ -35,6 +40,9 @@ export class ClientComponent implements OnInit {
   profileImageBlob!: Blob | null;
   isPopupVisible2 = false;
   isPopupVisible = false;
+  isPopupVisible3 = false;
+  isPopupVisible4 = false;
+  settedTravel: Travel | undefined = undefined;
   reviews: Review[] = [];
   recensioniVisibili: Review[] = [];
   loadBtnless = false;
@@ -42,6 +50,7 @@ export class ClientComponent implements OnInit {
   startIndex: number = 0;
   step: number = 3;
   numrec: number = 0;
+  selectReview: Review | null = null;
 
   constructor(private _authenticationService: AuthenticationService, private _clientService: ClientService, private reviewService: ReviewService,) {
   }
@@ -126,6 +135,17 @@ export class ClientComponent implements OnInit {
     this.isPopupVisible2 = false;
   }
 
+  openPopup3(/*travel:Travel*/) {
+    this.isPopupVisible3 = true;
+    /* this.settedTravel = travel;*/
+  }
+
+  closePopup3() {
+    this.isPopupVisible3 = false;
+    this.settedTravel = undefined;
+
+  }
+
   private setUser() {
     this._authenticationService.currentUser$.subscribe({
       next: data => {
@@ -186,5 +206,38 @@ export class ClientComponent implements OnInit {
 
   }
 
+  rimuoviDaLista(review: Review) {
+    console.log("mannananan")
+    console.log(review.idTravel
+    )
+    console.log(this.reviews)
+    const index = this.reviews.findIndex(rev => rev.idTravel === review.idTravel);
+    if (index !== -1) {
+      this.reviews.splice(index, 1);
+    }
+    console.log(this.reviews)
+    this.startIndex = 0;
+    this.numrec += 1;
+    this.aggiornaRecensioniVisibili();
 
+
+  }
+
+
+  openPopup4(review: Review) {
+    this.isPopupVisible4 = true;
+    this.selectReview = review;
+
+  }
+
+  closePopup4() {
+    this.isPopupVisible4 = false;
+  }
+
+  modificaLista(review: Review) {
+    this.rimuoviDaLista(review);
+    this.aggiornaLista(review);
+
+
+  }
 }

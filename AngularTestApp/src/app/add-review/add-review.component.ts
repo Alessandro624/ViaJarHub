@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {ReviewService} from '../review/review.service';
@@ -127,4 +127,6 @@ export class AddReviewComponent {
     const year = date.getFullYear();
     return `${year}-${month}-${day}`;
   }
+
+
 }

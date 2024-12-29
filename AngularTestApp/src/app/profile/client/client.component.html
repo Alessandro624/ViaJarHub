@@ -27,7 +27,7 @@
           <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Viaggi effettuati:</h5>
             <p class="fs-4">120</p></div>
           <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Recensioni effettuate:</h5>
-            <p class="fs-4">{{ numrec }}</p></div>
+            <p class="fs-4">{{ reviews.length }}</p></div>
         </div>
       </div>
     </div>
@@ -58,37 +58,44 @@
     <div class="col-md-6 mb-4 ">
 
       <div class="card p-3 shadow-sm rec d-flex flex-column h-100">
-        <div class="row justify-content-between">
-          <div class="col">
-            <h5 class="fw-bold">Ultime recensioni</h5>
+        @if (reviews.length != 0) {
+          <div class="row justify-content-between">
+            <div class="col">
+              <h5 class="fw-bold">Ultime recensioni</h5>
 
+            </div>
+
+            @if (this.loadBtnless) {
+              <div class="col-2 ">
+
+                <button (click)="lessReview()" class="btn btn-primary btn-sm">
+                  <i class="fa-solid fa-minus "></i>
+
+                </button>
+              </div>
+            }
           </div>
 
-          @if (this.loadBtnless) {
-            <div class="col-2 ">
 
-              <button (click)="lessReview()" class="btn btn-primary btn-sm">
-                <i class="fa-solid fa-minus "></i>
+          <div *ngFor="let review of recensioniVisibili"
+               class="review-container flex-grow-1 d-flex flex-column justify-content-center">
+            <app-review [review]="review" (click)="openPopup4(review)"></app-review>
+          </div>
+          @if (this.loadBtnmore) {
+            <div class="row justify-content-end mt-0">
+              <div class="col-2">
+                <button (click)="moreReview()" class="btn btn-primary btn-sm">
+                  <i class="fa-solid fa-plus fa-sm"></i>
+                </button>
+              </div>
 
-              </button>
             </div>
           }
-        </div>
-
-
-        <div *ngFor="let review of recensioniVisibili"
-             class="review-container flex-grow-1 d-flex flex-column justify-content-center" [ngClass]="{'show': true}">
-          <app-review [review]="review"></app-review>
-        </div>
-        @if (this.loadBtnmore) {
-          <div class="row justify-content-end mt-0">
-            <div class="col-2">
-              <button (click)="moreReview()" class="btn btn-primary btn-sm">
-                <i class="fa-solid fa-plus fa-sm"></i>
-              </button>
-            </div>
-
+        } @else {
+          <div class="row justify-content-center mt-auto text-center ">
+            <h5><strong>Aggiungi la tua prima recensione!</strong></h5>
           </div>
+
         }
         <div class="row justify-content-center mt-auto ">
           <div class="col-4">
@@ -111,6 +118,23 @@
           <div class="modal-body shadow-lg ">
             <!-- Contenuto del modale -->
             <app-add-review (closeModal)="closePopup2()" (reviewAdded)="aggiornaLista($event)"></app-add-review>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" [ngClass]="{'show': isPopupVisible4}"
+         [ngStyle]="{'display': isPopupVisible4 ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Recensione</h5>
+            <button type="button" class="btn-close" (click)="closePopup4()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body shadow-lg ">
+            <!-- Contenuto del modale -->
+            <app-reviewmodal (closeModal)="closePopup4()" [review]="selectReview"
+                             (reviewRemoved)="rimuoviDaLista($event)" (reviewModified)="modificaLista($event)"
+                             [isOpen]="isPopupVisible4"/>
           </div>
         </div>
       </div>

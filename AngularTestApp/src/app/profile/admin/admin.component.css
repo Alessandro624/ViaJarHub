@@ -109,3 +109,16 @@ small {
   overflow-y: auto;
   height: 550px; /*soluzione scroll bar*/
 }
+
+
+.rec {
+  min-height: 332px;
+}
+
+.fa-minus {
+  font-size: 10px;
+}
+
+.fa-plus {
+  font-size: 10px;
+}

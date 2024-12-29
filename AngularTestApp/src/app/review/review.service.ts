@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {catchError, Observable, throwError} from 'rxjs';
 import {Review} from '../models/review/review.module';
@@ -9,6 +9,7 @@ import {Travel} from '../models/travel/travel.model';
 })
 export class ReviewService {
   private APIUrl = "api";
+  starsHTML: string = '';
 
   constructor(private http: HttpClient) {
   }
@@ -67,11 +68,9 @@ export class ReviewService {
   }
 
   // Elimina una recensione specifica
-  deleteReview(travelId: number, email: string): Observable<void> {
-    const params = new HttpParams()
-      .set('travelId', travelId.toString())
-      .set('email', email);
-    return this.http.delete<void>(`${this.APIUrl}/open/v1/delete-review`, {params});
+  deleteReview(review: Review): Observable<void> {
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.request<void>('DELETE', `${this.APIUrl}/auth/v1/delete-review`, {headers, body: review});
   }
 
   // Conta il numero di recensioni di un determinato utente
@@ -79,4 +78,6 @@ export class ReviewService {
     const params = new HttpParams().set('email', email);
     return this.http.get<number>(`${this.APIUrl}/open/v1/reviews-count`, {params});
   }
+
+
 }
