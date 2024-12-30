@@ -45,3 +45,7 @@ body, button, input, select, textarea {
 .pac-container::after {
   display: none !important;
 }
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
