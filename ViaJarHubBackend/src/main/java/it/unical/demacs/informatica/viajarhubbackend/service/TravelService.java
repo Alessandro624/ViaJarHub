@@ -59,6 +59,12 @@ public class TravelService implements ITravelService {
     }
 
     @Override
+    public double getAvgStars(Long id, boolean isAdmin) {
+        checkTravelExistence(id, isAdmin);
+        return travelDAO.getAvgStars(id, !isAdmin ? LocalDate.now() : null);
+    }
+
+    @Override
     public Travel createTravel(Travel travel, List<MultipartFile> travelImages) throws Exception {
         checkNotNullFields(travel);
         checkDateValidity(travel.getStartDate(), travel.getEndDate());

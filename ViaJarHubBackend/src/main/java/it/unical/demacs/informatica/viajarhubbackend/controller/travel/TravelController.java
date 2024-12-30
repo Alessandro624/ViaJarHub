@@ -66,6 +66,17 @@ public abstract class TravelController {
         }
     }
 
+    public ResponseEntity<Double> getStars(Long id) {
+        try {
+            return ResponseEntity.ok(travelService.getAvgStars(id, isAdmin()));
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     public ResponseEntity<Integer> getTravelCount(TravelRequest travelRequest) {
         try {
             int travelCount = travelService.getTravelCount(travelRequest.getFilters(), isAdmin());

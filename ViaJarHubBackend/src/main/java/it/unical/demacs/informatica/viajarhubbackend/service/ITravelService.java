@@ -16,6 +16,8 @@ public interface ITravelService {
 
     List<String> getSuggestions(TravelFilter filters, boolean isAdmin);
 
+    double getAvgStars(Long id, boolean isAdmin);
+
     Travel createTravel(Travel travel, List<MultipartFile> travelImages) throws Exception;
 
     Travel updateTravel(Long id, Travel travel, List<MultipartFile> travelImages) throws Exception;

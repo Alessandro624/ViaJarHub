@@ -9,13 +9,15 @@ import java.util.List;
 public interface TravelDAO {
     List<Travel> findAll(LocalDate startDate);
 
-    List<Travel> findAllByUserWishlist(String email);
+    List<Travel> findAllByUserWishlist(String email, LocalDate startDate);
 
     List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters);
 
     Travel findById(Long id, LocalDate startDate);
 
     List<String> getSuggestions(TravelFilter filters);
+
+    double getAvgStars(Long id, LocalDate startDate);
 
     void save(Travel travel);
 

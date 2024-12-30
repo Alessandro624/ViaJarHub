@@ -42,10 +42,16 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
-    public List<Travel> findAllByUserWishlist(String email) {
+    public List<Travel> findAllByUserWishlist(String email, LocalDate startDate) {
         String query = "SELECT t.* FROM travel t JOIN wishlist w ON t.id = w.travel_id WHERE w.user_email = ?";
+        if (startDate != null) {
+            query += " AND start_date >= ?";
+        }
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
+            if (startDate != null) {
+                statement.setObject(2, startDate);
+            }
             ResultSet resultSet = statement.executeQuery();
             List<Travel> travels = new ArrayList<>();
             while (resultSet.next()) {
@@ -118,6 +124,27 @@ public class TravelDAOJDBC implements TravelDAO {
                 suggestions.add(resultSet.getString("destination"));
             }
             return suggestions;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public double getAvgStars(Long id, LocalDate startDate) {
+        String query = "SELECT tavg.avg_stars FROM travel_avg_stars tavg JOIN travel t ON t.id = tavg.id WHERE t.id = ?";
+        if (startDate != null) {
+            query += " AND t.start_date >= ?";
+        }
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, id);
+            if (startDate != null) {
+                statement.setObject(2, startDate);
+            }
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getDouble(1);
+            }
+            return 0;
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }

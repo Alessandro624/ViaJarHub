@@ -2,14 +2,13 @@ package it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC.p
 
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
-import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.UserDAO;
+import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 @AllArgsConstructor
 @Getter
@@ -24,7 +23,7 @@ public class UserProxy {
     }
 
     private void setWishlist() {
-        user.setWishlist(DBManager.getInstance().getTravelDAO().findAllByUserWishlist(user.getEmail()));
+        user.setWishlist(DBManager.getInstance().getTravelDAO().findAllByUserWishlist(user.getEmail(), !(user.getRole() == UserRole.ROLE_ADMIN) ? LocalDate.now() : null));
     }
 
     public void addToWishlist(Long travelId, LocalDate startDate) {
