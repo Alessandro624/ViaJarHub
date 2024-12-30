@@ -7,6 +7,7 @@ import {NgClass, NgIf, NgStyle} from '@angular/common';
 import {PaymentComponent} from '../payment/payment.component';
 import {AuthenticationService} from '../login/authentication.service';
 import {WishlistService} from '../wishlist/wishlist.service';
+import {ReviewmodalComponent} from '../review/reviewmodal/reviewmodal.component';
 
 @Component({
   selector: 'app-travel-detail',
@@ -19,7 +20,8 @@ import {WishlistService} from '../wishlist/wishlist.service';
     NgClass,
     NgStyle,
     PaymentComponent,
-    NgIf
+    NgIf,
+    ReviewmodalComponent
   ],
   templateUrl: './travel-detail.component.html',
   styleUrl: './travel-detail.component.css'

@@ -1,26 +1,21 @@
 <div class="card-data m-2 mb-2">
   <div class="row mt-3 ms-1">
     @if (inDetails) {
-      <div class="col-1  mt-1">
+      <div class="col-1  mt-2">
         <i class="fa-solid fa-circle-user fa-2xl ms-lg-3 ms-xl-0 "></i>
       </div>
       <div class="col ms-lg-0 mx-2 mx-md-0 ">
         <h5 class="card-title mb-0 ms-lg-0  fw-bold">{{ review.emailUser }} </h5>
-        <div>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
-        </div>
+        <app-star [rating]="review.stars"></app-star>
+
       </div>
     } @else if (inClient) {
-      <div class="col-1 ">
+      <div class="col-1 mt-2">
         <i class="fa-solid fa-circle-user fa-2xl  "></i>
       </div>
       <div class="col ms-md-3 ms-lg-1">
         <h6 class="card-title mb-0 ms-lg-0  fw-bold fs-5">{{ travelName }}</h6>
-        <div [innerHTML]="starsHTML"></div>
+        <app-star [rating]="review.stars"></app-star>
       </div>
     } @else {
       <div class="col-1 mt-2 ms-lg-2">
@@ -29,13 +24,8 @@
       <div class="col ms-0">
         <h5 class="card-title mb-0 fw-bold">{{ travelName }}</h5>
         <h6 class="card-title mb-0 ">{{ review.emailUser }}</h6>
-        <div>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-          <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
-        </div>
+        <app-star [rating]="review.stars"></app-star>
+
       </div>
     }
 

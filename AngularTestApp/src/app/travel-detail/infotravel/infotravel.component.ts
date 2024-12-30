@@ -3,12 +3,14 @@ import {Travel} from '../../models/travel/travel.model';
 
 import {ReviewComponent} from '../../review/review.component';
 import {GoogleMapsModule} from '@angular/google-maps';
-import {isPlatformBrowser, NgForOf, NgIf} from '@angular/common';
+import {isPlatformBrowser, NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {environment} from '../../../environments/environment';
 import {ActivatedRoute} from '@angular/router';
 import {TravelService} from '../travel.service';
 import {ReviewService} from '../../review/review.service';
 import {Review} from '../../models/review/review.module';
+import {StarComponent} from '../../star/star.component';
+import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.component';
 
 @Component({
   selector: 'app-infotravel',
@@ -17,7 +19,11 @@ import {Review} from '../../models/review/review.module';
     ReviewComponent,
     GoogleMapsModule,
     NgIf,
-    NgForOf
+    NgForOf,
+    StarComponent,
+    ReviewmodalComponent,
+    NgStyle,
+    NgClass
   ],
   templateUrl: './infotravel.component.html',
   styleUrl: './infotravel.component.css',
@@ -32,10 +38,11 @@ export class InfotravelComponent implements OnInit {
   infoWindow: any;
   reviews: Review[] = [];
   stars: number = 0;
-  fullStars: number[] = [];
-  emptyStars: number[] = [];
-  hasHalfStar: boolean = false;
+
   protected readonly environment = environment;
+  isPopupVisible: boolean = false;
+  selectReview: Review | null = null;
+  isLoading: boolean = true;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private _reviewService: ReviewService) {
   }
@@ -76,10 +83,10 @@ export class InfotravelComponent implements OnInit {
     this._travelService.getStars(id).subscribe({
       next: data => {
         this.stars = data;
-        this.calculateStars();
+        console.log("prov" + this.stars)
+        this.isLoading = false;
       }, error: error => {
         this.stars = 0;
-        this.calculateStars();
         console.log(error);
       }
     });
@@ -107,12 +114,14 @@ export class InfotravelComponent implements OnInit {
     });
   }
 
-  calculateStars() {
-    const hasHalf = this.stars % 1 !== 0;
-    const full = Math.floor(this.stars);
-    const empty = 5 - full - (hasHalf ? 1 : 0);
-    this.fullStars = Array(full).fill(0);
-    this.hasHalfStar = hasHalf;
-    this.emptyStars = Array(empty).fill(0);
+  openPopup(review: Review) {
+    this.isPopupVisible = true;
+    this.selectReview = review;
+
   }
+
+  closePopup() {
+    this.isPopupVisible = false;
+  }
+
 }

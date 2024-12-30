@@ -1,7 +1,7 @@
 <div class="container mt-5">
   <div class="row align-items-center mt-5">
     <div class="col-md-8 mt-4">
-      <h1 class="display-6">{{ travel?.destination }}</h1>
+      <h1 class="display-6 fw-bold">{{ travel?.destination }}</h1>
       <h3 class="text-muted">{{
           travel?.description
         }}
@@ -27,7 +27,7 @@
                  max="{{travel?.maxParticipantsNumber}}"
                  step="1" [(ngModel)]="postiSelezionati" (input)="modificaPrezzo()">
         </div>
-        <div class="col-12 text-end">
+        <div class="col-12 text-end text-md-start text-xl-end">
           <h5><strong>{{ prezzoFinale }}€</strong></h5>
         </div>
         <div class="col-12 mt-3">
@@ -64,7 +64,7 @@
     </li>
   </ul>
 
-  <div class="mt-3 mx-5">
+  <div class="mt-3 mx-3">
     <router-outlet></router-outlet>
   </div>
 
@@ -84,4 +84,5 @@
       </div>
     </div>
   </div>
+
 </div>

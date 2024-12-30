@@ -18,6 +18,7 @@ import {Travel} from '../../models/travel/travel.model';
 import {RouterLink} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AuthenticationService} from '../../login/authentication.service';
+import {StarComponent} from '../../star/star.component';
 
 @Component({
   selector: 'app-reviewmodal',
@@ -29,7 +30,8 @@ import {AuthenticationService} from '../../login/authentication.service';
     NgIf,
     ReactiveFormsModule,
     NgClass,
-    FormsModule
+    FormsModule,
+    StarComponent
   ],
   templateUrl: './reviewmodal.component.html',
   styleUrls: ['./reviewmodal.component.css']
@@ -54,6 +56,7 @@ export class ReviewmodalComponent implements OnChanges {
   imagesUrl: string[] = [];
   imageError: string = '';
   comment = '';
+  star = 0;
 
   constructor(private _travelService: TravelService, private reviewService: ReviewService, private elementRef: ElementRef, private authentication: AuthenticationService) {
   }
@@ -66,11 +69,14 @@ export class ReviewmodalComponent implements OnChanges {
 
   initialize(): void {
     if (this.review) {
+      this.star = this.review.stars
       this.isLoading = true;
       this.reviewService.getReviewImages(this.review.idTravel, this.review.emailUser).subscribe({
         next: result => {
+
           this.immaginiURLs = result.map(image => `data:image/jpeg;base64,${image}`);
           if (this.review) {
+            this.star = this.review.stars;
             this._travelService.getTravelById(this.review.idTravel).subscribe({
               next: data => {
                 this.travel = data;
@@ -87,7 +93,9 @@ export class ReviewmodalComponent implements OnChanges {
           this.errorMessage = 'Errore durante il caricamento delle immagini.';
         }
       });
+
     }
+
     this.inClient = this.isContainedIn('app-client');
   }
 

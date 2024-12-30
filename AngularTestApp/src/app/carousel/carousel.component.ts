@@ -120,7 +120,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
   // Funzione per verificare se il componente è contenuto in un altro componente
   isContainedIn(parentSelector: string): boolean {
-    console.log("rararar")
     let parent = this.elementRef.nativeElement.parentElement;
     while (parent) {
       if (parent.tagName.toLowerCase() === parentSelector.toLowerCase()) {

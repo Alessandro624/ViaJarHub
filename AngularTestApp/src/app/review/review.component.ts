@@ -5,12 +5,14 @@ import {Travel} from '../models/travel/travel.model';
 import {User} from '../models/user/user.model';
 import {Review} from '../models/review/review.module';
 import {TravelService} from '../travel-detail/travel.service';
+import {StarComponent} from '../star/star.component';
 
 @Component({
   selector: 'app-review',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    StarComponent
   ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.css'
@@ -59,11 +61,7 @@ export class ReviewComponent implements OnInit {
           next: result => {
             console.log(result);
             if (this.review) {
-              /*this.reviewService.getReviewImages(this.review.idTravel, this.review.emailUser).subscribe({
-                next: data => {
-                  this.immaginiURLs = data.map(image => `data:image/jpeg;base64,${image}`);
-                }
-              })*/
+              
               this.travelService.getTravelById(this.review.idTravel).subscribe(
                 {
                   next: result => {

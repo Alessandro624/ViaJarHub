@@ -25,8 +25,8 @@ export class FiltriComponent {
   @Input() isLoading!: boolean;
   travelTypes: TravelType[] = Object.values(TravelType).filter(type => type !== TravelType.NESSUNO);
   isExpanded: boolean = false; // Proprietà per mostrare/nascondere il pannello
-  minValue: number = 100; // Valore minimo iniziale
-  maxValue: number = 400; // Valore massimo iniziale
+  minValue: number = 0;
+  maxValue: number = 400;
   options: Options = {
     floor: 0,
     ceil: 500,

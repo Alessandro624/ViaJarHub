@@ -9,17 +9,16 @@
           <h1 class="display-4">{{ stars }}</h1>
           <div class="d-flex justify-content-center align-items-center mb-2">
             <!-- Stars -->
-            <div class="mb-2 d-flex">
-              <div *ngFor="let star of fullStars;">
-                <span class="text-warning fs-4 me-1"><i class="fa-solid fa-star fa-sm fa-beat"></i></span>
+            @if (isLoading) {
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
               </div>
-              <div *ngIf="hasHalfStar">
-                <span class="text-warning fs-4 me-1"><i class="fa-solid fa-star-half-stroke fa-sm fa-beat"></i></span>
+            } @else {
+              <div class="mb-2 d-flex">
+                <app-star [rating]="stars" [beat]="true"/>
               </div>
-              <div *ngFor="let star of emptyStars;">
-                <span class="text-warning fs-4 me-1"><i class="fa-regular fa-star fa-sm fa-beat"></i></span>
-              </div>
-            </div>
+            }
+
           </div>
           <p class="text-muted">({{ reviews.length }} Reviews)</p>
         </div>
@@ -35,11 +34,26 @@
             <h5 class="mb-3">Ultime recensioni</h5>
             <div *ngFor="let review of reviews">
 
-              <app-review [review]="review"></app-review>
+              <app-review [review]="review" (click)="openPopup(review)"></app-review>
             </div>
           }
 
 
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" [ngClass]="{'show': isPopupVisible}"
+         [ngStyle]="{'display': isPopupVisible ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Recensione</h5>
+            <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body shadow-lg ">
+            <!-- Contenuto del modale -->
+            <app-reviewmodal (closeModal)="closePopup()" [review]="selectReview" [isOpen]="isPopupVisible"/>
+          </div>
         </div>
       </div>
     </div>
