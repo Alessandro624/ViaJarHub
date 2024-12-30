@@ -75,6 +75,7 @@ export class Body1Component implements OnInit {
       tap(data => (this.elementiTot = data)),
       switchMap(() => this._travelService.getTravelsPaginated(this.index, 9, this.filters)),
       tap(travels => {
+        console.log(this.travels);
         this.travels = [...this.travels, ...travels];
         this.travelsMatrix = this.chunkArray(this.travels, 3);
         this.index += 9;
@@ -98,6 +99,7 @@ export class Body1Component implements OnInit {
     this.travels = [];
     this.travelsMatrix = [];
     this.index = 0;
+    this.elementiTot = 0;
   }
 
   localDeleteTravel(id: number): void {

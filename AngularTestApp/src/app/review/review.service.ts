@@ -43,6 +43,7 @@ export class ReviewService {
 
   // Crea una nuova recensione
   createReview(review: Review, images: File[]): Observable<void> {
+    review.user.authorities = null;
     const formData = new FormData();
     console.log(images);
 

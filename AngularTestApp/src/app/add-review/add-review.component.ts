@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {ReviewService} from '../review/review.service';
 import {Review} from '../models/review/review.module';
 import {AuthenticationService} from '../login/authentication.service';
+import {TravelService} from '../travel-detail/travel.service';
 
 @Component({
   selector: 'app-add-review',
@@ -19,20 +20,18 @@ import {AuthenticationService} from '../login/authentication.service';
 })
 export class AddReviewComponent {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  dropdownOptions: string[] = ['26', '27', '28', '29', '30'];
+  dropdownOptions: string[] = ['36', '37', '38', '39', '40'];
   selectedOption: string = '';
   rating: number = 0
   images: File[] = [];
   imagesUrl: string[] = [];
   imageError: string = '';
-
-
-  constructor(private reviewService: ReviewService, private authentication: AuthenticationService) {
-  }
-
   comment: string = '';
   @Output() closeModal = new EventEmitter<unknown>();//invia evento al padre
   @Output() reviewAdded = new EventEmitter<Review>();
+
+  constructor(private reviewService: ReviewService, private authentication: AuthenticationService, private travelService: TravelService) {
+  }
 
   rate(star: number) {
     this.rating = star;
@@ -47,30 +46,29 @@ export class AddReviewComponent {
     console.log('Opzione selezionata:', this.selectedOption);
     console.log('Stelle selezionate:', this.rating);
     console.log('Commento:', this.comment);
-
     this.authentication.currentUser$.subscribe(user => {
       if (user) {
-        let review: Review = {
-          idTravel: Number(this.selectedOption),
-          emailUser: user.email,
-          stars: this.rating,
-          comment: this.comment,
-          data: this.formatDate(new Date())
-        }
-        this.reviewService.createReview(review, this.images).subscribe(
-          {
-            next: () => {
-              this.reviewAdded.emit(review);
-            }
+        this.travelService.getTravelById(Number(this.selectedOption)).subscribe(travel => {
+          let review: Review = {
+            travel: travel,
+            user: {...user},
+            stars: this.rating,
+            comment: this.comment,
+            data: this.formatDate(new Date())
           }
-        );
+          this.reviewService.createReview(review, this.images).subscribe(
+            {
+              next: () => {
+                this.reviewAdded.emit(review);
+                this.resetReview();
+              }
+            }
+          );
+        });
+      } else {
+        this.resetReview();
       }
-      this.rating = 0
-      this.images = [];
-      this.imagesUrl = [];
-      this.comment = '';
-      this.closeModal.emit();
-    })
+    });
   }
 
   onFileSelect(event: any) {
@@ -129,4 +127,11 @@ export class AddReviewComponent {
   }
 
 
+  private resetReview() {
+    this.rating = 0
+    this.images = [];
+    this.imagesUrl = [];
+    this.comment = '';
+    this.closeModal.emit();
+  }
 }

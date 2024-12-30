@@ -1,8 +1,5 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {ReviewService} from './review.service';
-import {NgForOf} from '@angular/common';
-import {Travel} from '../models/travel/travel.model';
-import {User} from '../models/user/user.model';
 import {Review} from '../models/review/review.module';
 import {TravelService} from '../travel-detail/travel.service';
 import {StarComponent} from '../star/star.component';
@@ -11,7 +8,6 @@ import {StarComponent} from '../star/star.component';
   selector: 'app-review',
   standalone: true,
   imports: [
-    NgForOf,
     StarComponent
   ],
   templateUrl: './review.component.html',
@@ -22,16 +18,9 @@ export class ReviewComponent implements OnInit {
   inClient: boolean = false;
   inDetails: boolean = false;
   travelName: string = '';
-  immaginiURLs: string[] = [];
+  // immaginiURLs: string[] = [];
 
-  @Input() review: Review = {
-    idTravel: 0,
-    emailUser: '',
-    stars: 0,
-    comment: '',
-    data: ''
-
-  };
+  @Input() review!: Review;
   starsHTML: string = '';
 
 
@@ -56,13 +45,13 @@ export class ReviewComponent implements OnInit {
     this.inDetails = this.isContainedIn('app-infotravel');
 
     if (this.review) {
-      this.reviewService.getReview(this.review.idTravel, this.review.emailUser).subscribe(
+      this.reviewService.getReview(this.review.travel.id, this.review.user.email).subscribe(
         {
           next: result => {
             console.log(result);
             if (this.review) {
-              
-              this.travelService.getTravelById(this.review.idTravel).subscribe(
+
+              this.travelService.getTravelById(this.review.travel.id).subscribe(
                 {
                   next: result => {
                     console.log(result.destination);
@@ -101,6 +90,4 @@ export class ReviewComponent implements OnInit {
   private roundToHalf(value: number): number {
     return Math.round(value * 2) / 2;
   }
-
-
 }
