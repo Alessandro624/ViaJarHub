@@ -64,11 +64,11 @@ export class ReviewmodalComponent implements OnChanges {
 
   initialize(): void {
     if (this.review) {
-      this.star = this.review.stars
+      this.errorMessage = '';
+      this.star = this.review.stars;
       this.isLoading = true;
       this.reviewService.getReviewImages(this.review.travel.id, this.review.user.email).subscribe({
         next: result => {
-
           this.immaginiURLs = result.map(image => `data:image/jpeg;base64,${image}`);
           if (this.review) {
             this.star = this.review.stars;
