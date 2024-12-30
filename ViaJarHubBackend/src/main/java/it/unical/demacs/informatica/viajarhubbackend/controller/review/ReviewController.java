@@ -99,6 +99,7 @@ public class ReviewController {
             return ResponseEntity.ok()
                     .body(imagesBytes);
         } catch (InvalidInputException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         } catch (TravelNotFoundException e) {
             return ResponseEntity.notFound().build();

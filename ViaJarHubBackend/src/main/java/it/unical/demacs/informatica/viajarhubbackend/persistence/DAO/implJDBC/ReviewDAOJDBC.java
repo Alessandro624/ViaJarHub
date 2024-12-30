@@ -121,14 +121,15 @@ public class ReviewDAOJDBC implements ReviewDAO {
             System.out.println("provaSave");
 
             List<String> imagesPaths = review.getImagesPaths();
-
-            System.out.println("provaSave");
-            System.out.println(imagesPaths);
-
-            Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
-            System.out.println("provaSave");
-
-            statement.setArray(5, sqlArray);
+            if (imagesPaths != null) {
+                System.out.println("provaSave");
+                System.out.println(imagesPaths);
+                Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
+                System.out.println("provaSave");
+                statement.setArray(5, sqlArray);
+            } else {
+                statement.setArray(5, null);
+            }
             System.out.println("provaSave");
             statement.setObject(6, review.getData());
             statement.executeUpdate();
