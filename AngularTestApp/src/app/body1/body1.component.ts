@@ -55,7 +55,6 @@ export class Body1Component implements OnInit {
             this.alertMessage = error.message;
             console.error('Errore nel caricamento dei viaggi:', error);
             this.isLoading = false;
-            this.resetTravels();
           }
         });
     });
@@ -112,15 +111,13 @@ export class Body1Component implements OnInit {
     const input = this.translateTravelOrder(order);
     if (this.filters.travelOrder !== input) {
       this.filters.travelOrder = input;
-      this.resetTravels();
-      this.loadTravels(this.index);
+      this.loadTravels(0);
     }
   }
 
   toggleReverse() {
     this.filters.reverse = !this.filters.reverse;
-    this.resetTravels();
-    this.loadTravels(this.index);
+    this.loadTravels(0);
   }
 
   translateTravelOrder(order: TravelOrder) {
