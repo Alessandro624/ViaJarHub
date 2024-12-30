@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NgClass, NgForOf, NgStyle} from "@angular/common";
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {PaymentComponent} from "../payment/payment.component";
 import {RouterLink} from "@angular/router";
 import {Travel} from '../models/travel/travel.model';
@@ -13,14 +13,20 @@ import {WishlistService} from './wishlist.service';
     PaymentComponent,
     RouterLink,
     NgClass,
-    NgStyle
+    NgStyle,
+    NgIf
   ],
   templateUrl: './wishlist.component.html',
   styleUrl: './wishlist.component.css'
 })
 export class WishlistComponent implements OnInit {
   isPaymentVisible: boolean = false;
-  wishlist: Travel[] | null = [];
+  wishlist: Travel[] = [];
+  currentWishlist: Travel[] = [];
+  index: number = 0;
+  wishlistLength: number = 0;
+  isConfirmVisible: boolean = false;
+  toRemoveTravel: Travel | null = null;
 
   constructor(private _wishlistService: WishlistService) {
   }
@@ -28,9 +34,16 @@ export class WishlistComponent implements OnInit {
   ngOnInit(): void {
     this._wishlistService.wishlist$.subscribe({
         next: data => {
-          this.wishlist = data;
+          if (data) {
+            this.wishlist = data;
+            this.wishlistLength = this.wishlist.length - 3;
+            this.setCurrentWishlist();
+          } else {
+            this.resetWishlist();
+          }
         }, error: error => {
           console.log(error);
+          this.resetWishlist();
         }
       }
     );
@@ -48,10 +61,46 @@ export class WishlistComponent implements OnInit {
     this._wishlistService.removeFromWishlist(id).subscribe({
       next: () => {
         alert("Removed");
+        this.toRemoveTravel = null;
+        this.isConfirmVisible = false;
       },
       error: error => {
         console.log(error);
       }
     });
+  }
+
+  nextWishlist() {
+    this.index += 3;
+    this.setCurrentWishlist();
+  }
+
+  previewsWishlist() {
+    this.index = Math.max(0, this.index - 3);
+    this.setCurrentWishlist();
+  }
+
+  private setCurrentWishlist() {
+    if (this.index + 3 > this.wishlist.length) {
+      this.currentWishlist = this.wishlist.slice(this.index);
+    } else {
+      this.currentWishlist = this.wishlist.slice(this.index, this.index + 3);
+    }
+  }
+
+  private resetWishlist() {
+    this.wishlist = [];
+    this.wishlistLength = 0;
+    this.currentWishlist = [];
+  }
+
+  closeConfirm() {
+    this.isConfirmVisible = false;
+    this.toRemoveTravel = null;
+  }
+
+  confirmRemove(travel: Travel) {
+    this.isConfirmVisible = true;
+    this.toRemoveTravel = travel;
   }
 }
