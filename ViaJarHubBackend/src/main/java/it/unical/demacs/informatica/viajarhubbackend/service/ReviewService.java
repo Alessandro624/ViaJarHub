@@ -55,7 +55,7 @@ public class ReviewService implements IReviewService {
         Review review = checkReviewExistence(id, email);
         List<String> reviewImagesPaths = review.getImagesPaths();
         if (reviewImagesPaths == null || reviewImagesPaths.isEmpty()) {
-            throw new InvalidInputException("Travel images paths cannot be null or empty");
+            return List.of();
         }
         List<byte[]> reviewImages = new ArrayList<>();
         for (String imagePath : reviewImagesPaths) {
