@@ -109,7 +109,6 @@ public class ReviewController {
     }
 
     /*
-
     @RequestMapping(value = "/delete-review", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteReview(@RequestParam("travelId") int travelId, @RequestParam("email") String email) {
         try {
@@ -120,7 +119,8 @@ public class ReviewController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
-    }*/
+    }
+    */
 
     @RequestMapping(value = "/reviews-count", method = RequestMethod.GET)
     public ResponseEntity<Integer> getReviewCountByUser(@RequestParam("email") String email) {

@@ -71,8 +71,9 @@ public abstract class TravelController {
             return ResponseEntity.ok(travelService.getAvgStars(id, isAdmin()));
         } catch (InvalidInputException e) {
             return ResponseEntity.badRequest().build();
+        } catch (TravelNotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
