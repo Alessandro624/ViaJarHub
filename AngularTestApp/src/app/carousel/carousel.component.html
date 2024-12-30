@@ -29,7 +29,7 @@
               name="searchQuery"
               (focus)="expandSearchBar()"
               (blur)="collapseSearchBar()"
-              (input)="getAutocompleteSuggestions()"/>
+              (input)="getAutocompleteSuggestions(); onSearch();"/>
             <button
               class="btn"
               type="submit"
@@ -38,7 +38,8 @@
             </button>
             <!-- Autocomplete Suggestions -->
             <ul class="suggestions-list" *ngIf="suggestions.length > 0 && isExpanded" role="listbox">
-              <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)" class="suggestion-item"
+              <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion); onSearch();"
+                  class="suggestion-item"
                   role="option">
                 {{ suggestion }}
               </li>

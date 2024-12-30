@@ -1,7 +1,3 @@
-* {
-  font-family: 'Roboto', sans-serif;
-}
-
 .navbar {
   z-index: 1000;
   padding: 0; /* Rimuove il padding per adattarsi all'altezza dell'immagine */

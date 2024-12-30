@@ -154,6 +154,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     if (!this.filters.searchQuery) {
       this.isExpanded = false;
       this.isFocused = false;
+      this._router.navigate(['body1'], {queryParams: {search: this.filters.searchQuery}}).then();
     }
   }
 
