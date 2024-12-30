@@ -1,7 +1,8 @@
 <app-carousel></app-carousel>
 
 <div class="container my-5">
-  <app-filtri [filters]="filters" [alertMessage]="alertMessage" [isLoading]="isLoading" (loadTravel)="loadTravels()"
+  <app-filtri [filters]="filters" [alertMessage]="alertMessage" [isLoading]="isLoading"
+              (loadTravel)="loadTravels(0)"
               (resetTravels)="resetTravels()"></app-filtri>
 
   <div class="my-3 d-flex justify-content-end">
@@ -36,7 +37,7 @@
     </div>
   }
   @if (index < elementiTot && travelsMatrix.length != 0) {
-    <button class="btn btn-primary" (click)="loadTravels()" [disabled]="isLoading">
+    <button class="btn btn-primary" (click)="loadTravels(this.index)" [disabled]="isLoading">
       <span *ngIf="isLoading"
             class="spinner-border spinner-border-sm"
             role="status"

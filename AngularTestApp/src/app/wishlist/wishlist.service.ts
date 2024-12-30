@@ -48,6 +48,9 @@ export class WishlistService {
       case 400:
         errorMessage = 'Impossibile effettuare la richiesta, riprovare più tardi';
         break;
+      case 401:
+        errorMessage = 'Per aggiungere alla lista dei desideri devi accedere al sistema';
+        break;
       default:
         errorMessage = 'Si è verificato un errore, riprovare più tardi';
     }

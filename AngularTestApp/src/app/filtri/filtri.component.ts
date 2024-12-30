@@ -170,7 +170,7 @@ export class FiltriComponent {
     this.endDate = '';
     this.endDateMin = this.minDate;
     this.type = TravelType.NESSUNO;
-    this.minValue = 100;
+    this.minValue = 0;
     this.maxValue = 400;
     this.isLoading = false;
     this.alertMessage = '';
