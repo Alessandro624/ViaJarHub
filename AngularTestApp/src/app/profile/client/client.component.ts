@@ -12,6 +12,7 @@ import {Travel} from '../../models/travel/travel.model';
 import {ReviewService} from '../../review/review.service';
 import {Review} from '../../models/review/review.module';
 import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.component';
+import {WishlistComponent} from '../../wishlist/wishlist.component';
 
 @Component({
   selector: 'app-client',
@@ -26,7 +27,8 @@ import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.compone
     NgIf,
     RouterLink,
     PaymentComponent,
-    ReviewmodalComponent
+    ReviewmodalComponent,
+    WishlistComponent
   ],
   templateUrl: './client.component.html',
   styleUrl: './client.component.css'

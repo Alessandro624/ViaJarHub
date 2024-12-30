@@ -305,6 +305,17 @@ export class TravelService {
     )
   }
 
+  getStars(id: number) {
+    return this.checkUserAuthority().pipe(
+      switchMap(user =>
+        this._http.get<number>(
+          `${this.APIUrl}/${this.getAPIType(user)}/v1/stars?id=${id}`
+        )
+      ),
+      catchError(this.handleError)
+    );
+  }
+
   getTravelImages(id: number) {
     return this.checkUserAuthority().pipe(
       switchMap(user =>
