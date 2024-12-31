@@ -64,4 +64,9 @@ public class OpenTravelController extends TravelController {
     public ResponseEntity<List<byte[]>> getTravelImages(@RequestParam("id") Long id) {
         return super.getTravelImages(id);
     }
+    @Override
+    @RequestMapping(value = "/name", method = RequestMethod.GET)
+    public ResponseEntity<List<String>> getName(@RequestParam("id") Long id) {
+        return super.getName(id);
+    }
 }

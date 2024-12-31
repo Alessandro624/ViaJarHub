@@ -27,4 +27,6 @@ public interface ITravelService {
     void deleteTravel(Long id) throws Exception;
 
     int getTravelCount(TravelFilter filters, boolean isAdmin);
+
+    String getName(Long id);
 }

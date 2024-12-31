@@ -228,6 +228,23 @@ public class TravelDAOJDBC implements TravelDAO {
         }
     }
 
+    @Override
+    public String findNameById(Long id) {
+        String query = "SELECT * FROM travel WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, id);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("destination");
+            }
+            return null;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
     private List<Object> applyFilters(TravelFilter filters, StringBuilder query) {
         List<Object> params = new ArrayList<>();
         if (filters.getSearchQuery() != null && !filters.getSearchQuery().isBlank()) {

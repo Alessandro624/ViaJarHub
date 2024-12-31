@@ -24,4 +24,6 @@ public interface TravelDAO {
     void delete(Long id);
 
     int countTravels(TravelFilter filters);
+
+    String findNameById(Long id);
 }

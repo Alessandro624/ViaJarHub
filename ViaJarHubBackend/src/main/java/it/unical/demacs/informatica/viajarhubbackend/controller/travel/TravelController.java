@@ -156,4 +156,16 @@ public abstract class TravelController {
             return ResponseEntity.internalServerError().build();
         }
     }
+    public ResponseEntity<List<String>> getName(Long id) {
+        try {
+            List<String > nome=new ArrayList<>();
+
+            nome.add(travelService.getName(id));
+            return ResponseEntity.ok(nome);
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
