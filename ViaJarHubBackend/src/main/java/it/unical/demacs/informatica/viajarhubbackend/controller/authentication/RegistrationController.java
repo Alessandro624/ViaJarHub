@@ -1,4 +1,4 @@
-package it.unical.demacs.informatica.viajarhubbackend.controller;
+package it.unical.demacs.informatica.viajarhubbackend.controller.authentication;
 
 import it.unical.demacs.informatica.viajarhubbackend.exception.EmailNotSentException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;

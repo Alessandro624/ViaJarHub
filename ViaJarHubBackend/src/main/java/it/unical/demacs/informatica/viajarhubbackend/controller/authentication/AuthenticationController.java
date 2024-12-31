@@ -1,9 +1,8 @@
-package it.unical.demacs.informatica.viajarhubbackend.controller;
+package it.unical.demacs.informatica.viajarhubbackend.controller.authentication;
 
 import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.UserNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;

@@ -89,6 +89,17 @@ public abstract class TravelController {
         }
     }
 
+    public ResponseEntity<Integer> getAvailableSeats(Travel travel) {
+        try {
+            int availableSeats = travelService.getAvailableSeats(travel.getId(), travel.getStartDate(), travel.getEndDate());
+            return ResponseEntity.ok().body(availableSeats);
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     public ResponseEntity<List<byte[]>> getTravelImages(Long id) {
         try {
 

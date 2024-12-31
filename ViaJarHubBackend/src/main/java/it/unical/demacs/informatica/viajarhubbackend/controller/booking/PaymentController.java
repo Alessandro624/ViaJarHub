@@ -1,4 +1,4 @@
-package it.unical.demacs.informatica.viajarhubbackend.controller;
+package it.unical.demacs.informatica.viajarhubbackend.controller.booking;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -98,6 +98,7 @@ public class PaymentController {
         // TODO check amount = travel.price * participantsNumber
         // TODO check email = current user.email
         // TODO check travel existence
+        // TODO check date
         Long travelId = Long.valueOf((Integer) paymentData.get("travelId"));
         int numberOfParticipants = (Integer) paymentData.get("numeroPartecipanti");
         LocalDate startDate = LocalDate.parse(paymentData.get("dataPartenza").toString());
@@ -112,6 +113,7 @@ public class PaymentController {
         if (numberOfParticipants > availableSeats) {
             response.put("success", false);
             response.put("message", "Non ci sono abbastanza posti disponibili.");
+            System.out.println(response);
             return false;
         }
         // Controllo del formato del numero di carta
