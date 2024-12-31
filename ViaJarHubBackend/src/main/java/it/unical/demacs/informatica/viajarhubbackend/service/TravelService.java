@@ -140,6 +140,11 @@ public class TravelService implements ITravelService {
         return travelDAO.countTravels(filters);
     }
 
+    @Override
+    public int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate) {
+        return travelDAO.getAvailableSeats(id, startDate, endDate);
+    }
+
     private void checkNotNullFields(Travel travel) {
         if (travel.getDestination() == null || travel.getDestination().isBlank()) {
             throw new InvalidInputException("Destination cannot be null");

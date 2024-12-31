@@ -64,6 +64,25 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
+    public List<Travel> findAllByUserBooking(String email) {
+        String query = "SELECT DISTINCT t.* " +
+                "FROM travel t " +
+                "JOIN booking b ON t.id = b.travel_id " +
+                "WHERE b.user_email = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            List<Travel> travels = new ArrayList<>();
+            while (resultSet.next()) {
+                travels.add(mapResultSetToTravel(resultSet));
+            }
+            return travels;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
     public List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters) {
         StringBuilder query = new StringBuilder("SELECT t.* FROM travel t");
         query.append(" JOIN travel_avg_stars tavg ON t.id = tavg.id");
@@ -206,6 +225,7 @@ public class TravelDAOJDBC implements TravelDAO {
             statement.executeUpdate();
             resetRelationInWishListTable(id);
             resetRelationInReviewTable(id);
+            resetRelationInBookingTable(id);
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -228,6 +248,24 @@ public class TravelDAOJDBC implements TravelDAO {
             throw new RuntimeException(sqlException);
         }
     }
+
+    @Override
+    public int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate) {
+        String query = "SELECT available_seats FROM available_seats WHERE travel_id = ? AND start_date = ? AND end_date = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, id);
+            statement.setObject(2, startDate);
+            statement.setObject(3, endDate);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("available_seats");
+            }
+            return 0;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
 
     private List<Object> applyFilters(TravelFilter filters, StringBuilder query) {
         List<Object> params = new ArrayList<>();
@@ -315,6 +353,13 @@ public class TravelDAOJDBC implements TravelDAO {
 
     private void resetRelationInReviewTable(Long id) throws SQLException {
         String query = "DELETE FROM review WHERE idtravel = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setLong(1, id);
+        statement.execute();
+    }
+
+    private void resetRelationInBookingTable(Long id) throws SQLException {
+        String query = "DELETE FROM booking WHERE travel_id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setLong(1, id);
         statement.execute();

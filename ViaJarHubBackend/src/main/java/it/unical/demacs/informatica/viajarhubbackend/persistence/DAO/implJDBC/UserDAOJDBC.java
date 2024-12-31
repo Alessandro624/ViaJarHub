@@ -1,14 +1,12 @@
 package it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC;
 
-import it.unical.demacs.informatica.viajarhubbackend.model.AuthProvider;
-import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
-import it.unical.demacs.informatica.viajarhubbackend.model.User;
-import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
+import it.unical.demacs.informatica.viajarhubbackend.model.*;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.TravelDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.UserDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,6 +105,7 @@ public class UserDAOJDBC implements UserDAO {
             statement.executeUpdate();
             resetRelationInWishListTable(email);
             resetRelationInReviewTable(email);
+            resetRelationInBookingTable(email);
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -130,6 +129,24 @@ public class UserDAOJDBC implements UserDAO {
             statement.setString(1, email);
             statement.setLong(2, travelId);
             statement.execute();
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public void insertTravelInBookingTable(String email, Long travelId, LocalDate startDate, LocalDate endDate, Booking booking) {
+        String query = "INSERT INTO booking(user_email, travel_id, start_date, end_date, booking_date, participants_number, total_amount) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            statement.setLong(2, travelId);
+            statement.setObject(3, startDate);
+            statement.setObject(4, endDate);
+            statement.setTimestamp(5, booking.getBookingDate() != null ? Timestamp.valueOf(booking.getBookingDate()) : null);
+            statement.setInt(6, booking.getParticipantsNumber());
+            statement.setDouble(7, booking.getTotalAmount());
+            statement.executeUpdate();
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -183,6 +200,13 @@ public class UserDAOJDBC implements UserDAO {
 
     private void resetRelationInReviewTable(String email) throws SQLException {
         String query = "DELETE FROM review WHERE email = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, email);
+        statement.execute();
+    }
+
+    private void resetRelationInBookingTable(String email) throws SQLException {
+        String query = "DELETE FROM booking WHERE email = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, email);
         statement.execute();

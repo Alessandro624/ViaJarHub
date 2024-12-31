@@ -4,6 +4,7 @@ import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.model.TravelFilter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,4 +28,6 @@ public interface ITravelService {
     void deleteTravel(Long id) throws Exception;
 
     int getTravelCount(TravelFilter filters, boolean isAdmin);
+
+    int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate);
 }

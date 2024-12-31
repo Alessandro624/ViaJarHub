@@ -1,5 +1,6 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller.review;
 
+import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.Review;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/auth/v1")
@@ -27,6 +29,9 @@ public class AuthReviewController {
     public ResponseEntity<Void> createReview(@RequestPart Review review, @RequestParam(required = false) List<MultipartFile> reviewImages) {
         System.out.println("prova");
         try {
+            if (!Objects.equals(SecurityUtility.getCurrentUser().getUsername(), review.getUser().getEmail())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             System.out.println(review);
             Review createdReview = reviewService.save(review, reviewImages);
             System.out.println(createdReview);
@@ -45,6 +50,9 @@ public class AuthReviewController {
     @RequestMapping(value = "/delete-review", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteReview(@RequestBody Review review) {
         try {
+            if (!Objects.equals(SecurityUtility.getCurrentUser().getUsername(), review.getUser().getEmail())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             reviewService.delete(review);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {

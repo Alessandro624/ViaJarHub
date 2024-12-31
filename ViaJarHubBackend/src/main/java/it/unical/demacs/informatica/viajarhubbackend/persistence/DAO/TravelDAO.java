@@ -11,6 +11,8 @@ public interface TravelDAO {
 
     List<Travel> findAllByUserWishlist(String email, LocalDate startDate);
 
+    List<Travel> findAllByUserBooking(String email);
+
     List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters);
 
     Travel findById(Long id, LocalDate startDate);
@@ -24,4 +26,6 @@ public interface TravelDAO {
     void delete(Long id);
 
     int countTravels(TravelFilter filters);
+
+    int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate);
 }

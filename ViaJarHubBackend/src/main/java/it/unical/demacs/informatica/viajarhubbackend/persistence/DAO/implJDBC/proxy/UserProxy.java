@@ -1,5 +1,6 @@
 package it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.implJDBC.proxy;
 
+import it.unical.demacs.informatica.viajarhubbackend.model.Booking;
 import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
 import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
@@ -34,6 +35,23 @@ public class UserProxy {
 
     public void removeFromWishlist(Long travelId) {
         DBManager.getInstance().getUserDAO().removeTravelFromWishlist(user.getEmail(), travelId);
+        this.setWishlist();
+    }
+
+    public List<Travel> getBookedTravels() {
+        if (user.getBookedTravels() == null) {
+            this.setBookedTravels();
+        }
+        return user.getBookedTravels();
+    }
+
+    private void setBookedTravels() {
+        user.setBookedTravels(DBManager.getInstance().getTravelDAO().findAllByUserBooking(user.getEmail()));
+    }
+
+    public void addToBookedTravels(Long travelId, Booking booking) {
+        Travel travel = DBManager.getInstance().getTravelDAO().findById(travelId, !(user.getRole() == UserRole.ROLE_ADMIN) ? LocalDate.now() : null);
+        DBManager.getInstance().getUserDAO().insertTravelInBookingTable(user.getEmail(), travel.getId(), travel.getStartDate(), travel.getEndDate(), booking);
         this.setWishlist();
     }
 }
