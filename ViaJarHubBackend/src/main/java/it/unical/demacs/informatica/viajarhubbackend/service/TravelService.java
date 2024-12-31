@@ -41,6 +41,11 @@ public class TravelService implements ITravelService {
     }
 
     @Override
+    public List<Travel> getReviewableBooking(String email) {
+        return travelDAO.findAllReviewable(email);
+    }
+
+    @Override
     public Optional<Travel> findById(Long id, boolean isAdmin) {
         Travel travel = travelDAO.findById(id, !isAdmin ? LocalDate.now() : null);
         if (travel == null) {

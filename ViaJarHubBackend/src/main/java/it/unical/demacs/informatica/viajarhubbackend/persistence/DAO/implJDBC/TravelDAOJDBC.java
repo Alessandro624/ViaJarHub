@@ -108,6 +108,27 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
+    public List<Travel> findAllReviewable(String email) {
+        String query = "SELECT DISTINCT t.* " +
+                "FROM travel t " +
+                "JOIN booking b ON t.id = b.travel_id " +
+                "WHERE b.end_date <= CURRENT_DATE AND b.user_email = ? " +
+                "AND NOT EXISTS (" +
+                "    SELECT 1 FROM review r WHERE r.idtravel = t.id)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            List<Travel> travels = new ArrayList<>();
+            while (resultSet.next()) {
+                travels.add(mapResultSetToTravel(resultSet));
+            }
+            return travels;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
     public Travel findById(Long id, LocalDate startDate) {
         String query = "SELECT * FROM travel WHERE id = ?";
         if (startDate != null) {

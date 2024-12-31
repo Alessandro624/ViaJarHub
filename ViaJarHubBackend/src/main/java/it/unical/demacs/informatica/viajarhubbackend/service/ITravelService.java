@@ -13,6 +13,8 @@ public interface ITravelService {
 
     List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters, boolean isAdmin);
 
+    List<Travel> getReviewableBooking(String email);
+
     Optional<Travel> findById(Long id, boolean isAdmin);
 
     List<String> getSuggestions(TravelFilter filters, boolean isAdmin);

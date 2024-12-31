@@ -53,5 +53,10 @@ public class UserProxy {
         Travel travel = DBManager.getInstance().getTravelDAO().findById(travelId, !(user.getRole() == UserRole.ROLE_ADMIN) ? LocalDate.now() : null);
         DBManager.getInstance().getUserDAO().insertTravelInBookingTable(user.getEmail(), travel.getId(), travel.getStartDate(), travel.getEndDate(), booking);
         this.setBookedTravels();
+        try {
+            this.removeFromWishlist(travelId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

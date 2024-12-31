@@ -15,6 +15,8 @@ public interface TravelDAO {
 
     List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters);
 
+    List<Travel> findAllReviewable(String email);
+
     Travel findById(Long id, LocalDate startDate);
 
     List<String> getSuggestions(TravelFilter filters);
