@@ -1,5 +1,23 @@
 <div>
-  <p>Prezzo totale: <strong>{{ prezzo }} €</strong></p>
+  @if (inWishlist) {
+    <p>Prezzo totale: <strong>{{ prezzoFinale }} €</strong></p>
+    <div class="row justify-content-between">
+      <div class="col-6">
+        <p class="fw-bold">Numero di partecipanti:</p>
+      </div>
+      <div class="col-6 text-end">
+        <input type="number" class="increment-input" id="incrementInput" min="1"
+               max="{{travel?.maxParticipantsNumber}}"
+               step="1" [(ngModel)]="postiSelezionati" (input)="modificaPrezzo()">
+      </div>
+    </div>
+
+
+  } @else {
+    <p>Prezzo totale: <strong>{{ prezzo }} €</strong></p>
+
+  }
+
   <form>
     <div class="mb-3">
       <label for="cardNumber" class="form-label">Numero di Carta</label>

@@ -4,6 +4,8 @@ import {PaymentComponent} from "../payment/payment.component";
 import {RouterLink} from "@angular/router";
 import {Travel} from '../models/travel/travel.model';
 import {WishlistService} from './wishlist.service';
+import {TravelService} from '../travel-detail/travel.service';
+import {StarComponent} from '../star/star.component';
 
 @Component({
   selector: 'app-wishlist',
@@ -14,7 +16,8 @@ import {WishlistService} from './wishlist.service';
     RouterLink,
     NgClass,
     NgStyle,
-    NgIf
+    NgIf,
+    StarComponent
   ],
   templateUrl: './wishlist.component.html',
   styleUrl: './wishlist.component.css'
@@ -27,8 +30,9 @@ export class WishlistComponent implements OnInit {
   wishlistLength: number = 0;
   isConfirmVisible: boolean = false;
   toRemoveTravel: Travel | null = null;
+  selectedTravel: Travel | undefined;
 
-  constructor(private _wishlistService: WishlistService) {
+  constructor(private _wishlistService: WishlistService, private travelService: TravelService,) {
   }
 
   ngOnInit(): void {
@@ -36,6 +40,7 @@ export class WishlistComponent implements OnInit {
         next: data => {
           if (data) {
             this.wishlist = data;
+
             this.wishlistLength = this.wishlist.length - 3;
             this.setCurrentWishlist();
           } else {
@@ -49,8 +54,10 @@ export class WishlistComponent implements OnInit {
     );
   }
 
-  openPayment() {
+  openPayment(travel: Travel): void {
+    this.selectedTravel = travel;
     this.isPaymentVisible = true;
+
   }
 
   closePayment() {
@@ -103,4 +110,6 @@ export class WishlistComponent implements OnInit {
     this.isConfirmVisible = true;
     this.toRemoveTravel = travel;
   }
+
+
 }

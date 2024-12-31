@@ -5,7 +5,7 @@
 .card {
   border-radius: 15px;
   transition: transform 0.5s ease; /* Transizione per l'effetto hover */
-
+  min-height: 305px;
 }
 
 .card:hover {
@@ -45,3 +45,4 @@ a {
   text-decoration: none;
   color: black;
 }
+

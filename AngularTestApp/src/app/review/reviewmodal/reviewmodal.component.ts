@@ -46,7 +46,6 @@ export class ReviewmodalComponent implements OnChanges {
   @Input() isOpen: boolean = false;
 
   immaginiURLs: string[] = [];
-  travel: Travel | null = null;
   inClient: boolean = false;
   viewMode: boolean = true;
   isLoading: boolean = true;
@@ -57,12 +56,14 @@ export class ReviewmodalComponent implements OnChanges {
   imageError: string = '';
   comment = '';
   star = 0;
+  destinazione: string = '';
 
   constructor(private _travelService: TravelService, private reviewService: ReviewService, private elementRef: ElementRef, private authentication: AuthenticationService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen'] && changes['isOpen'].currentValue) {
+      this.viewMode = true;
       this.initialize(); // Inizializza il componente quando il modale è aperto
     }
   }
@@ -77,9 +78,9 @@ export class ReviewmodalComponent implements OnChanges {
           this.immaginiURLs = result.map(image => `data:image/jpeg;base64,${image}`);
           if (this.review) {
             this.star = this.review.stars;
-            this._travelService.getTravelById(this.review.idTravel).subscribe({
+            this._travelService.getName(this.review.idTravel).subscribe({
               next: data => {
-                this.travel = data;
+                this.destinazione = data[0];
                 this.isLoading = false;
                 if (this.immaginiURLs.length === 0) {
                   this.errorMessage = 'Nessuna immagine trovata.';

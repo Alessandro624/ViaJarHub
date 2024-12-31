@@ -1,10 +1,11 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 
 import {Travel} from '../models/travel/travel.model';
 import {AuthenticationService} from '../login/authentication.service';
 import {PaymentService} from './payment.service';
+import {response} from 'express';
 
 
 @Component({
@@ -14,7 +15,7 @@ import {PaymentService} from './payment.service';
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css']
 })
-export class PaymentComponent {
+export class PaymentComponent implements OnChanges {
   @Output() closeModal = new EventEmitter<void>();
 
   @Input() prezzo: number = 0;
@@ -26,10 +27,13 @@ export class PaymentComponent {
   cvv: string = '';
   stripe: any;
   isLoading: boolean = false;
+  inWishlist: boolean = false;
+  postiSelezionati: number = 1;
+  prezzoFinale: number = 0;
 
 
   // Stato del pagamento
-  constructor(private _paymentService: PaymentService, private authentication: AuthenticationService) {
+  constructor(private _paymentService: PaymentService, private authentication: AuthenticationService, private elementRef: ElementRef) {
   }
 
   makePayment() {
@@ -63,5 +67,31 @@ export class PaymentComponent {
           this.closeModal.emit();
         }
       });
+  }
+
+  isContainedIn(parentSelector: string): boolean {
+    let parent = this.elementRef.nativeElement.parentElement;
+    while (parent) {
+      if (parent.tagName.toLowerCase() === parentSelector.toLowerCase()) {
+        return true;
+      }
+      parent = parent.parentElement;
+    }
+    return false;
+  }
+
+  
+  modificaPrezzo() {
+    console.log()
+    if (this.travel) {
+      this.prezzoFinale = this.travel.price * this.postiSelezionati;
+      console.log(this.prezzoFinale
+      )
+    }
+  }
+
+  ngOnChanges(): void {
+    this.modificaPrezzo();
+    this.inWishlist = this.isContainedIn('app-client');
   }
 }
