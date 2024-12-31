@@ -11,8 +11,8 @@ import java.util.List;
 @Setter
 @ToString
 public class Review {
-    private int idTravel;
-    private String emailUser;
+    private Travel travel;
+    private User user;
     private int stars;
     private String comment;
     private List<String> imagesPaths;

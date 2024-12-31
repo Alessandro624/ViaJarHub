@@ -106,6 +106,7 @@ public class UserDAOJDBC implements UserDAO {
             statement.setString(1, email);
             statement.executeUpdate();
             resetRelationInWishListTable(email);
+            resetRelationInReviewTable(email);
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -175,6 +176,13 @@ public class UserDAOJDBC implements UserDAO {
 
     private void resetRelationInWishListTable(String email) throws SQLException {
         String query = "DELETE FROM wishlist WHERE user_email = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, email);
+        statement.execute();
+    }
+
+    private void resetRelationInReviewTable(String email) throws SQLException {
+        String query = "DELETE FROM review WHERE email = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, email);
         statement.execute();

@@ -2,7 +2,6 @@ package it.unical.demacs.informatica.viajarhubbackend.service;
 
 import it.unical.demacs.informatica.viajarhubbackend.exception.*;
 import it.unical.demacs.informatica.viajarhubbackend.model.Review;
-import it.unical.demacs.informatica.viajarhubbackend.model.Travel;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DAO.ReviewDAO;
 import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 import org.springframework.stereotype.Service;
@@ -56,7 +55,7 @@ public class ReviewService implements IReviewService {
         Review review = checkReviewExistence(id, email);
         List<String> reviewImagesPaths = review.getImagesPaths();
         if (reviewImagesPaths == null || reviewImagesPaths.isEmpty()) {
-            throw new InvalidInputException("Travel images paths cannot be null or empty");
+            return List.of();
         }
         List<byte[]> reviewImages = new ArrayList<>();
         for (String imagePath : reviewImagesPaths) {
@@ -108,7 +107,7 @@ public class ReviewService implements IReviewService {
         }
         reviewDAO.save(review);
         System.out.println("provas");
-        Optional<Review> savedReview = findReview(review.getIdTravel(), review.getEmailUser());
+        Optional<Review> savedReview = findReview(review.getTravel().getId().intValue(), review.getUser().getEmail());
         if (reviewImages != null && !reviewImages.isEmpty() && savedReview.isPresent()) {
             saveReviewImages(savedReview.get(), reviewImages);
             reviewDAO.save(savedReview.get());
@@ -119,16 +118,16 @@ public class ReviewService implements IReviewService {
 
     @Override
     public void delete(Review review) {
-        Review existingReview = checkReviewExistence(review.getIdTravel(), review.getEmailUser());
+        Review existingReview = checkReviewExistence(review.getTravel().getId().intValue(), review.getUser().getEmail());
         reviewDAO.delete(existingReview);
 
     }
 
     private void checkNotNullFields(Review review) {
-        if (review.getIdTravel() <= 0) {
+        if (review.getTravel().getId().intValue() <= 0) {
             throw new InvalidInputException("Travel ID must be greater than 0");
         }
-        if (review.getEmailUser() == null || review.getEmailUser().isBlank()) {
+        if (review.getUser().getEmail() == null || review.getUser().getEmail().isBlank()) {
             throw new InvalidInputException("Email cannot be null or blank");
         }
         if (review.getStars() < 1 || review.getStars() > 5) {
@@ -140,7 +139,7 @@ public class ReviewService implements IReviewService {
     }
 
     private void checkNotDuplicate(Review review) {
-        Optional<Review> existingReview = findReview(review.getIdTravel(), review.getEmailUser());
+        Optional<Review> existingReview = findReview(review.getTravel().getId().intValue(), review.getUser().getEmail());
         if (existingReview.isPresent()) {
             throw new ReviewAlreadyExistsException("Review already exists for this travel and user");
         }
@@ -155,8 +154,8 @@ public class ReviewService implements IReviewService {
     }
 
     private void saveReviewImages(Review review, List<MultipartFile> reviewImages) throws Exception {
-        System.out.println(review.getIdTravel());
-        String reviewDirectory = String.valueOf(review.getIdTravel()) + '-' + review.getEmailUser();
+        System.out.println(review.getTravel().getId());
+        String reviewDirectory = String.valueOf(review.getTravel().getId()) + '-' + review.getUser().getEmail();
         System.out.println("Directory " + reviewDirectory);
         File directory = new File(REVIEW_IMAGES_DIR + reviewDirectory);
         if (!directory.exists() && !directory.mkdirs()) {
@@ -169,7 +168,7 @@ public class ReviewService implements IReviewService {
 
         for (MultipartFile reviewImage : reviewImages) {
             System.out.println("mannaia");
-            String fileName = String.valueOf(review.getIdTravel()) + '-' + review.getEmailUser() + '-' + reviewImage.getOriginalFilename();
+            String fileName = String.valueOf(review.getTravel().getId()) + '-' + review.getUser().getEmail() + '-' + reviewImage.getOriginalFilename();
             System.out.println("mannaia" + fileName);
             Path path = Path.of(REVIEW_IMAGES_DIR + reviewDirectory, fileName);
             Files.copy(reviewImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
@@ -188,5 +187,4 @@ public class ReviewService implements IReviewService {
             }
         }
     }
-
 }

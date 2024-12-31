@@ -99,6 +99,7 @@ public class ReviewController {
             return ResponseEntity.ok()
                     .body(imagesBytes);
         } catch (InvalidInputException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         } catch (TravelNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -109,7 +110,6 @@ public class ReviewController {
     }
 
     /*
-
     @RequestMapping(value = "/delete-review", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteReview(@RequestParam("travelId") int travelId, @RequestParam("email") String email) {
         try {
@@ -120,7 +120,8 @@ public class ReviewController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
-    }*/
+    }
+    */
 
     @RequestMapping(value = "/reviews-count", method = RequestMethod.GET)
     public ResponseEntity<Integer> getReviewCountByUser(@RequestParam("email") String email) {

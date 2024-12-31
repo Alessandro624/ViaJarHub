@@ -205,6 +205,7 @@ public class TravelDAOJDBC implements TravelDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
             resetRelationInWishListTable(id);
+            resetRelationInReviewTable(id);
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -324,6 +325,13 @@ public class TravelDAOJDBC implements TravelDAO {
 
     private void resetRelationInWishListTable(Long id) throws SQLException {
         String query = "DELETE FROM wishlist WHERE travel_id = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setLong(1, id);
+        statement.execute();
+    }
+
+    private void resetRelationInReviewTable(Long id) throws SQLException {
+        String query = "DELETE FROM review WHERE idtravel = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setLong(1, id);
         statement.execute();

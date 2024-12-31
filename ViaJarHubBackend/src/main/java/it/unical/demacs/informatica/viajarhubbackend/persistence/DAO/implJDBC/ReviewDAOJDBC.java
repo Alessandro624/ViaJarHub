@@ -71,16 +71,15 @@ public class ReviewDAOJDBC implements ReviewDAO {
     @Override
     public Review findReview(int id, String email) {
         String query = "SELECT * FROM review WHERE idtravel = ? AND email = ?";
-        try(PreparedStatement statement=connection.prepareStatement(query)){
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.setString(2, email);
-            try (ResultSet resultSet=statement.executeQuery()) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return mapRowToReview(resultSet);
                 }
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -100,19 +99,19 @@ public class ReviewDAOJDBC implements ReviewDAO {
             e.printStackTrace();
         }
         return 0;
-        }
+    }
 
 
     @Override
     public void save(Review review) {
         String query = "INSERT INTO review (idtravel, email, stars, comment,images_paths,data) VALUES (?, ?, ?, ?,?,?) " +
-                "ON CONFLICT (idtravel, email) DO UPDATE SET stars = EXCLUDED.stars, comment = EXCLUDED.comment,images_paths = EXCLUDED.images_paths,data=EXCLUDED.data" ;
+                "ON CONFLICT (idtravel, email) DO UPDATE SET stars = EXCLUDED.stars, comment = EXCLUDED.comment,images_paths = EXCLUDED.images_paths,data=EXCLUDED.data";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             System.out.println("provaSave");
-            statement.setInt(1, review.getIdTravel());
+            statement.setInt(1, review.getTravel().getId().intValue());
             System.out.println("provaSave");
 
-            statement.setString(2, review.getEmailUser());
+            statement.setString(2, review.getUser().getEmail());
             System.out.println("provaSave");
 
             statement.setInt(3, review.getStars());
@@ -122,14 +121,15 @@ public class ReviewDAOJDBC implements ReviewDAO {
             System.out.println("provaSave");
 
             List<String> imagesPaths = review.getImagesPaths();
-
-            System.out.println("provaSave");
-            System.out.println(imagesPaths);
-
-            Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
-            System.out.println("provaSave");
-
-            statement.setArray(5, sqlArray);
+            if (imagesPaths != null) {
+                System.out.println("provaSave");
+                System.out.println(imagesPaths);
+                Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
+                System.out.println("provaSave");
+                statement.setArray(5, sqlArray);
+            } else {
+                statement.setArray(5, null);
+            }
             System.out.println("provaSave");
             statement.setObject(6, review.getData());
             statement.executeUpdate();
@@ -144,14 +144,15 @@ public class ReviewDAOJDBC implements ReviewDAO {
     public void delete(Review review) {
         String query = "DELETE FROM review WHERE idtravel = ? AND email = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, review.getIdTravel());
-            statement.setString(2, review.getEmailUser());
+            statement.setInt(1, review.getTravel().getId().intValue());
+            statement.setString(2, review.getUser().getEmail());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
+
     private Review mapRowToReview(ResultSet resultSet) throws SQLException {
         Array array = resultSet.getArray("images_paths");
         List<String> imagesPaths = new ArrayList<>();
@@ -159,13 +160,12 @@ public class ReviewDAOJDBC implements ReviewDAO {
             Collections.addAll(imagesPaths, (String[]) array.getArray());
         }
         return new Review(
-                resultSet.getInt("idtravel"),
-                resultSet.getString("email"),
+                DBManager.getInstance().getTravelDAO().findById((long) resultSet.getInt("idtravel"), null),
+                DBManager.getInstance().getUserDAO().findByEmail(resultSet.getString("email")),
                 resultSet.getInt("stars"),
                 resultSet.getString("comment"),
                 imagesPaths,
                 resultSet.getDate("data").toLocalDate()
-
         );
     }
 }
