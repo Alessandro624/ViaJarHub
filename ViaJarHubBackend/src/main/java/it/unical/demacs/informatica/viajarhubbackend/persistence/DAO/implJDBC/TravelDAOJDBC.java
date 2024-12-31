@@ -65,7 +65,9 @@ public class TravelDAOJDBC implements TravelDAO {
 
     @Override
     public List<Travel> findAllByUserBooking(String email) {
-        String query = "SELECT DISTINCT t.* " +
+        String query = "SELECT t.*, " +
+                "b.start_date AS booking_start_date, " +
+                "b.end_date AS booking_end_date " +
                 "FROM travel t " +
                 "JOIN booking b ON t.id = b.travel_id " +
                 "WHERE b.user_email = ?";
@@ -74,7 +76,10 @@ public class TravelDAOJDBC implements TravelDAO {
             ResultSet resultSet = statement.executeQuery();
             List<Travel> travels = new ArrayList<>();
             while (resultSet.next()) {
-                travels.add(mapResultSetToTravel(resultSet));
+                Travel travel = mapResultSetToTravel(resultSet);
+                travel.setStartDate(resultSet.getDate("booking_start_date").toLocalDate());
+                travel.setEndDate(resultSet.getDate("booking_end_date").toLocalDate());
+                travels.add(travel);
             }
             return travels;
         } catch (SQLException sqlException) {

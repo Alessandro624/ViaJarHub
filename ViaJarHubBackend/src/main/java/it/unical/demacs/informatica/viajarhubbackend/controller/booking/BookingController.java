@@ -31,7 +31,6 @@ public class BookingController {
         try {
             return ResponseEntity.ok(travelService.getReviewableBooking(SecurityUtility.getCurrentUser().getUsername()));
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
