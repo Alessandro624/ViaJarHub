@@ -221,6 +221,6 @@
 }
 
 /* Focused element */
-.suggestion-item:active {
-  background-color: #ddd;
+.suggestion-item.active {
+  background-color: #f0f0f0;
 }

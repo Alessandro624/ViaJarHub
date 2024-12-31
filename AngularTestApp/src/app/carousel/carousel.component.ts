@@ -1,4 +1,4 @@
-import {Component, ElementRef, Inject, Input, input, NgZone, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, ElementRef, Inject, Input, NgZone, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser, NgClass, NgForOf, NgIf} from '@angular/common';
 import {TravelService} from '../travel-detail/travel.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -26,6 +26,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   inBody: boolean = false; // Stato per indicare se è in Body1
   isFocused: boolean = false; // Controlla se la barra è illuminata
   inReview: boolean = false;
+  selectedIndex: number = -1;
 
   travel!: Travel | undefined;
   immaginiURLs: string[] = [];
@@ -62,6 +63,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
     // Esegui l'effetto macchina da scrivere solo dentro Body1
     if (this.inBody) {
       this.ngZone.runOutsideAngular(() => this.typeWriterEffect());
+      this._activatedRoute.queryParams.subscribe(params => {
+        const searchQuery = params['search'] || '';
+        this.selectSuggestion(searchQuery);
+      });
     } else {
 
       const id = Number(this._activatedRoute.parent?.snapshot.paramMap.get('id'));
@@ -154,17 +159,12 @@ export class CarouselComponent implements OnInit, OnDestroy {
     if (!this.filters.searchQuery) {
       this.isExpanded = false;
       this.isFocused = false;
-      this._router.navigate(['body1'], {queryParams: {search: this.filters.searchQuery}}).then();
+      this.onSearch();
     }
   }
 
   onSearch(): void {
-    if (this.isExpanded) {
-      /*this._homeComponent.resetTravels();
-      this._homeComponent.setSearchQuery(this.filters.searchQuery);
-      this._homeComponent.loadTravels();*/
-      this._router.navigate(['body1'], {queryParams: {search: this.filters.searchQuery}}).then();
-    }
+    this._router.navigate(['body1'], {queryParams: {search: this.filters.searchQuery}}).then();
   }
 
   getAutocompleteSuggestions() {
@@ -184,7 +184,34 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
   selectSuggestion(suggestion: string) {
     this.filters.searchQuery = suggestion;
-    // this._homeComponent.setSearchQuery(this.filters.searchQuery);
     this.suggestions = [];
+    this.selectedIndex = -1;
+  }
+
+  handleKeyDown($event: KeyboardEvent) {
+    switch ($event.key) {
+      case 'ArrowDown':
+        if (this.suggestions.length === 0) return;
+        this.selectedIndex = (this.selectedIndex + 1) % this.suggestions.length;
+        $event.preventDefault();
+        break;
+      case 'ArrowUp':
+        if (this.suggestions.length === 0) return;
+        this.selectedIndex = (this.selectedIndex - 1 + this.suggestions.length) % this.suggestions.length;
+        $event.preventDefault();
+        break;
+      case 'Enter':
+        if (this.selectedIndex >= 0) {
+          this.selectSuggestion(this.suggestions[this.selectedIndex]);
+          this.onSearch();
+        }
+        break;
+      case 'Escape':
+        this.selectSuggestion('');
+        this.collapseSearchBar();
+        const input = $event.target as HTMLInputElement;
+        input.blur();
+        break;
+    }
   }
 }

@@ -5,7 +5,7 @@
         <i class="fa-solid fa-circle-user fa-2xl ms-lg-3 ms-xl-0 "></i>
       </div>
       <div class="col ms-lg-0 mx-2 mx-md-0 ">
-        <h5 class="card-title mb-0 ms-lg-0  fw-bold">{{ review.emailUser }} </h5>
+        <h5 class="card-title mb-0 ms-lg-0  fw-bold">{{ review.user.firstName }} </h5>
         <app-star [rating]="review.stars"></app-star>
 
       </div>
@@ -24,7 +24,7 @@
       </div>
       <div class="col ms-0">
         <h5 class="card-title mb-0 fw-bold">{{ travelName }}</h5>
-        <h6 class="card-title mb-0 ">{{ review.emailUser }}</h6>
+        <h6 class="card-title mb-0 ">{{ review.user.firstName }}</h6>
         <app-star [rating]="review.stars"></app-star>
 
       </div>

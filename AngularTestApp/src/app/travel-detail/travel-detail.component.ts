@@ -7,7 +7,6 @@ import {NgClass, NgIf, NgStyle} from '@angular/common';
 import {PaymentComponent} from '../payment/payment.component';
 import {AuthenticationService} from '../login/authentication.service';
 import {WishlistService} from '../wishlist/wishlist.service';
-import {ReviewmodalComponent} from '../review/reviewmodal/reviewmodal.component';
 
 @Component({
   selector: 'app-travel-detail',
@@ -20,8 +19,7 @@ import {ReviewmodalComponent} from '../review/reviewmodal/reviewmodal.component'
     NgClass,
     NgStyle,
     PaymentComponent,
-    NgIf,
-    ReviewmodalComponent
+    NgIf
   ],
   templateUrl: './travel-detail.component.html',
   styleUrl: './travel-detail.component.css'
@@ -57,7 +55,6 @@ export class TravelDetailComponent implements OnInit {
     } else {
       alert("Attenzione:\nPer prenotare devi accedere al sistema!");
     }
-
   }
 
   closePopup() {
@@ -69,6 +66,7 @@ export class TravelDetailComponent implements OnInit {
         next: () => {
           alert("Added");
         }, error: error => {
+          alert(error.message);
           console.log(error);
         }
       }

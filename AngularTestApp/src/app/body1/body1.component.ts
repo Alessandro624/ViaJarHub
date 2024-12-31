@@ -23,14 +23,14 @@ import {translateOrder, TravelOrder} from '../models/travel/travel-order.enum';
 export class Body1Component implements OnInit {
   travels: Travel[] = [];
   travelsMatrix: Travel[][] = []
-  index: number = 0;//indice per caricare 9 viaggi alla volta
+  index: number = 0;
   elementiTot: number = 0;
   filters: TravelFilter = {
     searchQuery: '',
     startDate: '',
     endDate: '',
     minPrice: 0,
-    maxPrice: 0,
+    maxPrice: 400,
     travelType: null,
     travelOrder: null,
     reverse: false
@@ -48,8 +48,7 @@ export class Body1Component implements OnInit {
       this.setSearchQuery(searchQuery);
       this._authenticationService.currentUser$
         .pipe(
-          tap(() => this.resetTravels()),
-          switchMap(() => this.loadInit())
+          switchMap(() => this.loadInit(0))
         )
         .subscribe({
           error: error => {
@@ -61,23 +60,26 @@ export class Body1Component implements OnInit {
     });
   }
 
-  loadTravels() {
+  loadTravels(index: number) {
     this.isLoading = true;
-    this.loadInit().subscribe(() => this.isLoading = false);
+    this.loadInit(index).subscribe(() => this.isLoading = false);
   }
 
   setSearchQuery(query: string) {
     this.filters.searchQuery = query;
   }
 
-  loadInit() {
+  loadInit(index: number) {
     return this.countTravels().pipe(
       tap(data => (this.elementiTot = data)),
-      switchMap(() => this._travelService.getTravelsPaginated(this.index, 9, this.filters)),
+      switchMap(() => this._travelService.getTravelsPaginated(index, 9, this.filters)),
       tap(travels => {
+        if (index === 0) {
+          this.resetTravels();
+        }
         this.travels = [...this.travels, ...travels];
         this.travelsMatrix = this.chunkArray(this.travels, 3);
-        this.index += 9;
+        this.index = index + 9;
       })
     );
   }
@@ -109,17 +111,13 @@ export class Body1Component implements OnInit {
     const input = this.translateTravelOrder(order);
     if (this.filters.travelOrder !== input) {
       this.filters.travelOrder = input;
-      console.log(this.filters);
-      this.resetTravels();
-      this.loadTravels();
+      this.loadTravels(0);
     }
   }
 
   toggleReverse() {
     this.filters.reverse = !this.filters.reverse;
-    console.log(this.filters);
-    this.resetTravels();
-    this.loadTravels();
+    this.loadTravels(0);
   }
 
   translateTravelOrder(order: TravelOrder) {

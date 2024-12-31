@@ -20,7 +20,6 @@ import {TravelFilter} from '../models/travel/travel-filter.model';
 export class FiltriComponent {
   @Input() filters!: TravelFilter;
   @Output() loadTravel = new EventEmitter<void>();
-  @Output() resetTravels = new EventEmitter<void>();
   @Input() alertMessage!: string;
   @Input() isLoading!: boolean;
   travelTypes: TravelType[] = Object.values(TravelType).filter(type => type !== TravelType.NESSUNO);
@@ -115,7 +114,6 @@ export class FiltriComponent {
       } else {
         this.filters.travelType = <TravelType>this.type.toUpperCase();
       }
-      this.resetTravels.emit();
       this.loadTravel.emit();
     }
   }
@@ -170,7 +168,7 @@ export class FiltriComponent {
     this.endDate = '';
     this.endDateMin = this.minDate;
     this.type = TravelType.NESSUNO;
-    this.minValue = 100;
+    this.minValue = 0;
     this.maxValue = 400;
     this.isLoading = false;
     this.alertMessage = '';
