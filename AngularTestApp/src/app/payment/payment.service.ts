@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, catchError, Observable, of, switchMap} from 'rxjs';
 import {Travel} from '../models/travel/travel.model';
 import {WishlistService} from '../wishlist/wishlist.service';
+import {AuthenticationService} from '../login/authentication.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,10 @@ export class PaymentService {
   private currentBookingSubject = new BehaviorSubject<Travel[] | null>(null);
   booking$ = this.currentBookingSubject.asObservable();
 
-  constructor(private http: HttpClient, private _wishlistService: WishlistService) {
-    this.getBooking().subscribe();
+  constructor(private http: HttpClient, private _wishlistService: WishlistService, private _authenticationService: AuthenticationService) {
+    this._authenticationService.currentUser$.subscribe(() => {
+      this.getBooking().subscribe();
+    });
   }
 
   makePayment(paymentData: Object): Observable<any> {

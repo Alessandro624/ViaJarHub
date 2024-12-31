@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {BehaviorSubject, catchError, of, switchMap, throwError} from 'rxjs';
 import {Travel} from '../models/travel/travel.model';
+import {AuthenticationService} from '../login/authentication.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,10 @@ export class WishlistService {
   private currentWishlistSubject = new BehaviorSubject<Travel[] | null>(null);
   wishlist$ = this.currentWishlistSubject.asObservable();
 
-  constructor(private _http: HttpClient) {
-    this.getWishlist().subscribe();
+  constructor(private _http: HttpClient, private _authenticationService: AuthenticationService) {
+    this._authenticationService.currentUser$.subscribe(() => {
+      this.getWishlist().subscribe();
+    });
   }
 
   getWishlist() {

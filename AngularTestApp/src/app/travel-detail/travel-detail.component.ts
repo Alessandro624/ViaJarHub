@@ -44,7 +44,6 @@ export class TravelDetailComponent implements OnInit {
     }
     this.setTravel(id);
     this.checkIsInWishlist(id);
-    this.checkIsInBooking(id);
   }
 
   modificaPrezzo() {
@@ -111,6 +110,7 @@ export class TravelDetailComponent implements OnInit {
         this.travel = result;
         this.modificaPrezzo();
         this.setAvailableSeats(result);
+        this.checkIsInBooking(id, this.travel.startDate, this.travel.endDate);
       }
     });
   }
@@ -124,10 +124,10 @@ export class TravelDetailComponent implements OnInit {
     })
   }
 
-  private checkIsInBooking(id: number) {
+  private checkIsInBooking(id: number, startDate: string, endDate: string) {
     this._paymentService.booking$.subscribe({
       next: result => {
-        this.isInBooking = (!!result) && result.filter(item => item.id === id).length > 0;
+        this.isInBooking = (!!result) && result.filter(item => item.id === id && item.startDate === startDate && item.endDate === endDate).length > 0;
       }, error: error => {
         console.log(error);
         this.isInBooking = false;

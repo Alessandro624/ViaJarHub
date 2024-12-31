@@ -3,6 +3,7 @@ import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {BehaviorSubject, catchError, Observable, of, switchMap} from 'rxjs';
 import {Review} from '../models/review/review.module';
 import {Travel} from '../models/travel/travel.model';
+import {AuthenticationService} from '../login/authentication.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,10 @@ export class ReviewService {
   private currentReviewableSubject = new BehaviorSubject<Travel[] | null>(null);
   reviewable$ = this.currentReviewableSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-    this.getReviewable().subscribe();
+  constructor(private http: HttpClient, private _authenticationService: AuthenticationService) {
+    this._authenticationService.currentUser$.subscribe(() => {
+      this.getReviewable().subscribe();
+    });
   }
 
   getReviewable() {

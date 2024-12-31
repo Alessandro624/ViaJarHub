@@ -37,10 +37,10 @@ export class WishlistComponent implements OnInit {
     this.loadWishlist();
   }
 
-  openPayment(id: number) {
+  openPayment(id: number, startDate: string, endDate: string) {
     this._paymentService.booking$.subscribe({
       next: result => {
-        if (!((!!result) && result.filter(item => item.id === id).length > 0)) {
+        if (!((!!result) && result.filter(item => item.id === id && item.startDate === startDate && item.endDate === endDate).length > 0)) {
           this.isPaymentVisible = true;
         } else {
           this.isPaymentVisible = false;

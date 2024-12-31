@@ -24,7 +24,8 @@
                 <span class="card-date ms-3 no-wrap">{{ travel.startDate }} - {{ travel.endDate }}</span>
               </div>
               <div class="col-2 d-flex align-items-center">
-                <button class="btn btn-outline-success me-3" (click)="openPayment(travel.id)">
+                <button class="btn btn-outline-success me-3"
+                        (click)="openPayment(travel.id, travel.startDate, travel.endDate)">
                   <i class="fa-solid fa-cart-shopping"></i>
                 </button>
                 <button class="btn btn-outline-danger" (click)="confirmRemove(travel)">
