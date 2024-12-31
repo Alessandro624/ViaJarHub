@@ -24,7 +24,7 @@
         <div class="col-12 d-flex flex-row flex-md-column flex-xl-row justify-content-between mb-2 number-input">
           <h5 class="fw-bold">Numero di partecipanti:</h5>
           <input type="number" class="increment-input" id="incrementInput" min="1"
-                 max="{{travel?.maxParticipantsNumber}}"
+                 max="{{availableSeats}}"
                  step="1" [(ngModel)]="postiSelezionati" (input)="modificaPrezzo()">
         </div>
         <div class="col-12 text-end text-md-start text-xl-end">

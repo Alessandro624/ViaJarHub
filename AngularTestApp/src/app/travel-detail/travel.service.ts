@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Travel} from '../models/travel/travel.model';
-import {catchError, switchMap, throwError} from 'rxjs';
+import {catchError, refCount, switchMap, throwError} from 'rxjs';
 import {TravelFilter} from '../models/travel/travel-filter.model';
 import {AuthenticationService} from '../login/authentication.service';
 import {UserRole} from '../models/user/user-role.enum';
@@ -340,6 +340,12 @@ export class TravelService {
     return this._http.delete(`${this.APIUrl}/admin/v1/delete-travel?id=${id}`).pipe(
       catchError(this.handleError)
     );
+  }
+
+  getAvailableSeats(travel: Travel) {
+    return this._http.post<number>(`${this.APIUrl}/open/v1/available-seats`, travel).pipe(
+      catchError(this.handleError)
+    )
   }
 
   private handleError(error: HttpErrorResponse) {

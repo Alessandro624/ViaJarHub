@@ -22,7 +22,6 @@ export class StarComponent implements OnInit {
   ngOnInit() {
     this.inDetails = this.isContainedIn('app-infotravel')
     this.calculateStars()
-
   }
 
   constructor(private elementRef: ElementRef) {

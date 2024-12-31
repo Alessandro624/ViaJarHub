@@ -5,6 +5,7 @@ import {RouterLink} from "@angular/router";
 import {Travel} from '../models/travel/travel.model';
 import {WishlistService} from './wishlist.service';
 
+
 @Component({
   selector: 'app-wishlist',
   standalone: true,
@@ -32,21 +33,7 @@ export class WishlistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._wishlistService.wishlist$.subscribe({
-        next: data => {
-          if (data) {
-            this.wishlist = data;
-            this.wishlistLength = this.wishlist.length - 3;
-            this.setCurrentWishlist();
-          } else {
-            this.resetWishlist();
-          }
-        }, error: error => {
-          console.log(error);
-          this.resetWishlist();
-        }
-      }
-    );
+    this.loadWishlist();
   }
 
   openPayment() {
@@ -102,5 +89,23 @@ export class WishlistComponent implements OnInit {
   confirmRemove(travel: Travel) {
     this.isConfirmVisible = true;
     this.toRemoveTravel = travel;
+  }
+
+  private loadWishlist() {
+    this._wishlistService.wishlist$.subscribe({
+        next: data => {
+          if (data) {
+            this.wishlist = data;
+            this.wishlistLength = this.wishlist.length - 3;
+            this.setCurrentWishlist();
+          } else {
+            this.resetWishlist();
+          }
+        }, error: error => {
+          console.log(error);
+          this.resetWishlist();
+        }
+      }
+    );
   }
 }
