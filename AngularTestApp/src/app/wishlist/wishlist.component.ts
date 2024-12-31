@@ -4,6 +4,7 @@ import {PaymentComponent} from "../payment/payment.component";
 import {RouterLink} from "@angular/router";
 import {Travel} from '../models/travel/travel.model';
 import {WishlistService} from './wishlist.service';
+import {PaymentService} from '../payment/payment.service';
 
 
 @Component({
@@ -29,15 +30,27 @@ export class WishlistComponent implements OnInit {
   isConfirmVisible: boolean = false;
   toRemoveTravel: Travel | null = null;
 
-  constructor(private _wishlistService: WishlistService) {
+  constructor(private _paymentService: PaymentService, private _wishlistService: WishlistService) {
   }
 
   ngOnInit(): void {
     this.loadWishlist();
   }
 
-  openPayment() {
-    this.isPaymentVisible = true;
+  openPayment(id: number) {
+    this._paymentService.booking$.subscribe({
+      next: result => {
+        if (!((!!result) && result.filter(item => item.id === id).length > 0)) {
+          this.isPaymentVisible = true;
+        } else {
+          this.isPaymentVisible = false;
+          alert("Viaggio già prenotato")
+        }
+      }, error: error => {
+        console.log(error);
+        this.isPaymentVisible = false;
+      }
+    });
   }
 
   closePayment() {

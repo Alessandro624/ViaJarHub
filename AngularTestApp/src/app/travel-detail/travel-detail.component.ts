@@ -7,6 +7,7 @@ import {NgClass, NgIf, NgStyle} from '@angular/common';
 import {PaymentComponent} from '../payment/payment.component';
 import {AuthenticationService} from '../login/authentication.service';
 import {WishlistService} from '../wishlist/wishlist.service';
+import {PaymentService} from '../payment/payment.service';
 
 @Component({
   selector: 'app-travel-detail',
@@ -31,8 +32,9 @@ export class TravelDetailComponent implements OnInit {
   isPopupVisible: boolean = false;
   isInWishlist: boolean = false;
   availableSeats: number = 0;
+  isInBooking: boolean = false;
 
-  constructor(private _wishlistService: WishlistService, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
+  constructor(private _paymentService: PaymentService, private _wishlistService: WishlistService, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -42,7 +44,7 @@ export class TravelDetailComponent implements OnInit {
     }
     this.setTravel(id);
     this.checkIsInWishlist(id);
-    // this.checkIsInBooking(id);
+    this.checkIsInBooking(id);
   }
 
   modificaPrezzo() {
@@ -120,5 +122,16 @@ export class TravelDetailComponent implements OnInit {
         this.postiSelezionati = 1;
       }
     })
+  }
+
+  private checkIsInBooking(id: number) {
+    this._paymentService.booking$.subscribe({
+      next: result => {
+        this.isInBooking = (!!result) && result.filter(item => item.id === id).length > 0;
+      }, error: error => {
+        console.log(error);
+        this.isInBooking = false;
+      }
+    });
   }
 }

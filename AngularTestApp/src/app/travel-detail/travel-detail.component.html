@@ -31,9 +31,9 @@
           <h5><strong>{{ prezzoFinale }}€</strong></h5>
         </div>
         <div class="col-12 mt-3">
-          <button type="button" class="btn btn-success w-100" (click)="openPopup()"><i
+          <button type="button" class="btn btn-success w-100" (click)="openPopup()" [disabled]="isInBooking"><i
             class="fa-solid fa-cart-shopping me-2"></i>
-            Prenota ora
+            {{ isInBooking ? 'Già prenotato' : 'Prenota ora' }}
           </button>
         </div>
         <div *ngIf="!isInWishlist" class="col-12 my-2">

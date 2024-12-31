@@ -72,7 +72,12 @@ export class ReviewmodalComponent implements OnChanges {
           this.immaginiURLs = result.map(image => `data:image/jpeg;base64,${image}`);
           if (this.review) {
             this.star = this.review.stars;
-            this._travelService.getTravelById(this.review.travel.id).subscribe({
+            this.travel = {...this.review.travel};
+            this.isLoading = false;
+            if (this.immaginiURLs.length === 0) {
+              this.errorMessage = 'Nessuna immagine trovata.';
+            }
+            /*this._travelService.getTravelById(this.review.travel.id).subscribe({
               next: data => {
                 this.travel = data;
                 this.isLoading = false;
@@ -80,7 +85,7 @@ export class ReviewmodalComponent implements OnChanges {
                   this.errorMessage = 'Nessuna immagine trovata.';
                 }
               }
-            });
+            });*/
           }
         },
         error: () => {
