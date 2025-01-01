@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, switchMap, throwError} from 'rxjs';
 import {AuthenticationService} from '../../login/authentication.service';
+import {ContactMessage} from '../../models/contact/contact.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,10 @@ export class ClientService {
     return this._http.get(`${this.APIUrl}/auth/v1/profile-image`, {
       responseType: 'blob'
     }).pipe(catchError(this.handleError));
+  }
+
+  sendContactEmail(message: ContactMessage) {
+    return this._http.post(`${this.APIUrl}/auth/v1/contact-admins`, message).pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

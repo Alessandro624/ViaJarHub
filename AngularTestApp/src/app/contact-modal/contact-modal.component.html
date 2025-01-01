@@ -1,0 +1,46 @@
+<div class="modal" [ngClass]="{'show': isPopupVisible}" [ngStyle]="{'display': isPopupVisible ? 'block' : 'none'}"
+     tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Contattaci</h5>
+        <button type="button" class="btn-close" (click)="closePopup.emit()"></button>
+      </div>
+      <div class="modal-body">
+        <form id="contactEmailForm" (ngSubmit)="sendEmail()">
+          <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+            {{ alertMessage }}
+          </div>
+          <div class="mb-3 form-floating flex-grow-1">
+            <input type="text" class="form-control" id="subject" placeholder="Oggetto"
+                   (input)="alertMessage=''; subjectError='';"
+                   [(ngModel)]="message.subject" [class.is-invalid]="subjectError" name="Subject"
+                   required/>
+            <label for="subject" class="form-label">Oggetto</label>
+            <div *ngIf="subjectError"
+                 class="invalid-feedback d-block">{{ subjectError }}
+            </div>
+          </div>
+          <div class="mb-3 form-floating flex-grow-1">
+            <textarea class="body-area form-control" id="body" rows="4" placeholder="Messaggio"
+                      (input)="alertMessage=''; bodyError='';"
+                      [(ngModel)]="message.body" [class.is-invalid]="bodyError" name="Body"
+                      required></textarea>
+            <label for="body" class="form-label">Messaggio</label>
+            <div *ngIf="bodyError"
+                 class="invalid-feedback d-block">{{ bodyError }}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-outline-primary me-2" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+            <span *ngIf="!isLoading">Invia</span>
+          </button>
+          <button type="reset" class="btn btn-secondary" (click)="resetEmail()" [disabled]="isLoading">
+            Ripristina
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

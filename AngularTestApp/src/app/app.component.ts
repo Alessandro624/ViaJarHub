@@ -6,11 +6,12 @@ import {UserRole} from './models/user/user-role.enum';
 import {AuthenticationService} from './login/authentication.service';
 import {User} from './models/user/user.model';
 import {environment} from '../environments/environment';
+import {ContactModalComponent} from './contact-modal/contact-modal.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoginComponent],
+  imports: [CommonModule, RouterModule, LoginComponent, ContactModalComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit {
   isDropdownOpened: boolean = false;
   currentFrom: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail' = 'login';
   protected readonly environment = environment;
+  isPopupVisible: boolean = false;
 
   constructor(private _authenticationService: AuthenticationService, private _router: Router, private _activatedRoute: ActivatedRoute) {
   }
@@ -65,5 +67,13 @@ export class AppComponent implements OnInit {
         this.currentFrom = params['currentForm'];
       }
     });
+  }
+
+  openPopup() {
+    this.isPopupVisible = true;
+  }
+
+  closePopup() {
+    this.isPopupVisible = false;
   }
 }
