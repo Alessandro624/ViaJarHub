@@ -20,7 +20,7 @@ import {TravelService} from '../travel-detail/travel.service';
 })
 export class AddReviewComponent {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  dropdownOptions: string[] = ['36', '37', '38', '39', '40'];
+  dropdownOptions: string[] = ['28', '29', '57', '58', '59'];
   selectedOption: string = '';
   rating: number = 0
   images: File[] = [];

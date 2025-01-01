@@ -33,15 +33,42 @@ a {
 
 .card-text {
   display: -webkit-box;
-  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
 .card-img-top {
   max-width: 100%;
-  max-height: 200px;
-  height: auto;
+  height: 215px;
   display: block;
   margin: 0 auto;
 }
+
+.card {
+  height: 400px;
+}
+
+@media (max-width: 992px) {
+  .card-img-top {
+    height: 240px; /* Altezza aumentata */
+  }
+
+  .card-text {
+    -webkit-line-clamp: 2;
+
+  }
+}
+
+@media (min-width: 993px) {
+  .card-img-top {
+    height: 215px; /* Altezza originale */
+  }
+
+  .card-text {
+    -webkit-line-clamp: 3;
+
+  }
+}
+
+
+

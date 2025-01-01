@@ -2,7 +2,7 @@
   @if (inWishlist) {
     <p>Prezzo totale: <strong>{{ prezzoFinale }} €</strong></p>
     <div class="row justify-content-between">
-      <div class="col-6">
+      <div class="col-6 mt-2">
         <p class="fw-bold">Numero di partecipanti:</p>
       </div>
       <div class="col-6 text-end">
@@ -38,6 +38,7 @@
           id="expiryMonth"
           class="form-control"
           [(ngModel)]="expiryMonth"
+          (blur)="validateExpiryMonth()"
           name="expiryMonth"
           placeholder="MM"
           min="1"
@@ -52,6 +53,7 @@
           id="expiryYear"
           class="form-control"
           [(ngModel)]="expiryYear"
+          (blur)="validateExpiryYear()"
           name="expiryYear"
           placeholder="YYYY"
           min="2024"
@@ -60,6 +62,7 @@
         />
       </div>
     </div>
+
     <div class="mb-3">
       <label for="cvv" class="form-label">CVV</label>
       <input

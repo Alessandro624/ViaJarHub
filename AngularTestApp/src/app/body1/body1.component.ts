@@ -30,7 +30,7 @@ export class Body1Component implements OnInit {
     startDate: '',
     endDate: '',
     minPrice: 0,
-    maxPrice: 400,
+    maxPrice: 0,
     travelType: null,
     travelOrder: null,
     reverse: false
@@ -43,7 +43,13 @@ export class Body1Component implements OnInit {
   }
 
   ngOnInit() {
+    this._travelService.getMaxPrice().subscribe({
+      next: data => {
+        this.filters.maxPrice = data[0ò];
+      }
+    })
     this._activatedRoute.queryParams.subscribe(params => {
+
       const searchQuery = params['search'] || '';
       this.setSearchQuery(searchQuery);
       this._authenticationService.currentUser$
@@ -77,9 +83,11 @@ export class Body1Component implements OnInit {
         if (index === 0) {
           this.resetTravels();
         }
+
         this.travels = [...this.travels, ...travels];
         this.travelsMatrix = this.chunkArray(this.travels, 3);
         this.index = index + 9;
+
       })
     );
   }

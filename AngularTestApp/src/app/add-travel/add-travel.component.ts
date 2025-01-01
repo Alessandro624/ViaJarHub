@@ -45,6 +45,8 @@ export class AddTravelComponent implements OnInit {
     latitude: 0,
     longitude: 0
   };
+  prezzo = '';
+  numeroposti = '';
   alertMessage: string = '';
   imageError: string = '';
   isLoading: boolean = false;
@@ -184,6 +186,8 @@ export class AddTravelComponent implements OnInit {
 
   onSubmit() {
     this.isLoading = true;
+    this.travel.price = Number(this.prezzo);
+    this.travel.maxParticipantsNumber = Number(this.numeroposti);
     console.log('Dati del form:', this.travel);
     console.log('Immagini caricate:', this.images);
     this.travel.travelType = <TravelType>this.travel.travelType.toUpperCase();

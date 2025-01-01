@@ -80,7 +80,7 @@ export class PaymentComponent implements OnChanges {
     return false;
   }
 
-  
+
   modificaPrezzo() {
     console.log()
     if (this.travel) {
@@ -93,5 +93,25 @@ export class PaymentComponent implements OnChanges {
   ngOnChanges(): void {
     this.modificaPrezzo();
     this.inWishlist = this.isContainedIn('app-client');
+  }
+
+  validateExpiryMonth() {
+    if (this.expiryMonth !== null) {
+      if (Number(this.expiryMonth) < 1) {
+        this.expiryMonth = '1';
+      } else if (Number(this.expiryMonth) > 12) {
+        this.expiryMonth = '12';
+      }
+    }
+  }
+
+  validateExpiryYear() {
+    if (this.expiryYear !== null) {
+      if (Number(this.expiryYear) < 2024) {
+        this.expiryYear = '2024';
+      } else if (Number(this.expiryYear) > 2040) {
+        this.expiryYear = '2040';
+      }
+    }
   }
 }

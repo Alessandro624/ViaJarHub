@@ -70,6 +70,8 @@ export class ReviewService {
 
   // Elimina una recensione specifica
   deleteReview(review: Review): Observable<void> {
+    review.user.authorities = null;
+    
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.request<void>('DELETE', `${this.APIUrl}/auth/v1/delete-review`, {headers, body: review});
   }

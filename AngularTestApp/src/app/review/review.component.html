@@ -14,13 +14,13 @@
         <i class="fa-solid fa-circle-user fa-2xl  "></i>
       </div>
       <div class="col ms-md-3 ms-lg-1">
-       
+
         <h6 class="card-title mb-0 ms-lg-0  fw-bold fs-5">{{ travelName }}</h6>
         <app-star [rating]="review.stars"></app-star>
       </div>
     } @else {
-      <div class="col-1 mt-2 ms-lg-2">
-        <i class="fa-solid fa-circle-user mt-1 fa-2xl ms-lg-3 ms-xl-0 "></i>
+      <div class="col-1 mt-2 ">
+        <i class="fa-solid fa-circle-user mt-1 fa-2xl ms-lg-3 ms-xl-0 mt-md-2 mt-xl-1  "></i>
       </div>
       <div class="col ms-0">
         <h5 class="card-title mb-0 fw-bold">{{ travelName }}</h5>
@@ -31,10 +31,8 @@
     }
 
 
-    <p class="card-text mb-1 ms-1 pe-3 ">{{ review.comment }}</p>
-    <!--<div *ngFor="let imgURL of immaginiURLs; let i = index" [class.active]="i === 0">
-      <img [src]="imgURL" class="d-block w-100 carousel-img" alt="Slide {{ i + 1 }}">
-    </div>-->
+    <p class="card-text mb-1 ms-1 pe-3  ms-md-2 ms-xl-1">{{ review.comment }}</p>
+
     <div class="row justify-content-end">
       <div class="col-5">
         <p class="text-body-secondary text-end data">{{ review.data }}</p>

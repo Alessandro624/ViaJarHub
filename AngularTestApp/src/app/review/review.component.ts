@@ -51,11 +51,10 @@ export class ReviewComponent implements OnInit {
             console.log(result);
             if (this.review) {
 
-              this.travelService.getTravelById(this.review.travel.id).subscribe(
+              this.travelService.getName(this.review.travel.id).subscribe(
                 {
                   next: result => {
-                    console.log(result.destination);
-                    this.travelName = result.destination;
+                    this.travelName = result[0];
 
                   }
                 }

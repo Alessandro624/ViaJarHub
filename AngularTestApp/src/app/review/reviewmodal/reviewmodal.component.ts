@@ -52,6 +52,7 @@ export class ReviewmodalComponent implements OnChanges {
   imageError: string = '';
   comment = '';
   star = 0;
+  destinazione = '';
 
   constructor(private _travelService: TravelService, private reviewService: ReviewService, private elementRef: ElementRef, private authentication: AuthenticationService) {
   }
@@ -72,9 +73,9 @@ export class ReviewmodalComponent implements OnChanges {
           this.immaginiURLs = result.map(image => `data:image/jpeg;base64,${image}`);
           if (this.review) {
             this.star = this.review.stars;
-            this._travelService.getTravelById(this.review.travel.id).subscribe({
+            this._travelService.getName(this.review.travel.id).subscribe({
               next: data => {
-                this.travel = data;
+                this.destinazione = data[0];
                 this.isLoading = false;
                 if (this.immaginiURLs.length === 0) {
                   this.errorMessage = 'Nessuna immagine trovata.';
