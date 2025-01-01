@@ -8,4 +8,6 @@ public interface IEmailService {
     void sendPasswordResetEmail(String email, String resetURL);
 
     void sendPaymentConfirmationEmail(String email, String destination, String participantsNumber, String startDate, String endDate, String total);
+
+    void sendContactEmail(String from, String subject, String body);
 }

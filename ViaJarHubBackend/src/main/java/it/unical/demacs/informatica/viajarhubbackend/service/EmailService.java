@@ -1,12 +1,15 @@
 package it.unical.demacs.informatica.viajarhubbackend.service;
 
 import it.unical.demacs.informatica.viajarhubbackend.exception.EmailNotSentException;
+import it.unical.demacs.informatica.viajarhubbackend.model.User;
+import it.unical.demacs.informatica.viajarhubbackend.persistence.DBManager;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -74,6 +77,23 @@ public class EmailService implements IEmailService {
         sendTemplateEmail(email, "Dettagli Pagamento", templatePath, placeholders);
     }
 
+    @Override
+    public void sendContactEmail(String from, String subject, String body) {
+        List<User> admins = DBManager.getInstance().getUserDAO().findAllAdminUsers();
+        if (admins == null || admins.isEmpty()) {
+            throw new EmailNotSentException("Nessun amministratore trovato per ricevere l'email di contatto.");
+        }
+        String templatePath = "templates/contact-email.html";
+        Map<String, String> placeholders = Map.of(
+                "body", body,
+                "from", from,
+                "logoCid", "logo"
+        );
+        for (User admin : admins) {
+            sendTemplateEmail(admin.getEmail(), subject, templatePath, placeholders);
+        }
+    }
+    
     private void sendTemplateEmail(String to, String subject, String templatePath, Map<String, String> placeholders) {
         try {
             String template = new String(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(templatePath)).readAllBytes());

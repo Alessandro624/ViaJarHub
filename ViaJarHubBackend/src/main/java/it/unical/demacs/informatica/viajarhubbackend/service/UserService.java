@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,6 +45,11 @@ public class UserService implements IUserService {
             return Optional.empty();
         }
         return Optional.of(user);
+    }
+
+    @Override
+    public List<String> getAllUsersEmails() {
+        return userDAO.findAllUsersEmails();
     }
 
     @Override
@@ -85,6 +91,16 @@ public class UserService implements IUserService {
         else
             deleteProfileImage(existingUser);
         userDAO.save(existingUser);
+        return userDAO.findByEmail(email);
+    }
+
+    @Override
+    public User makeAdmin(String email) {
+        User existingUser = checkUserExistence(email);
+        if (existingUser.getRole() != UserRole.ROLE_ADMIN) {
+            existingUser.setRole(UserRole.ROLE_ADMIN);
+            userDAO.save(existingUser);
+        }
         return userDAO.findByEmail(email);
     }
 

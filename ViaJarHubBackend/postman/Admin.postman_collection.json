@@ -376,6 +376,56 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GetEmails",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/admin/v1/emails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"admin",
+						"v1",
+						"emails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MakeAdmin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/admin/v1/make-admin?email=example@example.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"admin",
+						"v1",
+						"make-admin"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "example@example.com"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

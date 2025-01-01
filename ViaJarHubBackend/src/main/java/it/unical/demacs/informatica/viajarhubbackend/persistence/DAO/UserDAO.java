@@ -15,6 +15,10 @@ public interface UserDAO {
 
     List<User> findUnverifiedUsers(int minutes);
 
+    List<User> findAllAdminUsers();
+
+    List<String> findAllUsersEmails();
+
     void save(User user);
 
     void updatePasswordResetToken(String email, String token);
