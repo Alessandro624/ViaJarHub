@@ -19,8 +19,11 @@
 
           <div class="d-flex align-items-center">
             <h4 class="mb-1 me-2">{{ user?.firstName }} {{ user?.lastName }}</h4>
-            <button class="btn btn-primary" (click)="openPopup()">
+            <button class="btn btn-primary me-2" (click)="openPopup()">
               Aggiungi
+            </button>
+            <button class="btn btn-primary" (click)="openPopupMakeAdmin()">
+              Rendi Admin
             </button>
           </div>
           <p class="text-muted mb-0">Admin</p>
@@ -39,6 +42,9 @@
       </div>
     </div>
   </div>
+
+  <app-make-admin-modal [isMakeAdminVisible]="isMakeAdminVisible"
+                        (closeMakeAdminPopup)="closeMakeAdminPopup()"></app-make-admin-modal>
 
   <!--Pop up page-->
   <div class="modal fade" [ngClass]="{'show': isPopupVisible}"
