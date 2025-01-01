@@ -246,6 +246,33 @@ public class TravelDAOJDBC implements TravelDAO {
         }
     }
 
+    @Override
+    public Long getMaxPrice(boolean isAdmin) {
+        String query;
+
+        if (isAdmin) {
+            // Query per ottenere il prezzo massimo senza restrizioni
+            query = "SELECT MAX(price) AS max_price FROM travel";
+        } else {
+            // Query per ottenere il prezzo massimo con data di partenza futura
+            query = "SELECT MAX(price) AS max_price FROM travel WHERE start_date > CURRENT_DATE";
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            // Non ci sono parametri da settare in questa query
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                // Otteniamo il risultato dalla colonna "max_price"
+                return resultSet.getLong("max_price");
+            }
+            return 0L; // Se non ci sono risultati, restituiamo 0
+        } catch (SQLException sqlException) {
+            throw new RuntimeException("Errore durante l'esecuzione della query", sqlException);
+        }
+
+    }
+
     private List<Object> applyFilters(TravelFilter filters, StringBuilder query) {
         List<Object> params = new ArrayList<>();
         if (filters.getSearchQuery() != null && !filters.getSearchQuery().isBlank()) {
@@ -336,4 +363,5 @@ public class TravelDAOJDBC implements TravelDAO {
         statement.setLong(1, id);
         statement.execute();
     }
+
 }

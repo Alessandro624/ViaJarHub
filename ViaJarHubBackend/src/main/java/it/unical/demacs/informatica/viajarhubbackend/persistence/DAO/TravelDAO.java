@@ -26,4 +26,5 @@ public interface TravelDAO {
     int countTravels(TravelFilter filters);
 
     String findNameById(Long id);
+    Long getMaxPrice(boolean isAdmin);
 }

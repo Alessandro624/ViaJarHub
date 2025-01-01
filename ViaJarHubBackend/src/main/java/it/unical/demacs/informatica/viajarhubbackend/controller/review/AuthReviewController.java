@@ -1,5 +1,6 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller.review;
 
+import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.Review;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/auth/v1")
@@ -41,10 +43,10 @@ public class AuthReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
     @RequestMapping(value = "/delete-review", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteReview(@RequestBody Review review) {
         try {
+
             reviewService.delete(review);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
@@ -53,6 +55,7 @@ public class AuthReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
 /*
     public ResponseEntity<Void> updateReview(Long id, Travel travel, List<MultipartFile> travelImages) {
         try {

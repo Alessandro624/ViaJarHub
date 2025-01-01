@@ -1,15 +1,18 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller.review;
 
+import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.TravelNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.Review;
 import it.unical.demacs.informatica.viajarhubbackend.service.ReviewService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -134,4 +137,5 @@ public class ReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
 }

@@ -28,5 +28,8 @@ public interface ITravelService {
 
     int getTravelCount(TravelFilter filters, boolean isAdmin);
 
+    Long getMaxPrice(boolean isAdmin);
+
     String getName(Long id);
+
 }

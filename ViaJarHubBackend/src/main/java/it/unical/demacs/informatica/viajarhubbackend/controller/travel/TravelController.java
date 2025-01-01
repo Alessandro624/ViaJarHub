@@ -8,6 +8,7 @@ import it.unical.demacs.informatica.viajarhubbackend.model.TravelFilter;
 import it.unical.demacs.informatica.viajarhubbackend.model.TravelRequest;
 import it.unical.demacs.informatica.viajarhubbackend.service.ITravelService;
 import lombok.Getter;
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -163,6 +164,19 @@ public abstract class TravelController {
 
             nome.add(travelService.getName(id));
             return ResponseEntity.ok(nome);
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    protected ResponseEntity<List<Long>> getMaxPrice() {
+        try {
+            List<Long> prezzo=new ArrayList<>();
+
+            prezzo.add(travelService.getMaxPrice(isAdmin()));
+            return ResponseEntity.ok(prezzo);
         } catch (InvalidInputException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
