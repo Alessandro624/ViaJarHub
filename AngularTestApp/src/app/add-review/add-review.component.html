@@ -10,11 +10,12 @@
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
-          {{ selectedOption || 'Seleziona un tipo' }}
+          {{ selectedOption?.destination || 'Seleziona un tipo' }}
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <li *ngFor="let option of dropdownOptions">
-            <a class="dropdown-item" (click)="selectType(option)">{{ option }}</a>
+            <!--TODO eliminare id, lo uso solo per debug-->
+            <a class="dropdown-item" (click)="selectType(option)">{{ option.id }} - {{ option.destination }}</a>
           </li>
         </ul>
       </div>
@@ -92,7 +93,7 @@
     </div>
 
     <!-- Pulsante di invio -->
-    <button type="submit" class="btn btn-success" (click)="submitForm()" [disabled]="comment==''|| selectedOption=='' ">
+    <button type="submit" class="btn btn-success" (click)="submitForm()" [disabled]="!comment || !selectedOption ">
       Invia
     </button>
   </form>

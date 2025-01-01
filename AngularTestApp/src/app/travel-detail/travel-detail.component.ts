@@ -7,6 +7,7 @@ import {NgClass, NgIf, NgStyle} from '@angular/common';
 import {PaymentComponent} from '../payment/payment.component';
 import {AuthenticationService} from '../login/authentication.service';
 import {WishlistService} from '../wishlist/wishlist.service';
+import {PaymentService} from '../payment/payment.service';
 
 @Component({
   selector: 'app-travel-detail',
@@ -30,8 +31,10 @@ export class TravelDetailComponent implements OnInit {
   prezzoFinale: number = 0;
   isPopupVisible: boolean = false;
   isInWishlist: boolean = false;
+  availableSeats: number = 0;
+  isInBooking: boolean = false;
 
-  constructor(private _wishlistService: WishlistService, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
+  constructor(private _paymentService: PaymentService, private _wishlistService: WishlistService, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -51,7 +54,11 @@ export class TravelDetailComponent implements OnInit {
 
   openPopup() {
     if (this.authentication.currentUserSubject.getValue()) {
-      this.isPopupVisible = true;
+      if (this.postiSelezionati <= this.availableSeats) {
+        this.isPopupVisible = true;
+      } else {
+        alert("Numero di posti superiore a quelli disponibili")
+      }
     } else {
       alert("Attenzione:\nPer prenotare devi accedere al sistema!");
     }
@@ -59,6 +66,7 @@ export class TravelDetailComponent implements OnInit {
 
   closePopup() {
     this.isPopupVisible = false;
+    this.setAvailableSeats(this.travel!);
   }
 
   addToWishlist() {
@@ -101,6 +109,28 @@ export class TravelDetailComponent implements OnInit {
       next: result => {
         this.travel = result;
         this.modificaPrezzo();
+        this.setAvailableSeats(result);
+        this.checkIsInBooking(id, this.travel.startDate, this.travel.endDate);
+      }
+    });
+  }
+
+  private setAvailableSeats(travel: Travel) {
+    this._travelService.getAvailableSeats(travel).subscribe({
+      next: result => {
+        this.availableSeats = result;
+        this.postiSelezionati = 1;
+      }
+    })
+  }
+
+  private checkIsInBooking(id: number, startDate: string, endDate: string) {
+    this._paymentService.booking$.subscribe({
+      next: result => {
+        this.isInBooking = (!!result) && result.filter(item => item.id === id && item.startDate === startDate && item.endDate === endDate).length > 0;
+      }, error: error => {
+        console.log(error);
+        this.isInBooking = false;
       }
     });
   }

@@ -5,6 +5,7 @@ import {ReviewService} from '../review/review.service';
 import {Review} from '../models/review/review.module';
 import {AuthenticationService} from '../login/authentication.service';
 import {TravelService} from '../travel-detail/travel.service';
+import {Travel} from '../models/travel/travel.model';
 
 @Component({
   selector: 'app-add-review',
@@ -18,19 +19,34 @@ import {TravelService} from '../travel-detail/travel.service';
   templateUrl: './add-review.component.html',
   styleUrl: './add-review.component.css'
 })
-export class AddReviewComponent {
+export class AddReviewComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  dropdownOptions: string[] = ['28', '29', '57', '58', '59'];
-  selectedOption: string = '';
+  @Output() closeModal = new EventEmitter<unknown>();//invia evento al padre
+  @Output() reviewAdded = new EventEmitter<Review>();
+  dropdownOptions: Travel[] = [];
+  selectedOption: Travel | null = null;
   rating: number = 0
   images: File[] = [];
   imagesUrl: string[] = [];
   imageError: string = '';
   comment: string = '';
-  @Output() closeModal = new EventEmitter<unknown>();//invia evento al padre
-  @Output() reviewAdded = new EventEmitter<Review>();
 
   constructor(private reviewService: ReviewService, private authentication: AuthenticationService, private travelService: TravelService) {
+  }
+
+  ngOnInit(): void {
+    this.reviewService.reviewable$.subscribe({
+      next: (review) => {
+        if (review) {
+          this.dropdownOptions = review;
+        } else {
+          this.dropdownOptions = [];
+        }
+      }, error: error => {
+        console.error(error);
+        this.dropdownOptions = [];
+      }
+    });
   }
 
   rate(star: number) {
@@ -38,7 +54,7 @@ export class AddReviewComponent {
     console.log(this.rating);
   }
 
-  selectType(option: string) {
+  selectType(option: Travel) {
     this.selectedOption = option;
   }
 
@@ -47,8 +63,8 @@ export class AddReviewComponent {
     console.log('Stelle selezionate:', this.rating);
     console.log('Commento:', this.comment);
     this.authentication.currentUser$.subscribe(user => {
-      if (user) {
-        this.travelService.getTravelById(Number(this.selectedOption)).subscribe(travel => {
+      if (user && this.selectedOption) {
+        this.travelService.getTravelById(this.selectedOption.id).subscribe(travel => {
           let review: Review = {
             travel: travel,
             user: {...user},
@@ -61,6 +77,7 @@ export class AddReviewComponent {
               next: () => {
                 this.reviewAdded.emit(review);
                 this.resetReview();
+                this.selectedOption = null;
               }
             }
           );
@@ -119,13 +136,13 @@ export class AddReviewComponent {
     this.imagesUrl.splice(index, 1);
   }
 
+
   formatDate(date: Date): string {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Mesi da 0 a 11
     const year = date.getFullYear();
     return `${year}-${month}-${day}`;
   }
-
 
   private resetReview() {
     this.rating = 0

@@ -48,8 +48,8 @@ export class PaymentComponent implements OnChanges {
       dataPartenza: this.travel?.startDate,
       dataRitorno: this.travel?.endDate,
       numeroPartecipanti: this.numeroPartecipanti,
-      email: this.authentication.currentUserSubject.getValue()?.email
-
+      email: this.authentication.currentUserSubject.getValue()?.email,
+      travelId: this.travel?.id
     };
     console.log(this.prezzo);
     // Invio dati al backend
