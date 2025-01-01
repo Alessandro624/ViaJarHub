@@ -60,6 +60,12 @@ public class OpenTravelController extends TravelController {
     }
 
     @Override
+    @RequestMapping(value = "/available-seats", method = RequestMethod.POST)
+    public ResponseEntity<Integer> getAvailableSeats(@RequestBody Travel travel) {
+        return super.getAvailableSeats(travel);
+    }
+
+    @Override
     @RequestMapping(value = "/travel-images", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<byte[]>> getTravelImages(@RequestParam("id") Long id) {
         return super.getTravelImages(id);

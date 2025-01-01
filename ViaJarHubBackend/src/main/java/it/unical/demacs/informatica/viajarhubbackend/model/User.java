@@ -29,6 +29,7 @@ public class User implements UserDetails {
     private LocalDateTime passwordResetTokenCreationTime;
     private String profileImagePath;
     private List<Travel> wishlist;
+    private List<Travel> bookedTravels;
 
     public User(String firstName, String lastName, LocalDate birthDate, String email, String password,
                 UserRole role, AuthProvider authProvider, boolean enabled, String verificationToken,

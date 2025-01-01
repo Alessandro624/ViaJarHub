@@ -1,4 +1,4 @@
-package it.unical.demacs.informatica.viajarhubbackend.controller;
+package it.unical.demacs.informatica.viajarhubbackend.controller.authentication;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;

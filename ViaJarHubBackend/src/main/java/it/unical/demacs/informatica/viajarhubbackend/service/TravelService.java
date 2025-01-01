@@ -41,6 +41,11 @@ public class TravelService implements ITravelService {
     }
 
     @Override
+    public List<Travel> getReviewableBooking(String email) {
+        return travelDAO.findAllReviewable(email);
+    }
+
+    @Override
     public Optional<Travel> findById(Long id, boolean isAdmin) {
         Travel travel = travelDAO.findById(id, !isAdmin ? LocalDate.now() : null);
         if (travel == null) {
@@ -148,6 +153,11 @@ public class TravelService implements ITravelService {
     @Override
     public String getName(Long id) {
         return travelDAO.findNameById(id);
+    }
+
+    @Override
+    public int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate) {
+        return travelDAO.getAvailableSeats(id, startDate, endDate);
     }
 
     private void checkNotNullFields(Travel travel) {

@@ -1,7 +1,9 @@
 package it.unical.demacs.informatica.viajarhubbackend.persistence.DAO;
 
+import it.unical.demacs.informatica.viajarhubbackend.model.Booking;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface UserDAO {
@@ -22,4 +24,6 @@ public interface UserDAO {
     void removeExpiredPasswordResetTokens(int minutes);
 
     void removeTravelFromWishlist(String email, Long travelId);
+
+    void insertTravelInBookingTable(String email, Long travelId, LocalDate startDate, LocalDate endDate, Booking booking);
 }

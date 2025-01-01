@@ -29,6 +29,9 @@ public class AuthReviewController {
     public ResponseEntity<Void> createReview(@RequestPart Review review, @RequestParam(required = false) List<MultipartFile> reviewImages) {
         System.out.println("prova");
         try {
+            if (!Objects.equals(SecurityUtility.getCurrentUser().getUsername(), review.getUser().getEmail())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             System.out.println(review);
             Review createdReview = reviewService.save(review, reviewImages);
             System.out.println(createdReview);
@@ -43,10 +46,13 @@ public class AuthReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
     @RequestMapping(value = "/delete-review", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteReview(@RequestBody Review review) {
         try {
-
+            if (!Objects.equals(SecurityUtility.getCurrentUser().getUsername(), review.getUser().getEmail())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             reviewService.delete(review);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
@@ -55,7 +61,6 @@ public class AuthReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
 /*
     public ResponseEntity<Void> updateReview(Long id, Travel travel, List<MultipartFile> travelImages) {
         try {
