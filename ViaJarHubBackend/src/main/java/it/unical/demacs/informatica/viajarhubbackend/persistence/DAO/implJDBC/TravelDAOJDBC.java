@@ -276,6 +276,16 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
+    public String findNameById(Long id) {
+        return "";
+    }
+
+    @Override
+    public Long getMaxPrice(boolean isAdmin) {
+        return 0;
+    }
+
+    @Override
     public int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate) {
         String query = "SELECT available_seats FROM available_seats WHERE travel_id = ? AND start_date = ? AND end_date = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
