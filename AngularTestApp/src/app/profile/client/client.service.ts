@@ -1,15 +1,24 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {catchError, switchMap, throwError} from 'rxjs';
+import {BehaviorSubject, catchError, of, switchMap, throwError} from 'rxjs';
 import {AuthenticationService} from '../../login/authentication.service';
+import {ContactMessage} from '../../models/contact/contact.model';
+import {UserRole} from '../../models/user/user-role.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClientService {
   private APIUrl: string = "api";
+  private currentEmailsSubject = new BehaviorSubject<string[] | null>(null);
+  emails$ = this.currentEmailsSubject.asObservable();
 
   constructor(private _http: HttpClient, private _authenticationService: AuthenticationService) {
+    this._authenticationService.currentUser$.subscribe((user) => {
+      if (user && user.authorities[0].authority === UserRole.ADMIN) {
+        this.getUsersEmails().subscribe();
+      }
+    });
   }
 
   updateUtente(email: string, firstName: string, lastName: string, image: File | null) {
@@ -30,6 +39,28 @@ export class ClientService {
     return this._http.get(`${this.APIUrl}/auth/v1/profile-image`, {
       responseType: 'blob'
     }).pipe(catchError(this.handleError));
+  }
+
+  sendContactEmail(message: ContactMessage) {
+    return this._http.post(`${this.APIUrl}/auth/v1/contact-admins`, message).pipe(catchError(this.handleError));
+  }
+
+  getUsersEmails() {
+    return this._http.get<string[]>(`${this.APIUrl}/admin/v1/emails`).pipe(
+      switchMap((emails) => {
+        this.currentEmailsSubject.next(emails);
+        return of(emails);
+      }),
+      catchError(() => {
+        this.currentEmailsSubject.next(null);
+        return of(null);
+      }));
+  }
+
+  makeAdmin(email: string) {
+    return this._http.post(`${this.APIUrl}/admin/v1/make-admin?email=${email}`, {}).pipe(
+      switchMap(() => this.getUsersEmails()),
+      catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

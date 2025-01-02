@@ -9,6 +9,7 @@ import {ClientService} from '../client/client.service';
 import {AuthenticationService} from '../../login/authentication.service';
 import {ReviewService} from '../../review/review.service';
 import {Review} from '../../models/review/review.module';
+import {MakeAdminModalComponent} from '../../make-admin-modal/make-admin-modal.component';
 
 @Component({
   selector: 'app-admin',
@@ -20,7 +21,8 @@ import {Review} from '../../models/review/review.module';
     NgClass,
     NgStyle,
     ReviewComponent,
-    NgIf
+    NgIf,
+    MakeAdminModalComponent
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
@@ -58,6 +60,7 @@ export class AdminComponent implements OnInit {
   profileImageUrl: string = '';
   birthdate: String | undefined;
   isPopupVisible = false;
+  isMakeAdminVisible = false;
   reviews: Review[] = [];
   recensioniVisibili: Review[] = [];
   loadBtnless = false;
@@ -219,5 +222,13 @@ export class AdminComponent implements OnInit {
     this.recensioniVisibili = this.reviews.slice(this.startIndex, this.startIndex + this.step);
     this.loadBtnless = this.startIndex != 0;
     this.loadBtnmore = this.startIndex + this.step < this.reviews.length;
+  }
+
+  openPopupMakeAdmin() {
+    this.isMakeAdminVisible = true;
+  }
+
+  closeMakeAdminPopup() {
+    this.isMakeAdminVisible = false;
   }
 }
