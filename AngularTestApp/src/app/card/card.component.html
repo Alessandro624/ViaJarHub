@@ -1,6 +1,9 @@
 <a routerLink="{{travel.id}}">
   <div class="card">
-    <img [src]="copertina" class="card-img-top" alt="Immagine della card">
+    <img *ngIf="copertina" [src]="copertina" class="card-img-top" alt="Immagine della card">
+    <div *ngIf="!copertina" class="p-3">
+      <i class="fas fa-image"></i> Immagine non disponibile
+    </div>
     <div class="card-body">
       <h5 class="card-title">
         <div class="row justify-content-between">

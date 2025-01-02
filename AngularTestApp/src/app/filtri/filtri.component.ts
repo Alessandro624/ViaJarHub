@@ -31,8 +31,8 @@ export class FiltriComponent implements OnChanges {
     floor: 0,
     noSwitching: true,
     showTicksValues: true,
-    tickStep: 100,
-    tickValueStep: 100,
+    tickStep: 500,
+    tickValueStep: 500,
     getSelectionBarColor: () => 'black',
     getPointerColor: () => 'black',
     translate: (value: number, label: LabelType): string => {
@@ -53,6 +53,29 @@ export class FiltriComponent implements OnChanges {
   endDateMin: string = this.minDate;
   type: TravelType = TravelType.NESSUNO;
 
+  setSliderOptions() {
+    if (this.maxValue >= this.filters.maxPrice) {
+      this.maxValue = this.filters.maxPrice / 2;
+    }
+    const calculatedTickStep = this.calculateTickStep(this.filters.maxPrice);
+    this.options.tickStep = calculatedTickStep;
+    this.options.tickValueStep = calculatedTickStep;
+    this.options.ceil = this.filters.maxPrice;
+  }
+
+  calculateTickStep(maxValue: number): number {
+    if (maxValue <= 100) {
+      return 10;
+    } else if (maxValue <= 500) {
+      return 50;
+    } else if (maxValue <= 1000) {
+      return 100;
+    } else if (maxValue <= 2000) {
+      return 250;
+    } else {
+      return 500;
+    }
+  }
 
   onStartDateChange(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -150,10 +173,10 @@ export class FiltriComponent implements OnChanges {
     this.maxValue = 1000;
     this.isLoading = false;
     this.alertMessage = '';
+    this.setSliderOptions();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.options.ceil = this.filters.maxPrice;
-
+    this.setSliderOptions();
   }
 }

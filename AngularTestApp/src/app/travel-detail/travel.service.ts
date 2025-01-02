@@ -88,18 +88,10 @@ export class TravelService {
     );
   }
 
-  getName(id: number) {
-
-    return this._http.get<string[]>(
-      `${this.APIUrl}/open/v1/name?id=${id}`
-    );
-
-  }
-
-  getMaxPrice(): Observable<number[]> {
+  getMaxPrice(): Observable<number> {
     return this.checkUserAuthority().pipe(
       switchMap(user =>
-        this._http.get<number[]>(
+        this._http.get<number>(
           `${this.APIUrl}/${this.getAPIType(user)}/v1/max-price`
         )
       ),

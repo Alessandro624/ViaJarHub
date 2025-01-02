@@ -49,23 +49,11 @@ export class ReviewComponent implements OnInit {
           next: result => {
             console.log(result);
             if (this.review) {
-
-              this.travelService.getName(this.review.travel.id).subscribe(
-                {
-                  next: result => {
-                    this.travelName = result[0];
-
-                  }
-                }
-              )
+              this.travelName = this.review.travel.destination;
             }
-
           }
         }
       )
     }
-
   }
-
-
 }
