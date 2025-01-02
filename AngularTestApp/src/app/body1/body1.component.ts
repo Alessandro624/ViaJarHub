@@ -30,7 +30,7 @@ export class Body1Component implements OnInit {
     startDate: '',
     endDate: '',
     minPrice: 0,
-    maxPrice: 400,
+    maxPrice: 2000,
     travelType: null,
     travelOrder: null,
     reverse: false

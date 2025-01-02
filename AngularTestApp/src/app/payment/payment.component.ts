@@ -47,7 +47,6 @@ export class PaymentComponent {
       email: this.authentication.currentUserSubject.getValue()?.email,
       travelId: this.travel?.id
     };
-    console.log(this.prezzo);
     // Invio dati al backend
     this._paymentService.makePayment(paymentData)
       .subscribe({

@@ -25,14 +25,14 @@ export class FiltriComponent {
   travelTypes: TravelType[] = Object.values(TravelType).filter(type => type !== TravelType.NESSUNO);
   isExpanded: boolean = false; // Proprietà per mostrare/nascondere il pannello
   minValue: number = 0;
-  maxValue: number = 400;
+  maxValue: number = 2000;
   options: Options = {
     floor: 0,
-    ceil: 500,
+    ceil: 4000,
     noSwitching: true,
     showTicksValues: true,
-    tickStep: 100,
-    tickValueStep: 100,
+    tickStep: 500,
+    tickValueStep: 500,
     getSelectionBarColor: () => {
       return 'black'
     },
@@ -169,7 +169,7 @@ export class FiltriComponent {
     this.endDateMin = this.minDate;
     this.type = TravelType.NESSUNO;
     this.minValue = 0;
-    this.maxValue = 400;
+    this.maxValue = 2000;
     this.isLoading = false;
     this.alertMessage = '';
   }
