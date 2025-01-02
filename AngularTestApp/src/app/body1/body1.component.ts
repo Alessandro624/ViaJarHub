@@ -45,11 +45,10 @@ export class Body1Component implements OnInit {
   ngOnInit() {
     this._travelService.getMaxPrice().subscribe({
       next: data => {
-        this.filters.maxPrice = data[0];
+        this.filters.maxPrice = data;
       }
     })
     this._activatedRoute.queryParams.subscribe(params => {
-
       const searchQuery = params['search'] || '';
       this.setSearchQuery(searchQuery);
       this._authenticationService.currentUser$

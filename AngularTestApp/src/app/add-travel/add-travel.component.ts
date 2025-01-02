@@ -188,7 +188,8 @@ export class AddTravelComponent implements OnInit {
     this.travel.maxParticipantsNumber = Number(this.numeroposti);
     console.log('Dati del form:', this.travel);
     console.log('Immagini caricate:', this.images);
-    this.travel.travelType = <TravelType>this.travel.travelType.toUpperCase();
+    const travelType = this.travel.travelType;
+    this.travel.travelType = <TravelType>travelType.toUpperCase();
     this.travelService.addTravel(this.travel, this.images).subscribe({
       next: () => {
         this.isLoading = false;
@@ -198,6 +199,7 @@ export class AddTravelComponent implements OnInit {
       }, error: error => {
         this.alertMessage = error.message;
         this.isLoading = false;
+        this.travel.travelType = travelType;
       }
     });
   }

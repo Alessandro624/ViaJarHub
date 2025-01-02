@@ -62,7 +62,6 @@ export class ClientComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.setUser();
     this.showBirthdate();
     this.showProfileImage();
@@ -70,14 +69,15 @@ export class ClientComponent implements OnInit {
         next: data => {
           this.reviews = data.reverse();
           this.aggiornaRecensioniVisibili();
+          this.numrec = this.reviews.length;
         }
       }
     )
-    this.reviewService.countReviewsByUser(this.user.email).subscribe({
+    /*this.reviewService.countReviewsByUser(this.user.email).subscribe({
       next: data => {
         this.numrec = data;
       }
-    })
+    })*/
     this.paymentService.booking$.subscribe({
       next: data => {
         if (data) {
@@ -90,11 +90,15 @@ export class ClientComponent implements OnInit {
           this.naturaList = data.filter(item => String(item.travelType) === "NATURA").length;
           this.romanticoList = data.filter(item => String(item.travelType) === "ROMANTICO").length;
           this.famigliaList = data.filter(item => String(item.travelType) === "FAMIGLIA").length;
+          console.log("cultura" + this.culturaList);
+          console.log(this.relaxList);
+          console.log(this.naturaList);
+          console.log(this.romanticoList);
+          console.log(this.famigliaList);
           this.updateStrokeDashArray();
           this.animateStrokeDashArray();
           this.tipoViaggio = this.getHighestType();
         }
-
       }
     })
   }
