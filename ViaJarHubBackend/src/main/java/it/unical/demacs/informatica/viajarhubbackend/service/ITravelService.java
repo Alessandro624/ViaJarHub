@@ -29,9 +29,8 @@ public interface ITravelService {
 
     int getTravelCount(TravelFilter filters, boolean isAdmin);
 
-    Long getMaxPrice(boolean isAdmin);
+    double getMaxPrice(boolean isAdmin);
 
-    String getName(Long id);
     int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate);
 
     List<Travel> getReviewableBooking(String username);

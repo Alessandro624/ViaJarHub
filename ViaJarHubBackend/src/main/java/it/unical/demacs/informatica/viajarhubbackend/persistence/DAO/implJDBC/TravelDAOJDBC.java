@@ -276,13 +276,23 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
-    public String findNameById(Long id) {
-        return "";
-    }
-
-    @Override
-    public Long getMaxPrice(boolean isAdmin) {
-        return 0;
+    public double getMaxPrice(LocalDate startDate) {
+        String query = "SELECT MAX(price) FROM travel";
+        if (startDate != null) {
+            query += " WHERE start_date >= ?";
+        }
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            if (startDate != null) {
+                statement.setObject(1, startDate);
+            }
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getDouble(1);
+            }
+            return 0;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
 
     @Override
