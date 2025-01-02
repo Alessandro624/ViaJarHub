@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Travel} from '../models/travel/travel.model';
+
 import {catchError, Observable, switchMap, throwError} from 'rxjs';
 import {TravelFilter} from '../models/travel/travel-filter.model';
 import {AuthenticationService} from '../login/authentication.service';
