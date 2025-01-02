@@ -61,6 +61,18 @@ public class AuthReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
+    @RequestMapping(value = "/reviews-by-user", method = RequestMethod.GET)
+    public ResponseEntity<List<Review>> getReviewsByUser(@RequestParam("email") String email) {
+        try {
+            List<Review> reviews = reviewService.findByUser(email);
+            return ResponseEntity.ok().body(reviews);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 
 /*
     public ResponseEntity<Void> updateReview(Long id, Travel travel, List<MultipartFile> travelImages) {

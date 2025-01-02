@@ -48,17 +48,7 @@ public class ReviewController {
         }
     }
 
-    @RequestMapping(value = "/reviews-by-user", method = RequestMethod.GET)
-    public ResponseEntity<List<Review>> getReviewsByUser(@RequestParam("email") String email) {
-        try {
-            List<Review> reviews = reviewService.findByUser(email);
-            return ResponseEntity.ok().body(reviews);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
+
 
     @RequestMapping(value = "/review", method = RequestMethod.GET)
     public ResponseEntity<Review> getReview(@RequestParam("travelId") int travelId, @RequestParam("email") String email) {
@@ -74,25 +64,6 @@ public class ReviewController {
         }
     }
 
-    @RequestMapping(value = "/create-review", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> createReview(@RequestPart Review review, @RequestParam(required = false) List<MultipartFile> reviewImages) {
-        System.out.println("prova");
-
-        try {
-            System.out.println(review);
-            Review createdReview = reviewService.save(review, reviewImages);
-            System.out.println(createdReview);
-            if (createdReview == null) {
-                return ResponseEntity.badRequest().build();
-            }
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
 
     @RequestMapping(value = "/review-images", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<byte[]>> getTravelImages(@RequestParam("id") int id,
