@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, input, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {NgxSliderModule, Options, LabelType} from '@angular-slider/ngx-slider';
 import {TravelFilter} from '../models/travel/travel-filter.model';
 import {TravelType} from '../models/travel/travel-type.enum';
+import {type} from 'node:os';
 
 @Component({
   selector: 'app-filtri',
@@ -16,7 +17,7 @@ import {TravelType} from '../models/travel/travel-type.enum';
   templateUrl: './filtri.component.html',
   styleUrls: ['./filtri.component.css']
 })
-export class FiltriComponent implements OnInit {
+export class FiltriComponent implements OnChanges {
   @Input() filters!: TravelFilter;
   @Output() loadTravel = new EventEmitter<void>();
   @Input() alertMessage!: string;
@@ -52,9 +53,6 @@ export class FiltriComponent implements OnInit {
   endDateMin: string = this.minDate;
   type: TravelType = TravelType.NESSUNO;
 
-  ngOnInit() {
-    this.options.ceil = this.filters.maxPrice;
-  }
 
   onStartDateChange(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -152,5 +150,10 @@ export class FiltriComponent implements OnInit {
     this.maxValue = 1000;
     this.isLoading = false;
     this.alertMessage = '';
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.options.ceil = this.filters.maxPrice;
+
   }
 }

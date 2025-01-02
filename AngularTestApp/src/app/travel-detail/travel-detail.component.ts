@@ -8,6 +8,7 @@ import {PaymentComponent} from '../payment/payment.component';
 import {AuthenticationService} from '../login/authentication.service';
 import {WishlistService} from '../wishlist/wishlist.service';
 import {PaymentService} from '../payment/payment.service';
+import {tap} from 'rxjs';
 
 @Component({
   selector: 'app-travel-detail',
@@ -33,6 +34,7 @@ export class TravelDetailComponent implements OnInit {
   isInWishlist: boolean = false;
   availableSeats: number = 0;
   isInBooking: boolean = false;
+  type = ''
 
   constructor(private _paymentService: PaymentService, private _wishlistService: WishlistService, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
   }
@@ -108,6 +110,7 @@ export class TravelDetailComponent implements OnInit {
     this._travelService.getTravelById(id).subscribe({
       next: result => {
         this.travel = result;
+        this.type = this.travel.travelType.toLowerCase();
         this.modificaPrezzo();
         this.setAvailableSeats(result);
         this.checkIsInBooking(id, this.travel.startDate, this.travel.endDate);
@@ -134,4 +137,6 @@ export class TravelDetailComponent implements OnInit {
       }
     });
   }
+
+  protected readonly tap = tap;
 }

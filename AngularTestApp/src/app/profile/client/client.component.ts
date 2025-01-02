@@ -10,6 +10,8 @@ import {ReviewService} from '../../review/review.service';
 import {Review} from '../../models/review/review.module';
 import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.component';
 import {WishlistComponent} from '../../wishlist/wishlist.component';
+import {PaymentService} from '../../payment/payment.service';
+import {TravelType} from '../../models/travel/travel-type.enum';
 
 @Component({
   selector: 'app-client',
@@ -30,7 +32,7 @@ import {WishlistComponent} from '../../wishlist/wishlist.component';
 })
 export class ClientComponent implements OnInit {
   strokeDashArrayStart: string = '282, 285';
-  strokeDashArrayEnd: string[] = ['100, 285', '200, 251', '100, 251', '90, 251', '251, 251'];
+  strokeDashArrayEnd: string[] = [];
   user!: User;
   birthdate: String | undefined;
   profileImageUrl: string = '';
@@ -48,15 +50,22 @@ export class ClientComponent implements OnInit {
   step: number = 3;
   numrec: number = 0;
   selectReview: Review | null = null;
+  numbook = 0;
+  culturaList = 0;
+  relaxList = 0;
+  naturaList = 0;
+  romanticoList = 0;
+  famigliaList = 0;
+  tipoViaggio: string = '';
 
-  constructor(private _authenticationService: AuthenticationService, private _clientService: ClientService, private reviewService: ReviewService,) {
+  constructor(private _authenticationService: AuthenticationService, private _clientService: ClientService, private reviewService: ReviewService, private paymentService: PaymentService) {
   }
 
   ngOnInit() {
+
     this.setUser();
     this.showBirthdate();
     this.showProfileImage();
-    this.animateStrokeDashArray();
     this.reviewService.getReviewsByUser(this.user.email).subscribe({
         next: data => {
           this.reviews = data.reverse();
@@ -67,6 +76,25 @@ export class ClientComponent implements OnInit {
     this.reviewService.countReviewsByUser(this.user.email).subscribe({
       next: data => {
         this.numrec = data;
+      }
+    })
+    this.paymentService.booking$.subscribe({
+      next: data => {
+        if (data) {
+          this.numbook = data?.length;
+          for (let travel of data) {
+            console.log(travel.travelType);
+          }
+          this.culturaList = data.filter(item => String(item.travelType) === "CULTURA").length;
+          this.relaxList = data.filter(item => String(item.travelType) === "RELAX").length;
+          this.naturaList = data.filter(item => String(item.travelType) === "NATURA").length;
+          this.romanticoList = data.filter(item => String(item.travelType) === "ROMANTICO").length;
+          this.famigliaList = data.filter(item => String(item.travelType) === "FAMIGLIA").length;
+          this.updateStrokeDashArray();
+          this.animateStrokeDashArray();
+          this.tipoViaggio = this.getHighestType();
+        }
+
       }
     })
   }
@@ -134,6 +162,7 @@ export class ClientComponent implements OnInit {
     this.isPopupVisible3 = false;
     this.settedTravel = undefined;
   }*/
+
 
   private setUser() {
     this._authenticationService.currentUser$.subscribe({
@@ -220,4 +249,44 @@ export class ClientComponent implements OnInit {
     this.rimuoviDaLista(review);
     this.aggiornaLista(review);
   }
+
+  updateStrokeDashArray(): void {
+    const calculatePercentage = (count: number): number => (count / this.numbook) * 100;
+
+    const calculateStrokeDashArray = (percentage: number): string => {
+      const visible = (100 - percentage) * 2.85; // 285 * (100 - percentage) / 100
+      return `${visible.toFixed(0)}, 285`;
+    };
+
+    this.strokeDashArrayEnd = [
+      calculateStrokeDashArray(calculatePercentage(this.culturaList)),
+      calculateStrokeDashArray(calculatePercentage(this.relaxList)),
+      calculateStrokeDashArray(calculatePercentage(this.naturaList)),
+      calculateStrokeDashArray(calculatePercentage(this.romanticoList)),
+      calculateStrokeDashArray(calculatePercentage(this.famigliaList)),
+    ];
+  }
+
+  getHighestType(): string {
+    // Definisci le chiavi del tipo
+    type TravelTypeKeys = keyof typeof travelTypes;
+
+    // Oggetto con i valori
+    const travelTypes = {
+      Cultura: this.culturaList,
+      Relax: this.relaxList,
+      Natura: this.naturaList,
+      Romantico: this.romanticoList,
+      Famiglia: this.famigliaList,
+    };
+
+    // Trova il tipo con il valore massimo
+    const highestType = (Object.keys(travelTypes) as TravelTypeKeys[]).reduce((prev, current) => {
+      return travelTypes[prev] > travelTypes[current] ? prev : current;
+    });
+
+    return highestType;
+  }
+
+
 }

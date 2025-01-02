@@ -32,7 +32,7 @@ export class WishlistComponent implements OnInit {
   isConfirmVisible: boolean = false;
   toRemoveTravel: Travel | null = null;
   selectedTravel: Travel | undefined;
-  starValue = 0;
+  starRatings: Map<number, number> = new Map();
 
   constructor(private _wishlistService: WishlistService, private travelService: TravelService,) {
   }
@@ -42,7 +42,7 @@ export class WishlistComponent implements OnInit {
         next: data => {
           if (data) {
             this.wishlist = data;
-
+            this.calculateStars();
 
             this.wishlistLength = this.wishlist.length - 3;
             this.setCurrentWishlist();
@@ -116,16 +116,25 @@ export class WishlistComponent implements OnInit {
     this.toRemoveTravel = null;
   }
 
-  getStar(id: number): void {
-    this.travelService.getStars(id).subscribe({
-      next: (data: any) => {
-        this.starValue = data as number;
-      },
-      error: error => {
-        console.error('Errore:', error);
-        this.starValue = 0;
-      }
+  calculateStars(): void {
+    console.log("proaroroa")
+    console.log(this.wishlist.length);
+
+    this.wishlist.forEach((travel) => {
+      this.travelService.getStars(travel.id).subscribe({
+        next: (rating: number) => {
+          this.starRatings.set(travel.id, rating); // Salva il rating nella mappa
+        },
+        error: (error) => {
+          console.error(`Errore nel recupero delle stelle per il viaggio con ID ${travel.id}:`, error);
+          this.starRatings.set(travel.id, 0); // Default a 0 in caso di errore
+        },
+      });
     });
+  }
+
+  getStar(id: number): number {
+    return this.starRatings.get(id) || 0;
   }
 
 

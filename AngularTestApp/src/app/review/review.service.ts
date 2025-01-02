@@ -46,7 +46,7 @@ export class ReviewService {
   // Recupera recensioni di un determinato utente
   getReviewsByUser(email: string): Observable<Review[]> {
     const params = new HttpParams().set('email', email);
-    return this.http.get<Review[]>(`${this.APIUrl}/open/v1/reviews-by-user`, {params});
+    return this.http.get<Review[]>(`${this.APIUrl}/auth/v1/reviews-by-user`, {params});
   }
 
   // Recupera una recensione specifica
