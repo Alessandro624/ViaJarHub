@@ -276,6 +276,26 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
+    public double getMaxPrice(LocalDate startDate) {
+        String query = "SELECT MAX(price) FROM travel";
+        if (startDate != null) {
+            query += " WHERE start_date >= ?";
+        }
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            if (startDate != null) {
+                statement.setObject(1, startDate);
+            }
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getDouble(1);
+            }
+            return 0;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
     public int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate) {
         String query = "SELECT available_seats FROM available_seats WHERE travel_id = ? AND start_date = ? AND end_date = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {

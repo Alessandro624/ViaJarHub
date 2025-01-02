@@ -70,15 +70,10 @@ public class OpenTravelController extends TravelController {
     public ResponseEntity<List<byte[]>> getTravelImages(@RequestParam("id") Long id) {
         return super.getTravelImages(id);
     }
-    @Override
-    @RequestMapping(value = "/name", method = RequestMethod.GET)
-    public ResponseEntity<List<String>> getName(@RequestParam("id") Long id) {
-        return super.getName(id);
-    }
+
     @Override
     @RequestMapping(value = "/max-price", method = RequestMethod.GET)
-    public ResponseEntity<List<Long>> getMaxPrice() {
+    public ResponseEntity<Double> getMaxPrice() {
         return super.getMaxPrice();
     }
-
 }

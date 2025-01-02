@@ -144,15 +144,10 @@ public class TravelService implements ITravelService {
         }
         return travelDAO.countTravels(filters);
     }
-    @Override
-    public Long getMaxPrice( boolean isAdmin) {
-
-        return travelDAO.getMaxPrice(isAdmin);
-    }
 
     @Override
-    public String getName(Long id) {
-        return travelDAO.findNameById(id);
+    public double getMaxPrice(boolean isAdmin) {
+        return travelDAO.getMaxPrice(!isAdmin ? LocalDate.now() : null);
     }
 
     @Override
