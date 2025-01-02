@@ -1,9 +1,12 @@
 package it.unical.demacs.informatica.viajarhubbackend.controller.user;
 
 import it.unical.demacs.informatica.viajarhubbackend.config.security.SecurityUtility;
+import it.unical.demacs.informatica.viajarhubbackend.exception.EmailNotSentException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.InvalidInputException;
 import it.unical.demacs.informatica.viajarhubbackend.exception.UserNotFoundException;
+import it.unical.demacs.informatica.viajarhubbackend.model.ContactMessage;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
+import it.unical.demacs.informatica.viajarhubbackend.service.IEmailService;
 import it.unical.demacs.informatica.viajarhubbackend.service.IUserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.MediaType;
@@ -17,9 +20,11 @@ import java.util.Objects;
 @RequestMapping("/api/auth/v1")
 public class UserController {
     private final IUserService userService;
+    private final IEmailService emailService;
 
-    public UserController(IUserService userService) {
+    public UserController(IUserService userService, IEmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @RequestMapping(value = "/update-user", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -50,6 +55,18 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @RequestMapping(value = "/contact-admins", method = RequestMethod.POST)
+    public ResponseEntity<Void> contactAdmins(@RequestBody ContactMessage message) {
+        try {
+            emailService.sendContactEmail(SecurityUtility.getCurrentUser().getUsername(), message.getSubject(), message.getBody());
+            return ResponseEntity.ok().build();
+        } catch (EmailNotSentException e) {
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

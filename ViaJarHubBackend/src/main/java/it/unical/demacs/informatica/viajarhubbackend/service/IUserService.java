@@ -6,14 +6,19 @@ import it.unical.demacs.informatica.viajarhubbackend.model.UserRole;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface IUserService {
     Optional<User> findByEmail(String email, AuthProvider provider);
 
+    List<String> getAllUsersEmails();
+
     User createUser(String firstName, String lastName, LocalDate birthDate, String email, String password, UserRole role, AuthProvider provider);
 
     User updateUser(String email, User user, MultipartFile profileImage) throws Exception;
+
+    User makeAdmin(String email);
 
     void forgotPassword(String email);
 

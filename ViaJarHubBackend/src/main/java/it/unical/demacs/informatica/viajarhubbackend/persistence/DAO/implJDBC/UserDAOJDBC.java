@@ -52,6 +52,36 @@ public class UserDAOJDBC implements UserDAO {
     }
 
     @Override
+    public List<User> findAllAdminUsers() {
+        String query = "SELECT * FROM \"user\" WHERE role = 'ROLE_ADMIN'";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            ResultSet resultSet = statement.executeQuery();
+            List<User> users = new ArrayList<>();
+            while (resultSet.next()) {
+                users.add(mapResultSetToUser(resultSet));
+            }
+            return users;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public List<String> findAllUsersEmails() {
+        String query = "SELECT email FROM \"user\" WHERE role = 'ROLE_USER' AND enabled = TRUE";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            ResultSet resultSet = statement.executeQuery();
+            List<String> usersEmails = new ArrayList<>();
+            while (resultSet.next()) {
+                usersEmails.add(resultSet.getString("email"));
+            }
+            return usersEmails;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
     public void save(User user) {
         String query = "INSERT INTO \"user\" (email, password, role, provider, firstname, lastname, birthdate, profile_image_path, enabled, verification_token, token_creation_time, password_reset_token, password_reset_token_creation_time) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
                 + "ON CONFLICT (email) DO UPDATE SET firstname = EXCLUDED.firstname, lastname = EXCLUDED.lastname, password = EXCLUDED.password, birthdate = EXCLUDED.birthdate, profile_image_path = EXCLUDED.profile_image_path, role = EXCLUDED.role, enabled = EXCLUDED.enabled, verification_token = EXCLUDED.verification_token, token_creation_time = EXCLUDED.token_creation_time, password_reset_token = EXCLUDED.password_reset_token, password_reset_token_creation_time = EXCLUDED.password_reset_token_creation_time";
