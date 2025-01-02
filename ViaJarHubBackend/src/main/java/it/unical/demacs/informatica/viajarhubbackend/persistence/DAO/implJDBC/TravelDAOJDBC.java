@@ -119,7 +119,7 @@ public class TravelDAOJDBC implements TravelDAO {
                 "JOIN booking b ON t.id = b.travel_id " +
                 "WHERE b.end_date <= CURRENT_DATE AND b.user_email = ? " +
                 "AND NOT EXISTS (" +
-                "    SELECT 1 FROM review r WHERE r.idtravel = t.id)";
+                "    SELECT 1 FROM review r WHERE r.idtravel = t.id AND r.email = b.user_email)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
             ResultSet resultSet = statement.executeQuery();

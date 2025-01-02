@@ -57,7 +57,7 @@ public class PaymentController {
                 return ResponseEntity.badRequest().body(response);
             }
             // Conversione dell'importo in centesimi
-            long amount = Math.round((Double) paymentData.get("amount") * 100);
+            long amount = Math.round(((Number) paymentData.get("amount")).doubleValue() * 100);
             // Creazione del PaymentIntent
             PaymentIntentCreateParams createParams = PaymentIntentCreateParams.builder()
                     .setAmount(amount)
@@ -70,7 +70,7 @@ public class PaymentController {
                     .setPaymentMethod("pm_card_visa") // Metodo di pagamento di test
                     .build();
             paymentIntent = paymentIntent.confirm(confirmParams);
-            Booking booking = new Booking((Integer) paymentData.get("numeroPartecipanti"), (Double) paymentData.get("amount"), LocalDateTime.now());
+            Booking booking = new Booking((Integer) paymentData.get("numeroPartecipanti"), ((Number) paymentData.get("amount")).doubleValue(), LocalDateTime.now());
             this.addToBooking(Long.valueOf((Integer) paymentData.get("travelId")), booking);
             // Risposta di successo
             response.put("success", true);
