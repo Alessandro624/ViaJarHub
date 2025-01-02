@@ -272,6 +272,67 @@ public class TravelDAOJDBC implements TravelDAO {
         }
 
     }
+    @Override
+    public int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate) {
+        String query = "SELECT available_seats FROM available_seats WHERE travel_id = ? AND start_date = ? AND end_date = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, id);
+            statement.setObject(2, startDate);
+            statement.setObject(3, endDate);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("available_seats");
+
+            }
+            return 0;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public List<Travel> findAllReviewable(String email) {
+        String query = "SELECT DISTINCT t.* " +
+                "FROM travel t " +
+                "JOIN booking b ON t.id = b.travel_id " +
+                "WHERE b.end_date <= CURRENT_DATE AND b.user_email = ? " +
+                "AND NOT EXISTS (" +
+                "    SELECT 1 FROM review r WHERE r.idtravel = t.id)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            List<Travel> travels = new ArrayList<>();
+            while (resultSet.next()) {
+                travels.add(mapResultSetToTravel(resultSet));
+            }
+            return travels;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public List<Travel> findAllByUserBooking(String email) {
+        String query = "SELECT t.*, " +
+                "b.start_date AS booking_start_date, " +
+                "b.end_date AS booking_end_date " +
+                "FROM travel t " +
+                "JOIN booking b ON t.id = b.travel_id " +
+                "WHERE b.user_email = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            List<Travel> travels = new ArrayList<>();
+            while (resultSet.next()) {
+                Travel travel = mapResultSetToTravel(resultSet);
+                travel.setStartDate(resultSet.getDate("booking_start_date").toLocalDate());
+                travel.setEndDate(resultSet.getDate("booking_end_date").toLocalDate());
+                travels.add(travel);
+            }
+            return travels;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }    }
 
     private List<Object> applyFilters(TravelFilter filters, StringBuilder query) {
         List<Object> params = new ArrayList<>();

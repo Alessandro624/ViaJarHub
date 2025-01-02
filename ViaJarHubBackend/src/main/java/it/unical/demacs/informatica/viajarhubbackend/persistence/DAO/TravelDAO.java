@@ -27,4 +27,9 @@ public interface TravelDAO {
 
     String findNameById(Long id);
     Long getMaxPrice(boolean isAdmin);
+    int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate);
+
+    List<Travel> findAllReviewable(String email);
+
+    List<Travel> findAllByUserBooking(String email);
 }

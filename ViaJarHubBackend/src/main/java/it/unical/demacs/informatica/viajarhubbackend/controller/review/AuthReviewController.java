@@ -46,10 +46,10 @@ public class AuthReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
     @RequestMapping(value = "/delete-review", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteReview(@RequestBody Review review) {
         try {
+
             if (!Objects.equals(SecurityUtility.getCurrentUser().getUsername(), review.getUser().getEmail())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
@@ -61,6 +61,7 @@ public class AuthReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
 /*
     public ResponseEntity<Void> updateReview(Long id, Travel travel, List<MultipartFile> travelImages) {
         try {
