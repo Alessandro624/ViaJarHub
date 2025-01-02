@@ -64,6 +64,30 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
+    public List<Travel> findAllByUserBooking(String email) {
+        String query = "SELECT t.*, " +
+                "b.start_date AS booking_start_date, " +
+                "b.end_date AS booking_end_date " +
+                "FROM travel t " +
+                "JOIN booking b ON t.id = b.travel_id " +
+                "WHERE b.user_email = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            List<Travel> travels = new ArrayList<>();
+            while (resultSet.next()) {
+                Travel travel = mapResultSetToTravel(resultSet);
+                travel.setStartDate(resultSet.getDate("booking_start_date").toLocalDate());
+                travel.setEndDate(resultSet.getDate("booking_end_date").toLocalDate());
+                travels.add(travel);
+            }
+            return travels;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
     public List<Travel> findAllPaginated(int offset, int limit, TravelFilter filters) {
         StringBuilder query = new StringBuilder("SELECT t.* FROM travel t");
         query.append(" JOIN travel_avg_stars tavg ON t.id = tavg.id");
@@ -77,6 +101,27 @@ public class TravelDAOJDBC implements TravelDAO {
             for (int i = 0; i < params.size(); i++) {
                 statement.setObject(i + 1, params.get(i));
             }
+            ResultSet resultSet = statement.executeQuery();
+            List<Travel> travels = new ArrayList<>();
+            while (resultSet.next()) {
+                travels.add(mapResultSetToTravel(resultSet));
+            }
+            return travels;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public List<Travel> findAllReviewable(String email) {
+        String query = "SELECT DISTINCT t.* " +
+                "FROM travel t " +
+                "JOIN booking b ON t.id = b.travel_id " +
+                "WHERE b.end_date <= CURRENT_DATE AND b.user_email = ? " +
+                "AND NOT EXISTS (" +
+                "    SELECT 1 FROM review r WHERE r.idtravel = t.id AND r.email = b.user_email)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
             ResultSet resultSet = statement.executeQuery();
             List<Travel> travels = new ArrayList<>();
             while (resultSet.next()) {
@@ -206,6 +251,7 @@ public class TravelDAOJDBC implements TravelDAO {
             statement.executeUpdate();
             resetRelationInWishListTable(id);
             resetRelationInReviewTable(id);
+            resetRelationInBookingTable(id);
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -230,49 +276,6 @@ public class TravelDAOJDBC implements TravelDAO {
     }
 
     @Override
-    public String findNameById(Long id) {
-        String query = "SELECT * FROM travel WHERE id = ?";
-
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setLong(1, id);
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getString("destination");
-            }
-            return null;
-        } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
-        }
-    }
-
-    @Override
-    public Long getMaxPrice(boolean isAdmin) {
-        String query;
-
-        if (isAdmin) {
-            // Query per ottenere il prezzo massimo senza restrizioni
-            query = "SELECT MAX(price) AS max_price FROM travel";
-        } else {
-            // Query per ottenere il prezzo massimo con data di partenza futura
-            query = "SELECT MAX(price) AS max_price FROM travel WHERE start_date > CURRENT_DATE";
-        }
-
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            // Non ci sono parametri da settare in questa query
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                // Otteniamo il risultato dalla colonna "max_price"
-                return resultSet.getLong("max_price");
-            }
-            return 0L; // Se non ci sono risultati, restituiamo 0
-        } catch (SQLException sqlException) {
-            throw new RuntimeException("Errore durante l'esecuzione della query", sqlException);
-        }
-
-    }
-    @Override
     public int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate) {
         String query = "SELECT available_seats FROM available_seats WHERE travel_id = ? AND start_date = ? AND end_date = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -282,7 +285,6 @@ public class TravelDAOJDBC implements TravelDAO {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt("available_seats");
-
             }
             return 0;
         } catch (SQLException sqlException) {
@@ -290,49 +292,6 @@ public class TravelDAOJDBC implements TravelDAO {
         }
     }
 
-    @Override
-    public List<Travel> findAllReviewable(String email) {
-        String query = "SELECT DISTINCT t.* " +
-                "FROM travel t " +
-                "JOIN booking b ON t.id = b.travel_id " +
-                "WHERE b.end_date <= CURRENT_DATE AND b.user_email = ? " +
-                "AND NOT EXISTS (" +
-                "    SELECT 1 FROM review r WHERE r.idtravel = t.id)";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, email);
-            ResultSet resultSet = statement.executeQuery();
-            List<Travel> travels = new ArrayList<>();
-            while (resultSet.next()) {
-                travels.add(mapResultSetToTravel(resultSet));
-            }
-            return travels;
-        } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
-        }
-    }
-
-    @Override
-    public List<Travel> findAllByUserBooking(String email) {
-        String query = "SELECT t.*, " +
-                "b.start_date AS booking_start_date, " +
-                "b.end_date AS booking_end_date " +
-                "FROM travel t " +
-                "JOIN booking b ON t.id = b.travel_id " +
-                "WHERE b.user_email = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, email);
-            ResultSet resultSet = statement.executeQuery();
-            List<Travel> travels = new ArrayList<>();
-            while (resultSet.next()) {
-                Travel travel = mapResultSetToTravel(resultSet);
-                travel.setStartDate(resultSet.getDate("booking_start_date").toLocalDate());
-                travel.setEndDate(resultSet.getDate("booking_end_date").toLocalDate());
-                travels.add(travel);
-            }
-            return travels;
-        } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
-        }    }
 
     private List<Object> applyFilters(TravelFilter filters, StringBuilder query) {
         List<Object> params = new ArrayList<>();
@@ -425,4 +384,10 @@ public class TravelDAOJDBC implements TravelDAO {
         statement.execute();
     }
 
+    private void resetRelationInBookingTable(Long id) throws SQLException {
+        String query = "DELETE FROM booking WHERE travel_id = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setLong(1, id);
+        statement.execute();
+    }
 }

@@ -46,67 +46,53 @@ public class PaymentController {
     public ResponseEntity<Map<String, Object>> processPayment(@RequestBody Map<String, Object> paymentData) {
         String stripeApiKey = "sk_test_51QXRegAy1mElwXplBtKd1JF5OfVvXMBKbOk3DVRM64FDM9d9cbfuwB8RKM5feK1yOiHwZoyIbxYIw9HTZ4rJ4WPX00QrtOIGao";
         Stripe.apiKey = stripeApiKey;
-
+        System.out.println(stripeApiKey);
         if (stripeApiKey == null || stripeApiKey.isEmpty()) {
             throw new RuntimeException("Chiave API Stripe non configurata.");
         }
-
         Map<String, Object> response = new HashMap<>();
         try {
             // Validazione dei dati in ingresso
             if (!checkNotNullPaymentData(paymentData, response) || !validatePaymentData(paymentData, response)) {
                 return ResponseEntity.badRequest().body(response);
             }
-
             // Conversione dell'importo in centesimi
-            double amount;
-            Object amountObject = paymentData.get("amount");
-
-            if (amountObject instanceof Integer) {
-                amount = ((Integer) amountObject).doubleValue(); // Converti Integer in Double
-            } else if (amountObject instanceof Double) {
-                amount = (Double) amountObject; // Usa direttamente il Double
-            } else {
-                throw new IllegalArgumentException("Il valore di 'amount' non è valido.");
-            }
-
+            long amount = Math.round(((Number) paymentData.get("amount")).doubleValue() * 100);
             // Creazione del PaymentIntent
             PaymentIntentCreateParams createParams = PaymentIntentCreateParams.builder()
-                    .setAmount((long) Math.round(amount * 100)) // Converti in centesimi
+                    .setAmount(amount)
                     .setCurrency("eur")
                     .addPaymentMethodType("card")
                     .build();
             PaymentIntent paymentIntent = PaymentIntent.create(createParams);
-
             // Conferma del pagamento con un metodo di test
             PaymentIntentConfirmParams confirmParams = PaymentIntentConfirmParams.builder()
                     .setPaymentMethod("pm_card_visa") // Metodo di pagamento di test
                     .build();
             paymentIntent = paymentIntent.confirm(confirmParams);
-
-            Booking booking = new Booking((Integer) paymentData.get("numeroPartecipanti"), amount, LocalDateTime.now());
+            Booking booking = new Booking((Integer) paymentData.get("numeroPartecipanti"), ((Number) paymentData.get("amount")).doubleValue(), LocalDateTime.now());
             this.addToBooking(Long.valueOf((Integer) paymentData.get("travelId")), booking);
-
             // Risposta di successo
             response.put("success", true);
             response.put("status", paymentIntent.getStatus());
+            System.out.println(response);
             this.sendEmail(paymentData);
-
             return ResponseEntity.ok(response);
         } catch (StripeException e) {
             // Risposta di errore Stripe
             response.put("success", false);
             response.put("message", "Errore durante il pagamento: " + e.getMessage());
+            System.out.println(response);
             return ResponseEntity.badRequest().body(response);
         } catch (Exception e) {
             // Risposta di errore generico
             response.put("success", false);
             response.put("message", "Errore generico: " + e.getMessage());
             e.printStackTrace();
+            System.out.println(response);
             return ResponseEntity.badRequest().body(response);
         }
     }
-
 
     private boolean validatePaymentData(Map<String, Object> paymentData, Map<String, Object> response) {
         // TODO check amount = travel.price * participantsNumber
