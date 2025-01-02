@@ -4,8 +4,8 @@
     <div class="card-body">
       <h5 class="card-title">
         <div class="row justify-content-between">
-          <div class="col">
-            {{ travel.destination }}
+          <div class="col-7 fs-4">
+            <strong>{{ travel.destination }}</strong>
           </div>
           <div class="col-5 no-wrap fw-semibold text-end">
             <span *ngIf="travel.oldPrice > 0" class="text-muted text-decoration-line-through me-2">
@@ -13,32 +13,23 @@
             </span>
             {{ travel.price }}€
           </div>
+          <div class="row">
+            <div class="col-12 type ">
+              {{ travel.travelType.toLowerCase() }}
+            </div>
+            <div class="col-12 star">
+              <app-star [rating]="stars" [beat]="false"></app-star>
+            </div>
+          </div>
         </div>
       </h5>
-      <div class="mb-2 d-flex">
-        <div *ngFor="let star of fullStars;">
-          <span class="star">
-            <i class="fa-solid fa-star"></i>
-          </span>
-        </div>
-        <div *ngIf="hasHalfStar">
-          <span class="star">
-            <i class="fa-solid fa-star-half-stroke"></i>
-          </span>
-        </div>
-        <div *ngFor="let star of emptyStars;">
-          <span class="star">
-            <i class="fa-regular fa-star"></i>
-          </span>
-        </div>
-      </div>
+
+
       <div *ngIf="isAdmin" class="btn-group position-absolute top-0 end-0 m-2" style="display: none;">
-        <button class="btn btn-primary" (click)="handleMouse($event); showUpdateTravel=true;">Modifica
-        </button>
-        <button class="btn btn-danger" (click)="handleMouse($event); showDeleteTravel=true;">Elimina
-        </button>
+        <button class="btn btn-primary" (click)="handleMouse($event); showUpdateTravel=true;">Modifica</button>
+        <button class="btn btn-danger" (click)="handleMouse($event); showDeleteTravel=true;">Elimina</button>
       </div>
-      <p class="card-text  mb-1">{{ travel.description }}</p>
+      <p class="card-text mb-1">{{ travel.description }}</p>
       <div class="card-date text-body-secondary">{{ travel.startDate }} - {{ travel.endDate }}</div>
     </div>
   </div>

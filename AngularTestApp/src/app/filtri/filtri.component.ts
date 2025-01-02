@@ -117,7 +117,7 @@ export class FiltriComponent implements OnInit {
     this.alertMessage = '';
     const start = new Date(this.startDate);
     const end = new Date(this.endDate);
-
+    this.today.setHours(0, 0, 0, 0);
     if (this.startDate && start < this.today) {
       this.alertMessage = 'La data di partenza non può essere precedente alla data di oggi';
       return false;

@@ -6,6 +6,7 @@ import {Travel} from '../models/travel/travel.model';
 import {WishlistService} from './wishlist.service';
 import {TravelService} from '../travel-detail/travel.service';
 import {StarComponent} from '../star/star.component';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-wishlist',
@@ -31,6 +32,7 @@ export class WishlistComponent implements OnInit {
   isConfirmVisible: boolean = false;
   toRemoveTravel: Travel | null = null;
   selectedTravel: Travel | undefined;
+  starValue = 0;
 
   constructor(private _wishlistService: WishlistService, private travelService: TravelService,) {
   }
@@ -40,6 +42,7 @@ export class WishlistComponent implements OnInit {
         next: data => {
           if (data) {
             this.wishlist = data;
+
 
             this.wishlistLength = this.wishlist.length - 3;
             this.setCurrentWishlist();
@@ -101,14 +104,28 @@ export class WishlistComponent implements OnInit {
     this.currentWishlist = [];
   }
 
+
+  confirmRemove(travel: Travel) {
+    this.isConfirmVisible = true;
+    this.toRemoveTravel = travel;
+  }
+
+
   closeConfirm() {
     this.isConfirmVisible = false;
     this.toRemoveTravel = null;
   }
 
-  confirmRemove(travel: Travel) {
-    this.isConfirmVisible = true;
-    this.toRemoveTravel = travel;
+  getStar(id: number): void {
+    this.travelService.getStars(id).subscribe({
+      next: (data: any) => {
+        this.starValue = data as number;
+      },
+      error: error => {
+        console.error('Errore:', error);
+        this.starValue = 0;
+      }
+    });
   }
 
 

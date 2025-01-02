@@ -43,7 +43,7 @@ export class PaymentComponent implements OnChanges {
       expiryMonth: this.expiryMonth,
       expiryYear: this.expiryYear,
       cvv: this.cvv,
-      amount: this.prezzo,
+      amount: this.prezzoFinale,
       destinazione: this.travel?.destination,
       dataPartenza: this.travel?.startDate,
       dataRitorno: this.travel?.endDate,

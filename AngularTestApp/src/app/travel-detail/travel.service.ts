@@ -154,4 +154,9 @@ export class TravelService {
     return throwError(() => new Error(errorMessage));
   }
 
+  getAvailableSeats(travel: Travel) {
+    return this._http.post<number>(`${this.APIUrl}/open/v1/available-seats`, travel).pipe(
+      catchError(this.handleError)
+    )
+  }
 }

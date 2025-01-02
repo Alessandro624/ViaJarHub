@@ -1,17 +1,36 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
-import {catchError, Observable, throwError} from 'rxjs';
+import {BehaviorSubject, catchError, Observable, of, switchMap} from 'rxjs';
 import {Review} from '../models/review/review.module';
 import {Travel} from '../models/travel/travel.model';
+import {AuthenticationService} from '../login/authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReviewService {
   private APIUrl = "api";
-  starsHTML: string = '';
+  // starsHTML: string = '';
+  private currentReviewableSubject = new BehaviorSubject<Travel[] | null>(null);
+  reviewable$ = this.currentReviewableSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private _authenticationService: AuthenticationService) {
+    this._authenticationService.currentUser$.subscribe(() => {
+      this.getReviewable().subscribe();
+    });
+  }
+
+  getReviewable() {
+    return this.http.get<Travel[]>(`${this.APIUrl}/auth/v1/reviewable-booking`).pipe(
+      switchMap((reviewable) => {
+        this.currentReviewableSubject.next(reviewable);
+        return of(reviewable);
+      }),
+      catchError(() => {
+        this.currentReviewableSubject.next(null);
+        return of(null);
+      })
+    );
   }
 
   getAllReviews(): Observable<Review[]> {
@@ -42,7 +61,7 @@ export class ReviewService {
   }
 
   // Crea una nuova recensione
-  createReview(review: Review, images: File[]): Observable<void> {
+  createReview(review: Review, images: File[]) {
     review.user.authorities = null;
     const formData = new FormData();
     console.log(images);
@@ -54,7 +73,8 @@ export class ReviewService {
     });
 
     console.log(formData);
-    return this.http.post<void>(`${this.APIUrl}/auth/v1/create-review`, formData);
+    return this.http.post<void>(`${this.APIUrl}/auth/v1/create-review`, formData).pipe(
+      switchMap(() => this.getReviewable()));
   }
 
   getReviewImages(id: number, email: string | undefined): Observable<string[]> {
@@ -62,18 +82,19 @@ export class ReviewService {
   }
 
   // Aggiorna una recensione esistente
-  updateReview(review: Review): Observable<void> {
+  /*updateReview(review: Review): Observable<void> {
     return this.http.put<void>(`${this.APIUrl}/open/v1/update-review`, review, {
       headers: new HttpHeaders({'Content-Type': 'application/json'})
-    });
-  }
+    }).pipe(
+      switchMap(() => this.getReviewable()));;
+  }*/
 
   // Elimina una recensione specifica
-  deleteReview(review: Review): Observable<void> {
+  deleteReview(review: Review) {
     review.user.authorities = null;
-    
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.request<void>('DELETE', `${this.APIUrl}/auth/v1/delete-review`, {headers, body: review});
+    return this.http.delete<void>(`${this.APIUrl}/auth/v1/delete-review`, {headers, body: review}).pipe(
+      switchMap(() => this.getReviewable()));
   }
 
   // Conta il numero di recensioni di un determinato utente
@@ -81,6 +102,4 @@ export class ReviewService {
     const params = new HttpParams().set('email', email);
     return this.http.get<number>(`${this.APIUrl}/open/v1/reviews-count`, {params});
   }
-
-
 }

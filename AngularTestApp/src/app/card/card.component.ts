@@ -8,6 +8,8 @@ import {NgForOf, NgIf} from '@angular/common';
 import {DeleteTravelComponent} from '../delete-travel/delete-travel.component';
 import {UserRole} from '../models/user/user-role.enum';
 import {AuthenticationService} from '../login/authentication.service';
+import {StarComponent} from '../star/star.component';
+import {combineLatestAll} from 'rxjs';
 
 @Component({
   selector: 'app-card',
@@ -19,7 +21,8 @@ import {AuthenticationService} from '../login/authentication.service';
     UpdateTravelComponent,
     NgIf,
     DeleteTravelComponent,
-    NgForOf
+    NgForOf,
+    StarComponent
   ],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css'
@@ -32,9 +35,7 @@ export class CardComponent implements OnInit {
   showUpdateTravel: boolean = false;
   showDeleteTravel: boolean = false;
   stars: number = 0;
-  fullStars: number[] = [];
-  emptyStars: number[] = [];
-  hasHalfStar: boolean = false;
+
 
   constructor(private _travelService: TravelService, private _authenticationService: AuthenticationService) {
   }
@@ -62,11 +63,8 @@ export class CardComponent implements OnInit {
     this._travelService.getStars(this.travel.id).subscribe({
       next: data => {
         this.stars = data;
-        this.calculateStars();
       }, error: error => {
         this.stars = 0;
-        this.calculateStars();
-        console.log(error);
       }
     });
   }
@@ -90,12 +88,5 @@ export class CardComponent implements OnInit {
     this.showDeleteTravel = false;
   }
 
-  calculateStars(): void {
-    const full = Math.floor(this.stars);
-    const hasHalf = this.stars % 1 !== 0;
-    const empty = 5 - full - (hasHalf ? 1 : 0);
-    this.fullStars = Array(full).fill(0);
-    this.hasHalfStar = hasHalf;
-    this.emptyStars = Array(empty).fill(0);
-  }
+
 }

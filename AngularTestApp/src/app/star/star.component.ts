@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, numberAttribute, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 
 @Component({
@@ -11,7 +11,7 @@ import {NgForOf, NgIf} from '@angular/common';
   templateUrl: './star.component.html',
   styleUrl: './star.component.css'
 })
-export class StarComponent implements OnInit {
+export class StarComponent implements OnChanges {
   @Input() rating: number = 0;
   @Input() beat: boolean = false;
   fullStars: number[] = [];
@@ -19,10 +19,6 @@ export class StarComponent implements OnInit {
   hasHalfStar: boolean = false;
   inDetails = false;
 
-  ngOnInit() {
-    this.inDetails = this.isContainedIn('app-infotravel')
-    this.calculateStars()
-  }
 
   constructor(private elementRef: ElementRef) {
   }
@@ -45,5 +41,11 @@ export class StarComponent implements OnInit {
       parent = parent.parentElement;
     }
     return false;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.inDetails = this.isContainedIn('app-infotravel')
+    this.calculateStars()
+    console.log(this.rating);
   }
 }

@@ -6,6 +6,7 @@ import {Review} from '../models/review/review.module';
 import {AuthenticationService} from '../login/authentication.service';
 import {TravelService} from '../travel-detail/travel.service';
 import {Travel} from '../models/travel/travel.model';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-add-review',
@@ -14,7 +15,8 @@ import {Travel} from '../models/travel/travel.model';
     FormsModule,
     NgForOf,
     NgClass,
-    NgIf
+    NgIf,
+    RouterLink
   ],
   templateUrl: './add-review.component.html',
   styleUrl: './add-review.component.css'
@@ -39,6 +41,7 @@ export class AddReviewComponent implements OnInit {
       next: (review) => {
         if (review) {
           this.dropdownOptions = review;
+          console.log(this.dropdownOptions);
         } else {
           this.dropdownOptions = [];
         }

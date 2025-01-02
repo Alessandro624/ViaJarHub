@@ -1,100 +1,109 @@
 <div class="container mt-4">
-  <form>
-    <!-- Dropdown -->
-    <div class="mb-3">
-      <div class="mb-3 dropdown">
-        <button
-          class="btn border  dropdown-toggle"
-          type="button"
-          id="dropdownMenuButton"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          {{ selectedOption?.destination || 'Seleziona un tipo' }}
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <li *ngFor="let option of dropdownOptions">
-            <!--TODO eliminare id, lo uso solo per debug-->
-            <a class="dropdown-item" (click)="selectType(option)">{{ option.id }} - {{ option.destination }}</a>
-          </li>
-        </ul>
-      </div>
-    </div>
+  @if (dropdownOptions.length == 0) {
+    <h3>Completa un viaggio con noi prima di recensire!</h3>
+    <button class="btn btn-primary" routerLink="">
+      <i class="fa-solid fa-plus"></i> Scopri i viaggi
+    </button>
+  } @else {
 
-    <!-- Selezione stelle -->
-    <div class="mb-3">
-      <label class="form-label fw-bold">Voto: {{ rating }}</label>
-      <div class="rating">
+
+    <form>
+      <!-- Dropdown -->
+      <div class="mb-3">
+        <div class="mb-3 dropdown">
+          <button
+            class="btn border  dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            {{ selectedOption?.destination || 'Seleziona un tipo' }}
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li *ngFor="let option of dropdownOptions">
+              <!--TODO eliminare id, lo uso solo per debug-->
+              <a class="dropdown-item" (click)="selectType(option)">{{ option.id }} - {{ option.destination }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Selezione stelle -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">Voto: {{ rating }}</label>
+        <div class="rating">
   <span class="star" [ngClass]="{'filled': rating >= 1}" (click)="rate(1)">
     <i class="fa-solid fa-star"></i>
   </span>
-        <span class="star" [ngClass]="{'filled': rating >= 2}" (click)="rate(2)">
+          <span class="star" [ngClass]="{'filled': rating >= 2}" (click)="rate(2)">
     <i class="fa-solid fa-star"></i>
   </span>
-        <span class="star" [ngClass]="{'filled': rating >= 3}" (click)="rate(3)">
+          <span class="star" [ngClass]="{'filled': rating >= 3}" (click)="rate(3)">
     <i class="fa-solid fa-star"></i>
   </span>
-        <span class="star" [ngClass]="{'filled': rating >= 4}" (click)="rate(4)">
+          <span class="star" [ngClass]="{'filled': rating >= 4}" (click)="rate(4)">
     <i class="fa-solid fa-star"></i>
   </span>
-        <span class="star" [ngClass]="{'filled': rating >= 5}" (click)="rate(5)">
+          <span class="star" [ngClass]="{'filled': rating >= 5}" (click)="rate(5)">
     <i class="fa-solid fa-star"></i>
   </span>
+        </div>
+
+
       </div>
 
+      <!-- Textarea -->
+      <div class="mb-3">
+        <label for="comment" class="form-label fw-bold">Commento</label>
+        <textarea
+          id="comment"
+          class="form-control"
+          rows="4"
+          placeholder="Scrivi un commento..."
+          [(ngModel)]="comment"
+          name="comment"
+          required
+        ></textarea>
+      </div>
 
-    </div>
-
-    <!-- Textarea -->
-    <div class="mb-3">
-      <label for="comment" class="form-label fw-bold">Commento</label>
-      <textarea
-        id="comment"
-        class="form-control"
-        rows="4"
-        placeholder="Scrivi un commento..."
-        [(ngModel)]="comment"
-        name="comment"
-        required
-      ></textarea>
-    </div>
-
-    <div class="mb-3">
-      <label for="images" class="form-label">Carica Immagini</label>
-      <div
-        class="drop-area border border-primary p-3 text-center"
-        (click)="triggerFileInput()"
-        (dragover)="onDragOver($event)"
-        (dragleave)="onDragLeave($event)"
-        (drop)="onDrop($event)"
-        (input)="imageError = ''; "
-      >
-        <p>Trascina qui le immagini o clicca per selezionarle</p>
-        <!-- Input file nascosto -->
-        <input
-          #fileInput
-          type="file"
-          id="images"
-          class="d-none"
-          (change)="onFileSelect($event)"
-          accept="image/*"
-          multiple
+      <div class="mb-3">
+        <label for="images" class="form-label">Carica Immagini</label>
+        <div
+          class="drop-area border border-primary p-3 text-center"
+          (click)="triggerFileInput()"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
           (input)="imageError = ''; "
-        />
+        >
+          <p>Trascina qui le immagini o clicca per selezionarle</p>
+          <!-- Input file nascosto -->
+          <input
+            #fileInput
+            type="file"
+            id="images"
+            class="d-none"
+            (change)="onFileSelect($event)"
+            accept="image/*"
+            multiple
+            (input)="imageError = ''; "
+          />
+        </div>
+        <ul class="mt-2">
+          <li class="mb-2" *ngFor="let image of images; let i = index">
+            <span>{{ image.name }}</span>
+            <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
+          </li>
+        </ul>
+        <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
+        <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
       </div>
-      <ul class="mt-2">
-        <li class="mb-2" *ngFor="let image of images; let i = index">
-          <span>{{ image.name }}</span>
-          <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
-        </li>
-      </ul>
-      <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
-      <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
-    </div>
 
-    <!-- Pulsante di invio -->
-    <button type="submit" class="btn btn-success" (click)="submitForm()" [disabled]="!comment || !selectedOption ">
-      Invia
-    </button>
-  </form>
+      <!-- Pulsante di invio -->
+      <button type="submit" class="btn btn-success" (click)="submitForm()" [disabled]="!comment || !selectedOption ">
+        Invia
+      </button>
+    </form>
+  }
 </div>
