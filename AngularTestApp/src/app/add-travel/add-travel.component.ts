@@ -41,7 +41,6 @@ export class AddTravelComponent implements OnInit {
     price: 0,
     maxParticipantsNumber: 0,
     travelType: TravelType.NESSUNO,
-    numeroStelle: 0,
     latitude: 0,
     longitude: 0
   };
@@ -169,7 +168,6 @@ export class AddTravelComponent implements OnInit {
       price: 0,
       maxParticipantsNumber: 0,
       travelType: TravelType.NESSUNO,
-      numeroStelle: 0,
       latitude: 0,
       longitude: 0
     };

@@ -11,7 +11,6 @@ export interface Travel {
   price: number;
   maxParticipantsNumber: number;
   travelType: TravelType;
-  numeroStelle: number;
   latitude: number;
   longitude: number;
 }
