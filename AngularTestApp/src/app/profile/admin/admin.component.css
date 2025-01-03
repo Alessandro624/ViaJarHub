@@ -29,6 +29,18 @@
 }
 
 
+@media (min-width: 992px) {
+  .mostrated {
+    height: 375px;
+  }
+}
+
+.ratedLink {
+  text-decoration: none;
+  color: black;
+
+}
+
 .card-data {
   border: 1px solid #E9E9E9;
   background-color: #F5F5F5;
