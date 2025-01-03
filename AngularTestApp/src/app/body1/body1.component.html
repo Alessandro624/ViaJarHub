@@ -1,7 +1,7 @@
 <app-carousel></app-carousel>
 
 <div class="container my-5">
-  <app-filtri [filters]="filters" [alertMessage]="alertMessage" [isLoading]="isLoading"
+  <app-filtri [filters]="filters" [alertMessage]="alertMessage" [isLoading]="isLoading" [maxPrice]="maxPrice"
               (loadTravel)="loadTravels(0)"></app-filtri>
 
   <div class="my-3 d-flex justify-content-end">
