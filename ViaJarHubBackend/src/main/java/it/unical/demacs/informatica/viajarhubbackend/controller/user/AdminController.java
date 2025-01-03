@@ -3,6 +3,7 @@ package it.unical.demacs.informatica.viajarhubbackend.controller.user;
 
 import it.unical.demacs.informatica.viajarhubbackend.exception.UserNotFoundException;
 import it.unical.demacs.informatica.viajarhubbackend.model.User;
+import it.unical.demacs.informatica.viajarhubbackend.service.IEmailService;
 import it.unical.demacs.informatica.viajarhubbackend.service.IUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,11 @@ import java.util.List;
 @RequestMapping("/api/admin/v1")
 public class AdminController {
     private final IUserService userService;
+    private final IEmailService emailService;
 
-    public AdminController(IUserService userService) {
+    public AdminController(IUserService userService, IEmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @RequestMapping(value = "/emails", method = RequestMethod.GET)
@@ -34,6 +37,7 @@ public class AdminController {
             if (updatedUser == null) {
                 return ResponseEntity.badRequest().build();
             }
+            this.emailService.sendAdminConfirmationEmail(email, updatedUser.getFirstName(), updatedUser.getLastName());
             return ResponseEntity.ok().build();
         } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build();

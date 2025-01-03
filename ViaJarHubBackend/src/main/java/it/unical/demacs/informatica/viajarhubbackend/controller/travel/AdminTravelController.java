@@ -68,6 +68,12 @@ public class AdminTravelController extends TravelController {
     }
 
     @Override
+    @RequestMapping(value = "/max-price", method = RequestMethod.GET)
+    public ResponseEntity<Double> getMaxPrice() {
+        return super.getMaxPrice();
+    }
+
+    @Override
     @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createTravel(@RequestPart Travel travel, @RequestParam List<MultipartFile> travelImages) {
         return super.createTravel(travel, travelImages);
