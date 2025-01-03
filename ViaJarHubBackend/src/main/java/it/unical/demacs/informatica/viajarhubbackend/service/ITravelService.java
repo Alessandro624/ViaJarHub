@@ -34,4 +34,18 @@ public interface ITravelService {
     int getAvailableSeats(Long id, LocalDate startDate, LocalDate endDate);
 
     List<Travel> getReviewableBooking(String username);
+
+    List<Travel> getMostRated();
+
+    Integer[] getTravelNumber();
+
+    Double[] getDailyIncome();
+
+    Double[] getMonthlyIncome();
+
+    Double[] getAllIncome();
+
+    Double[] getAnnualIncome();
+
+    Integer[] getMonthlyBooking(int mese);
 }

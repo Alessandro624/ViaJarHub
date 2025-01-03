@@ -32,4 +32,18 @@ public interface TravelDAO {
     List<Travel> findAllReviewable(String email);
 
     List<Travel> findAllByUserBooking(String email);
+
+    List<Travel> getMostRated();
+
+    int getTravelNumber();
+
+    Double getDailyIncome();
+
+    Double getMonthly();
+
+    Double getAllIncome();
+
+    Double getAnnualIncome();
+
+    Integer getMonthlyBooking(int mese);
 }

@@ -46,6 +46,58 @@ public class TravelService implements ITravelService {
     }
 
     @Override
+    public List<Travel> getMostRated() {
+        return travelDAO.getMostRated();
+    }
+
+    @Override
+    public Integer[] getTravelNumber() {
+        Integer[] num=new Integer[1];
+        num[0]=travelDAO.getTravelNumber();
+        return num;
+
+    }
+
+    @Override
+    public Double[] getDailyIncome() {
+        Double[] num=new Double[1];
+        num[0]=travelDAO.getDailyIncome();
+        return num;
+
+    }
+
+    @Override
+    public Double[] getMonthlyIncome() {
+        Double[] num=new Double[1];
+        num[0]=travelDAO.getMonthly();
+        return num;
+    }
+
+    @Override
+    public Double[] getAllIncome() {
+        Double[] num=new Double[1];
+        num[0]=travelDAO.getAllIncome();
+        return num;
+
+    }
+
+    @Override
+    public Double[] getAnnualIncome() {
+        Double[] num=new Double[1];
+        num[0]=travelDAO.getAnnualIncome();
+        return num;
+
+    }
+
+    @Override
+    public Integer[] getMonthlyBooking(int mese) {
+        System.out.println(mese);
+        Integer[] num=new Integer[1];
+        num[0]=travelDAO.getMonthlyBooking(mese);
+        return num;
+    }
+
+    @Override
     public Optional<Travel> findById(Long id, boolean isAdmin) {
         Travel travel = travelDAO.findById(id, !isAdmin ? LocalDate.now() : null);
         if (travel == null) {

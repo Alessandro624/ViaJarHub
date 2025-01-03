@@ -178,4 +178,25 @@ public abstract class TravelController {
             return ResponseEntity.internalServerError().build();
         }
     }
+    public ResponseEntity<List<Travel>>  getMostRated(){
+        try {
+
+            return ResponseEntity.ok(travelService.getMostRated());
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    protected ResponseEntity<Integer[]> getTravelNumber() {
+        try {
+
+            return ResponseEntity.ok(travelService.getTravelNumber());
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
