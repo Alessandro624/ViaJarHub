@@ -93,7 +93,18 @@ public class EmailService implements IEmailService {
             sendTemplateEmail(admin.getEmail(), subject, templatePath, placeholders);
         }
     }
-    
+
+    @Override
+    public void sendAdminConfirmationEmail(String email, String firstName, String lastName) {
+        String templatePath = "templates/admin-confirmation-email.html";
+        Map<String, String> placeholders = Map.of(
+                "lastName", lastName,
+                "firstName", firstName,
+                "logoCid", "logo"
+        );
+        sendTemplateEmail(email, "Il tuo ruolo è stato aggiornato a Amministratore", templatePath, placeholders);
+    }
+
     private void sendTemplateEmail(String to, String subject, String templatePath, Map<String, String> placeholders) {
         try {
             String template = new String(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(templatePath)).readAllBytes());

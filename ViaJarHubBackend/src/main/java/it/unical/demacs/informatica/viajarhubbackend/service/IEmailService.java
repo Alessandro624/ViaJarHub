@@ -10,4 +10,6 @@ public interface IEmailService {
     void sendPaymentConfirmationEmail(String email, String destination, String participantsNumber, String startDate, String endDate, String total);
 
     void sendContactEmail(String from, String subject, String body);
+
+    void sendAdminConfirmationEmail(String email, String firstName, String lastName);
 }
