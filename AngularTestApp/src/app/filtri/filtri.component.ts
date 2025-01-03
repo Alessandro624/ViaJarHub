@@ -1,10 +1,9 @@
-import {Component, EventEmitter, input, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {NgxSliderModule, Options, LabelType} from '@angular-slider/ngx-slider';
 import {TravelFilter} from '../models/travel/travel-filter.model';
 import {TravelType} from '../models/travel/travel-type.enum';
-import {type} from 'node:os';
 
 @Component({
   selector: 'app-filtri',
@@ -17,12 +16,12 @@ import {type} from 'node:os';
   templateUrl: './filtri.component.html',
   styleUrls: ['./filtri.component.css']
 })
-export class FiltriComponent implements OnChanges {
+export class FiltriComponent implements OnChanges, OnInit {
+  @Input() maxPrice!: number;
   @Input() filters!: TravelFilter;
   @Output() loadTravel = new EventEmitter<void>();
   @Input() alertMessage!: string;
   @Input() isLoading!: boolean;
-
   travelTypes: TravelType[] = Object.values(TravelType).filter(type => type !== TravelType.NESSUNO);
   isExpanded: boolean = false;
   minValue: number = 0;
@@ -54,13 +53,10 @@ export class FiltriComponent implements OnChanges {
   type: TravelType = TravelType.NESSUNO;
 
   setSliderOptions() {
-    if (this.maxValue >= this.filters.maxPrice) {
-      this.maxValue = this.filters.maxPrice / 2;
-    }
-    const calculatedTickStep = this.calculateTickStep(this.filters.maxPrice);
+    const calculatedTickStep = this.calculateTickStep(this.maxPrice);
     this.options.tickStep = calculatedTickStep;
     this.options.tickValueStep = calculatedTickStep;
-    this.options.ceil = this.filters.maxPrice;
+    this.options.ceil = this.maxPrice;
   }
 
   calculateTickStep(maxValue: number): number {
@@ -80,7 +76,6 @@ export class FiltriComponent implements OnChanges {
   onStartDateChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const selectedStartDate = input.value;
-
     if (selectedStartDate) {
       this.endDateMin = selectedStartDate;
 
@@ -119,18 +114,16 @@ export class FiltriComponent implements OnChanges {
 
   applyFilters(): void {
     if (this.checkFiltersValidity()) {
-      if (this.checkFiltersValidity()) {
-        this.filters.startDate = this.startDate;
-        this.filters.endDate = this.endDate;
-        this.filters.minPrice = this.minValue;
-        this.filters.maxPrice = this.maxValue;
-        if (this.type === TravelType.NESSUNO) {
-          this.filters.travelType = null;
-        } else {
-          this.filters.travelType = <TravelType>this.type.toUpperCase();
-        }
-        this.loadTravel.emit();
+      this.filters.startDate = this.startDate;
+      this.filters.endDate = this.endDate;
+      this.filters.minPrice = this.minValue;
+      this.filters.maxPrice = this.maxValue === 0 ? 0.1 : this.maxValue;
+      if (this.type === TravelType.NESSUNO) {
+        this.filters.travelType = null;
+      } else {
+        this.filters.travelType = <TravelType>this.type.toUpperCase();
       }
+      this.loadTravel.emit();
     }
   }
 
@@ -170,7 +163,7 @@ export class FiltriComponent implements OnChanges {
     this.endDateMin = this.minDate;
     this.type = TravelType.NESSUNO;
     this.minValue = 0;
-    this.maxValue = 1000;
+    this.maxValue = this.maxPrice;
     this.isLoading = false;
     this.alertMessage = '';
     this.setSliderOptions();
@@ -178,5 +171,9 @@ export class FiltriComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.setSliderOptions();
+  }
+
+  ngOnInit(): void {
+    this.resetFilters();
   }
 }

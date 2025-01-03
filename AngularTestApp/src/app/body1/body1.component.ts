@@ -38,16 +38,13 @@ export class Body1Component implements OnInit {
   alertMessage: string = '';
   isLoading: boolean = false;
   travelOrders: TravelOrder[] = Object.values(TravelOrder);
+  maxPrice: number = 0;
 
   constructor(private _travelService: TravelService, private _authenticationService: AuthenticationService, private _activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this._travelService.getMaxPrice().subscribe({
-      next: data => {
-        this.filters.maxPrice = data;
-      }
-    })
+    this.getMaxPrice();
     this._activatedRoute.queryParams.subscribe(params => {
       const searchQuery = params['search'] || '';
       this.setSearchQuery(searchQuery);
@@ -129,5 +126,14 @@ export class Body1Component implements OnInit {
 
   translateTravelOrder(order: TravelOrder) {
     return <TravelOrder>translateOrder(order);
+  }
+
+  private getMaxPrice() {
+    this._travelService.getMaxPrice().subscribe({
+      next: data => {
+        this.maxPrice = data;
+        this.filters.maxPrice = this.maxPrice;
+      }
+    });
   }
 }
