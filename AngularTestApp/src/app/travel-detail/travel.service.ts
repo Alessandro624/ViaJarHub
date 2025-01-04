@@ -13,8 +13,7 @@ import {UserRole} from '../models/user/user-role.enum';
 export class TravelService {
 
   APIUrl = "api";
-
-
+  
   constructor(private _http: HttpClient, private _authenticationService: AuthenticationService) {
   }
 
@@ -89,7 +88,6 @@ export class TravelService {
     );
   }
 
-
   getMaxPrice(): Observable<number> {
     return this.checkUserAuthority().pipe(
       switchMap(user =>
@@ -104,7 +102,6 @@ export class TravelService {
   getMostRated(): Observable<Travel[]> {
     return this.checkUserAuthority().pipe(
       switchMap(user =>
-
         this._http.get<Travel[]>(
           `${this.APIUrl}/${this.getAPIType(user)}/v1/most-rated`
         )
@@ -113,11 +110,10 @@ export class TravelService {
     );
   }
 
-  getTravelNumber(): Observable<number[]> {
+  getTravelNumber(): Observable<number> {
     return this.checkUserAuthority().pipe(
       switchMap(user =>
-
-        this._http.get<number[]>(
+        this._http.get<number>(
           `${this.APIUrl}/${this.getAPIType(user)}/v1/all-travel-number`
         )
       ),
@@ -134,6 +130,12 @@ export class TravelService {
       ),
       catchError(this.handleError)
     );
+  }
+
+  getAvailableSeats(travel: Travel) {
+    return this._http.post<number>(`${this.APIUrl}/open/v1/available-seats`, travel).pipe(
+      catchError(this.handleError)
+    )
   }
 
   updateTravel(id: number, travel: Travel, images: File[]) {
@@ -170,11 +172,5 @@ export class TravelService {
         errorMessage = 'Si è verificato un errore, riprovare più tardi';
     }
     return throwError(() => new Error(errorMessage));
-  }
-
-  getAvailableSeats(travel: Travel) {
-    return this._http.post<number>(`${this.APIUrl}/open/v1/available-seats`, travel).pipe(
-      catchError(this.handleError)
-    )
   }
 }

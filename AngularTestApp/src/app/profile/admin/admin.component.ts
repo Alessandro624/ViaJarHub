@@ -14,7 +14,6 @@ import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.compone
 import {TravelService} from '../../travel-detail/travel.service';
 import {Travel} from '../../models/travel/travel.model';
 import {StarComponent} from '../../star/star.component';
-import {RouterLink} from '@angular/router';
 import {PaymentService} from '../../payment/payment.service';
 
 @Component({
@@ -30,8 +29,7 @@ import {PaymentService} from '../../payment/payment.service';
     NgIf,
     MakeAdminModalComponent,
     ReviewmodalComponent,
-    StarComponent,
-    RouterLink
+    StarComponent
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
@@ -81,7 +79,9 @@ export class AdminComponent implements OnInit {
   mostRated: Travel[] = [];
   starRatings: Map<number, number> = new Map();
   numTravel = 0;
-
+  isPopupVisible4: boolean = false;
+  selectReview: Review | null = null;
+  maxVal: number = 0;
 
   constructor(@Inject(NgZone) private ngZone: NgZone, private _clientService: ClientService, private _authenticationService: AuthenticationService, private reviewService: ReviewService, private travelService: TravelService, private paymentService: PaymentService) {
   }
@@ -90,68 +90,15 @@ export class AdminComponent implements OnInit {
     this.setUser();
     this.showProfileImage();
     this.showBirthdate();
-
-    this.reviewService.getAllReviews().subscribe({
-      next: data => {
-        this.reviews = data.reverse();
-        this.numrec = this.reviews.length;
-        this.aggiornaRecensioniVisibili();
-      }
-    })
-
-    this.travelService.getMostRated().subscribe({
-      next: data => {
-        this.mostRated = data.reverse();
-        this.calculateStars();
-
-      }, error: err => console.log(err)
-    })
-    this.travelService.getTravelNumber().subscribe({
-      next: data => {
-        console.log("mfasf" + data[0]);
-        this.numTravel = data[0];
-      }, error: err => console.log(err)
-    })
-    this.paymentService.getDailyIncome().subscribe({
-      next: data => {
-        this.finalDailyIncome = data[0];
-        this.animateValue('dailyIncome', this.finalDailyIncome);
-      }
-    })
-    this.paymentService.getMonthlyIncome().subscribe({
-      next: data => {
-        this.finalMonthlyIncome = data[0];
-        this.animateValue('monthlyIncome', this.finalMonthlyIncome);
-      }
-    })
-    this.paymentService.getAllIncome().subscribe({
-      next: data => {
-        this.finalTotalIncome = data[0];
-        this.animateValue('totalIncome', this.finalTotalIncome);
-      }
-    })
-    this.paymentService.getAnnualIncome().subscribe({
-      next: data => {
-        this.finalYearlyIncome = data[0];
-        this.animateValue('yearlyIncome', this.finalYearlyIncome);
-      }
-    })
+    this.getReviews();
+    this.getMostRated();
+    this.getTravelNumber();
+    this.getDailyIncome();
+    this.getMonthlyIncome();
+    this.getAnnualIncome();
+    this.getAllIncome();
     this.fetchMonthlyBookings();
 
-  }
-
-  fetchMonthlyBookings() {
-    for (let month = 1; month <= 12; month++) {
-      this.paymentService.getMonthlyBooking(month).subscribe({
-        next: booking => {
-          this.data[month - 1].value = booking[0];
-          console.log("msee" + booking[0]);
-          if (month === 12) {
-            this.initializeAnimation();
-          }
-        }, error: err => console.log(err)
-      });
-    }
   }
 
   private setUser() {
@@ -182,31 +129,96 @@ export class AdminComponent implements OnInit {
       error: error => {
         console.log(error);
       }
-    })
+    });
   }
 
-  openPopup() {
-    this.isPopupVisible = true;
+  private getReviews() {
+    this.reviewService.getAllReviews().subscribe({
+      next: data => {
+        this.reviews = data.reverse();
+        this.numrec = this.reviews.length;
+        this.aggiornaRecensioniVisibili();
+      }
+    });
   }
 
-  closePopup() {
-    this.isPopupVisible = false;
-    this.addTravelComponent?.resetData();
+  private getMostRated() {
+    this.travelService.getMostRated().subscribe({
+      next: data => {
+        this.mostRated = data.reverse();
+        this.calculateStars();
+
+      }, error: err => console.log(err)
+    });
+  }
+
+  private getTravelNumber() {
+    this.travelService.getTravelNumber().subscribe({
+      next: data => {
+        this.numTravel = data;
+      }, error: err => console.log(err)
+    });
+  }
+
+  private fetchMonthlyBookings() {
+    for (let month = 1; month <= 12; month++) {
+      this.paymentService.getMonthlyBooking(month).subscribe({
+        next: booking => {
+          this.data[month - 1].value = booking;
+          console.log("msee" + booking);
+          if (month === 12) {
+            this.initializeAnimation();
+          }
+        }, error: err => console.log(err)
+      });
+    }
+  }
+
+  private getDailyIncome() {
+    this.paymentService.getDailyIncome().subscribe({
+      next: data => {
+        this.finalDailyIncome = data;
+        this.animateValue('dailyIncome', this.finalDailyIncome);
+      }
+    });
+  }
+
+  private getMonthlyIncome() {
+    this.paymentService.getMonthlyIncome().subscribe({
+      next: data => {
+        this.finalMonthlyIncome = data;
+        this.animateValue('monthlyIncome', this.finalMonthlyIncome);
+      }
+    });
+  }
+
+  private getAnnualIncome() {
+    this.paymentService.getAnnualIncome().subscribe({
+      next: data => {
+        this.finalYearlyIncome = data;
+        this.animateValue('yearlyIncome', this.finalYearlyIncome);
+      }
+    });
+  }
+
+  private getAllIncome() {
+    this.paymentService.getAllIncome().subscribe({
+      next: data => {
+        this.finalTotalIncome = data;
+        this.animateValue('totalIncome', this.finalTotalIncome);
+      }
+    });
   }
 
   // Metodo per inizializzare l'animazione
-  initializeAnimation(): void {
+  private initializeAnimation(): void {
     this.maxVal = Math.max(...this.data.map(d => d.value));
     this.animatedData = this.data.map(() => 0); // Inizializza tutti i valori a 0
     this.animateBars();
   }
 
   // Animazione incrementale dei valori
-  isPopupVisible4: boolean = false;
-  selectReview: Review | null = null;
-  maxVal: number = 0;
-
-  animateBars(): void {
+  private animateBars(): void {
     const duration = 2000;
     const steps = 60;
     const interval = duration / steps;
@@ -231,14 +243,11 @@ export class AdminComponent implements OnInit {
     const duration = 2000; // Durata dell'animazione in millisecondi
     let steps = 60; // Numero di frame dell'animazione
     const interval = duration / steps; // Intervallo tra ogni frame
-
     if (finalValue < steps) {
       steps = finalValue; // Imposta gli step al valore finale se è minore di 60
     }
-
     const increment = Math.floor(finalValue / steps);
     let currentStep = 0;
-
     const intervalId = this.ngZone.runOutsideAngular(() => setInterval(() => {
       if (currentStep >= steps || this[property] + increment >= finalValue) {
         clearInterval(intervalId);
@@ -247,58 +256,20 @@ export class AdminComponent implements OnInit {
         });
         return;
       }
-
       this.ngZone.run(() => {
         this[property] = Math.min(this[property] + increment, finalValue);
       });
-
       currentStep++;
     }, interval));
   }
 
-
-  lessReview() {
-    if (this.startIndex - this.step >= 0) {
-      this.startIndex -= this.step;
-      this.aggiornaRecensioniVisibili();
-    }
-  }
-
-  moreReview() {
-    if (this.startIndex + this.step < this.reviews.length) {
-      this.startIndex += this.step;
-      this.aggiornaRecensioniVisibili();
-    }
-  }
-
-  aggiornaRecensioniVisibili() {
+  private aggiornaRecensioniVisibili() {
     this.recensioniVisibili = this.reviews.slice(this.startIndex, this.startIndex + this.step);
     this.loadBtnless = this.startIndex != 0;
     this.loadBtnmore = this.startIndex + this.step < this.reviews.length;
   }
 
-  openPopupMakeAdmin() {
-    this.isMakeAdminVisible = true;
-  }
-
-  closeMakeAdminPopup() {
-    this.isMakeAdminVisible = false;
-  }
-
-  closePopup4() {
-    this.isPopupVisible4 = false;
-
-  }
-
-  openPopup4(review: Review) {
-    this.isPopupVisible4 = true;
-    this.selectReview = review;
-
-  }
-
-  calculateStars(): void {
-    console.log("proaroroa")
-
+  private calculateStars(): void {
     this.mostRated.forEach((travel) => {
       this.travelService.getStars(travel.id).subscribe({
         next: (rating: number) => {
@@ -316,4 +287,43 @@ export class AdminComponent implements OnInit {
     return this.starRatings.get(id) || 0;
   }
 
+  lessReview() {
+    if (this.startIndex - this.step >= 0) {
+      this.startIndex -= this.step;
+      this.aggiornaRecensioniVisibili();
+    }
+  }
+
+  moreReview() {
+    if (this.startIndex + this.step < this.reviews.length) {
+      this.startIndex += this.step;
+      this.aggiornaRecensioniVisibili();
+    }
+  }
+
+  openPopup() {
+    this.isPopupVisible = true;
+  }
+
+  closePopup() {
+    this.isPopupVisible = false;
+    this.addTravelComponent?.resetData();
+  }
+
+  openPopupMakeAdmin() {
+    this.isMakeAdminVisible = true;
+  }
+
+  closeMakeAdminPopup() {
+    this.isMakeAdminVisible = false;
+  }
+
+  closePopup4() {
+    this.isPopupVisible4 = false;
+  }
+
+  openPopup4(review: Review) {
+    this.isPopupVisible4 = true;
+    this.selectReview = review;
+  }
 }

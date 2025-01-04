@@ -1,6 +1,5 @@
 <div class="container my-5">
   <!-- Header Section -->
-
   <!-- Colonna Profilo -->
   <div class="card p-4 ">
     <div class="row justify-content-between">
@@ -16,14 +15,14 @@
         </div>
         <!-- User Info -->
         <div class="d-flex flex-column">
-
           <div class="d-flex align-items-center">
             <h4 class="mb-1 me-2">{{ user?.firstName }} {{ user?.lastName }}</h4>
             <button class="btn btn-primary me-2" (click)="openPopup()">
               Aggiungi
             </button>
             <button class="btn btn-primary me-0" (click)="openPopupMakeAdmin()">
-              +Admin
+              <i class="fa fa-user-shield fa-xl me-2"></i>
+              <span>+ Admin</span>
             </button>
           </div>
           <p class="text-muted mb-0">Admin</p>
@@ -42,10 +41,8 @@
       </div>
     </div>
   </div>
-
   <app-make-admin-modal [isMakeAdminVisible]="isMakeAdminVisible"
                         (closeMakeAdminPopup)="closeMakeAdminPopup()"></app-make-admin-modal>
-
   <!--Pop up page-->
   <div class="modal fade" [ngClass]="{'show': isPopupVisible}"
        [ngStyle]="{'display': isPopupVisible ? 'block' : 'none'}" tabindex="-1">
@@ -62,7 +59,6 @@
       </div>
     </div>
   </div>
-
   <!-- Skills and Stats Section -->
   <div class="row mt-4 mb-3">
     <!-- Skills -->
@@ -111,7 +107,6 @@
       </div>
     </div>
   </div>
-
   <div class="row ">
     <!-- Favorite Food -->
     <div class="col-xl-6 mt-2 mb-4">
@@ -122,15 +117,12 @@
           </div>
           @if (this.loadBtnless) {
             <div class="col-2 ">
-
               <button (click)="lessReview()" class="btn btn-primary btn-sm">
                 <i class="fa-solid fa-minus "></i>
-
               </button>
             </div>
           }
         </div>
-
         <div *ngFor="let review of recensioniVisibili"
              class="review-container flex-grow-1 d-flex flex-column justify-content-center">
           <app-review [review]="review" (click)="openPopup4(review)"></app-review>
@@ -182,6 +174,5 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>

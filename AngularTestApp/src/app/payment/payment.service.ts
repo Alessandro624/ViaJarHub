@@ -40,26 +40,23 @@ export class PaymentService {
   }
 
   getDailyIncome() {
-    return this.http.get<number[]>(`${this.APIUrl}/admin/v1/daily-income`).pipe();
-
+    return this.http.get<number>(`${this.APIUrl}/admin/v1/daily-income`).pipe();
   }
 
   getMonthlyIncome() {
-    return this.http.get<number[]>(`${this.APIUrl}/admin/v1/monthly-income`).pipe();
-
+    return this.http.get<number>(`${this.APIUrl}/admin/v1/monthly-income`).pipe();
   }
 
   getAnnualIncome() {
-    return this.http.get<number[]>(`${this.APIUrl}/admin/v1/annual-income`).pipe();
-
+    return this.http.get<number>(`${this.APIUrl}/admin/v1/annual-income`).pipe();
   }
 
   getAllIncome() {
-    return this.http.get<number[]>(`${this.APIUrl}/admin/v1/all-income`).pipe();
+    return this.http.get<number>(`${this.APIUrl}/admin/v1/all-income`).pipe();
 
   }
 
   getMonthlyBooking(mese: number) {
-    return this.http.get<number[]>(`${this.APIUrl}/admin/v1/get-monthly-booking?month=${mese}`).pipe()
+    return this.http.get<number>(`${this.APIUrl}/admin/v1/get-monthly-booking?month=${mese}`).pipe()
   }
 }
