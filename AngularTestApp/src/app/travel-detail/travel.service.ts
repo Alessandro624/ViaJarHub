@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Travel} from '../models/travel/travel.model';
+
 import {catchError, Observable, switchMap, throwError} from 'rxjs';
 import {TravelFilter} from '../models/travel/travel-filter.model';
 import {AuthenticationService} from '../login/authentication.service';
@@ -88,11 +89,36 @@ export class TravelService {
     );
   }
 
+
   getMaxPrice(): Observable<number> {
     return this.checkUserAuthority().pipe(
       switchMap(user =>
         this._http.get<number>(
           `${this.APIUrl}/${this.getAPIType(user)}/v1/max-price`
+        )
+      ),
+      catchError(this.handleError)
+    );
+  }
+
+  getMostRated(): Observable<Travel[]> {
+    return this.checkUserAuthority().pipe(
+      switchMap(user =>
+
+        this._http.get<Travel[]>(
+          `${this.APIUrl}/${this.getAPIType(user)}/v1/most-rated`
+        )
+      ),
+      catchError(this.handleError)
+    );
+  }
+
+  getTravelNumber(): Observable<number[]> {
+    return this.checkUserAuthority().pipe(
+      switchMap(user =>
+
+        this._http.get<number[]>(
+          `${this.APIUrl}/${this.getAPIType(user)}/v1/all-travel-number`
         )
       ),
       catchError(this.handleError)

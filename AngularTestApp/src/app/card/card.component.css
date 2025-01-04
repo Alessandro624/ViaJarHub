@@ -63,9 +63,9 @@ a {
   }
 }
 
-@media (min-width: 993px) {
+@media (min-width: 992px) {
   .card-img-top {
-    height: 215px; /* Altezza originale */
+    height: 225px; /* Altezza originale */
   }
 
   .card-text {
@@ -74,7 +74,7 @@ a {
   }
 
   .card {
-    height: 400px;
+    height: 410px;
   }
 }
 

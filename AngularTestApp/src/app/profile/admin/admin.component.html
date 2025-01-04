@@ -1,9 +1,10 @@
 <div class="container my-5">
   <!-- Header Section -->
+
   <!-- Colonna Profilo -->
   <div class="card p-4 ">
     <div class="row justify-content-between">
-      <div class="col-6 d-flex align-items-center">
+      <div class="col-6  d-flex align-items-center ">
         <!-- Profile Image -->
         <div *ngIf="profileImageUrl">
           <img [src]="profileImageUrl" alt="Profile Picture"
@@ -15,13 +16,14 @@
         </div>
         <!-- User Info -->
         <div class="d-flex flex-column">
+
           <div class="d-flex align-items-center">
             <h4 class="mb-1 me-2">{{ user?.firstName }} {{ user?.lastName }}</h4>
             <button class="btn btn-primary me-2" (click)="openPopup()">
               Aggiungi
             </button>
-            <button class="btn btn-primary" (click)="openPopupMakeAdmin()">
-              Rendi Admin
+            <button class="btn btn-primary me-0" (click)="openPopupMakeAdmin()">
+              +Admin
             </button>
           </div>
           <p class="text-muted mb-0">Admin</p>
@@ -30,18 +32,20 @@
           </small>
         </div>
       </div>
-      <div class="col-lg-6 col-12">
-        <div class="row">
+      <div class="col-lg-6 col-12 ">
+        <div class="row justify-content-around">
           <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Viaggi disponibili:</h5>
-            <p class="fs-4">120</p></div>
+            <p class="fs-4">{{ numTravel }}</p></div>
           <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Recensioni effettuate:</h5>
-            <p class="fs-4">20</p></div>
+            <p class="fs-4">{{ numrec }}</p></div>
         </div>
       </div>
     </div>
   </div>
+
   <app-make-admin-modal [isMakeAdminVisible]="isMakeAdminVisible"
                         (closeMakeAdminPopup)="closeMakeAdminPopup()"></app-make-admin-modal>
+
   <!--Pop up page-->
   <div class="modal fade" [ngClass]="{'show': isPopupVisible}"
        [ngStyle]="{'display': isPopupVisible ? 'block' : 'none'}" tabindex="-1">
@@ -58,25 +62,24 @@
       </div>
     </div>
   </div>
+
   <!-- Skills and Stats Section -->
   <div class="row mt-4 mb-3">
     <!-- Skills -->
     <div class="col-lg-6 mb-4">
-      <div class="card p-3 mb-2 shadow-sm">
+      <div class="card p-3 mb-2 shadow-sm mostrated">
         <h5 class="fw-bold  mb-3">Viaggi più votati</h5>
-        <div class="card-data  m-3 mb-2" *ngFor="let card of [1, 2, 3]">
-          <div class="row">
-            <div class="col mx-2">
-              <h5 class="card-title  mt-2 mb-1 fw-bold">Nome del Prodotto</h5>
-              <div class="mb-2">
-                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-                <span class="star"><i class="fa-solid fa-star fa-xs"></i></span>
-                <span class="star"><i class="fa-solid fa-star-half fa-xs"></i></span>
+        <div class="card-data  m-3 mb-2" *ngFor="let travel of mostRated">
+          <a href="../body1/{{travel.id}}" class="ratedLink">
+            <div class="row">
+              <div class="col mx-2">
+                <h5 class="card-title  mt-2 mb-1 fw-bold">{{ travel.destination }}</h5>
+                <div class="mb-2">
+                  <app-star [rating]="getStar(travel.id)"/>
+                </div>
               </div>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -108,6 +111,7 @@
       </div>
     </div>
   </div>
+
   <div class="row ">
     <!-- Favorite Food -->
     <div class="col-xl-6 mt-2 mb-4">
@@ -118,6 +122,7 @@
           </div>
           @if (this.loadBtnless) {
             <div class="col-2 ">
+
               <button (click)="lessReview()" class="btn btn-primary btn-sm">
                 <i class="fa-solid fa-minus "></i>
 
@@ -125,9 +130,10 @@
             </div>
           }
         </div>
+
         <div *ngFor="let review of recensioniVisibili"
              class="review-container flex-grow-1 d-flex flex-column justify-content-center">
-          <app-review [review]="review"></app-review>
+          <app-review [review]="review" (click)="openPopup4(review)"></app-review>
         </div>
         @if (this.loadBtnmore) {
           <div class="row justify-content-end mt-0">
@@ -150,7 +156,8 @@
             <div *ngFor="let bar of animatedData; let i = index" class="text-center">
               <!-- Contenitore della barra per garantire che parta dal basso -->
               <div class="bar-container" style="height: 200px;">
-                <div class="bar bg-primary mx-auto" [style.height]="bar + 'px'" [attr.title]="'Valore: ' + bar"></div>
+                <div class="bar bg-primary mx-auto" [style.height]="(bar/maxVal  * 100) + '%'"
+                     [attr.title]="'Valore: ' + bar"></div>
               </div>
               <!-- Etichetta sotto la barra -->
               <small class="d-block mt-2">{{ data[i].label }}</small>
@@ -159,5 +166,22 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" [ngClass]="{'show': isPopupVisible4}"
+         [ngStyle]="{'display': isPopupVisible4 ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Recensione</h5>
+            <button type="button" class="btn-close" (click)="closePopup4()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body shadow-lg ">
+            <!-- Contenuto del modale -->
+            <app-reviewmodal (closeModal)="closePopup4()" [review]="selectReview"
+                             [isOpen]="isPopupVisible4"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

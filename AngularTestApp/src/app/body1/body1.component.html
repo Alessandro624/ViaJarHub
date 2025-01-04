@@ -33,7 +33,7 @@
     </div>
   }
   @if (index < elementiTot && travelsMatrix.length != 0) {
-    <button type="button" class="btn btn-primary" (click)="loadTravels(this.index)" [disabled]="isLoading">
+    <button type="button" class="btn btn-primary mt-2" (click)="loadTravels(this.index)" [disabled]="isLoading">
       <span *ngIf="isLoading"
             class="spinner-border spinner-border-sm"
             role="status"
