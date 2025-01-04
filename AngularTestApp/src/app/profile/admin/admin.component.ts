@@ -35,13 +35,11 @@ export class AdminComponent implements OnInit {
   finalMonthlyIncome = 102;
   finalYearlyIncome = 102;
   finalTotalIncome = 102;
-
   // Valori animati
   dailyIncome = 0;
   monthlyIncome = 0;
   yearlyIncome = 0;
   totalIncome = 0;
-
   data = [
     {label: 'Gen', value: 120},
     {label: 'Feb', value: 80},
@@ -77,12 +75,7 @@ export class AdminComponent implements OnInit {
     this.showBirthdate();
     this.initializeAnimation();
     this.animateValues();
-    this.reviewService.getAllReviews().subscribe({
-      next: data => {
-        this.reviews = data.reverse();
-        this.aggiornaRecensioniVisibili();
-      }
-    })
+    this.loadReviews();
   }
 
   private setUser() {
@@ -116,31 +109,26 @@ export class AdminComponent implements OnInit {
     })
   }
 
-  openPopup() {
-    this.isPopupVisible = true;
+  private loadReviews() {
+    this.reviewService.getAllReviews().subscribe({
+      next: data => {
+        this.reviews = data.reverse();
+        this.aggiornaRecensioniVisibili();
+      }
+    });
   }
 
-  closePopup() {
-    this.isPopupVisible = false;
-    this.addTravelComponent?.resetData();
-  }
-
-  // Metodo per inizializzare l'animazione
-  initializeAnimation(): void {
+  private initializeAnimation(): void {
     this.animatedData = this.data.map(() => 0); // Inizializza tutti i valori a 0
     this.animateBars();
   }
 
-  // Animazione incrementale dei valori
-  animateBars(): void {
+  private animateBars(): void {
     const duration = 2000; // Durata totale dell'animazione in millisecondi
     const steps = 60; // Numero di frame dell'animazione
     const interval = duration / steps; // Intervallo tra ogni frame
-
     const increments = this.data.map(bar => bar.value / steps); // Incremento per ogni barra
-
     let currentStep = 0;
-
     const intervalId = this.ngZone.runOutsideAngular(() => setInterval(() => {
       if (currentStep >= steps) {
         clearInterval(intervalId); // Ferma l'animazione quando completa
@@ -149,30 +137,25 @@ export class AdminComponent implements OnInit {
         });
         return;
       }
-
       this.ngZone.run(() => {
         this.animatedData = this.animatedData.map((value, index) =>
           Math.min(value + increments[index], this.data[index].value)
         );
       });
-
       currentStep++;
     }, interval));
   }
 
-  animateValues(): void {
+  private animateValues(): void {
     const duration = 2000; // Durata dell'animazione in millisecondi
     const steps = 60; // Numero di frame
     const interval = duration / steps;
-
     // Calcola gli incrementi per ciascun valore
     const dailyIncrement = this.finalDailyIncome / steps;
     const monthlyIncrement = this.finalMonthlyIncome / steps;
     const yearlyIncrement = this.finalYearlyIncome / steps;
     const totalIncrement = this.finalTotalIncome / steps;
-
     let currentStep = 0;
-
     const intervalId = this.ngZone.runOutsideAngular(() => setInterval(() => {
       if (currentStep >= steps) {
         // Ferma l'animazione e imposta i valori finali
@@ -185,7 +168,6 @@ export class AdminComponent implements OnInit {
         });
         return;
       }
-
       // Aggiorna i valori incrementandoli
       this.ngZone.run(() => {
         this.dailyIncome += dailyIncrement;
@@ -199,9 +181,17 @@ export class AdminComponent implements OnInit {
         this.yearlyIncome = Math.round(this.yearlyIncome);
         this.totalIncome = Math.round(this.totalIncome);
       });
-
       currentStep++;
     }, interval));
+  }
+
+  openPopup() {
+    this.isPopupVisible = true;
+  }
+
+  closePopup() {
+    this.isPopupVisible = false;
+    this.addTravelComponent?.resetData();
   }
 
   lessReview() {
@@ -218,7 +208,7 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  aggiornaRecensioniVisibili() {
+  private aggiornaRecensioniVisibili() {
     this.recensioniVisibili = this.reviews.slice(this.startIndex, this.startIndex + this.step);
     this.loadBtnless = this.startIndex != 0;
     this.loadBtnmore = this.startIndex + this.step < this.reviews.length;

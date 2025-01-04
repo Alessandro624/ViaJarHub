@@ -7,13 +7,8 @@
           <i class="fa-solid fa-plus"></i> Scopri i viaggi
         </button>
       </div>
-
-
     </div>
-
   } @else {
-
-
     <form>
       <!-- Dropdown -->
       <div class="mb-3">
@@ -23,8 +18,7 @@
             type="button"
             id="dropdownMenuButton"
             data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
+            aria-expanded="false">
             {{ selectedOption?.destination || 'Seleziona un tipo' }}
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -35,31 +29,27 @@
           </ul>
         </div>
       </div>
-
       <!-- Selezione stelle -->
       <div class="mb-3">
         <label class="form-label fw-bold">Voto: {{ rating }}</label>
         <div class="rating">
-  <span class="star" [ngClass]="{'filled': rating >= 1}" (click)="rate(1)">
-    <i class="fa-solid fa-star"></i>
-  </span>
+          <span class="star" [ngClass]="{'filled': rating >= 1}" (click)="rate(1)">
+            <i class="fa-solid fa-star"></i>
+          </span>
           <span class="star" [ngClass]="{'filled': rating >= 2}" (click)="rate(2)">
-    <i class="fa-solid fa-star"></i>
-  </span>
+            <i class="fa-solid fa-star"></i>
+          </span>
           <span class="star" [ngClass]="{'filled': rating >= 3}" (click)="rate(3)">
-    <i class="fa-solid fa-star"></i>
-  </span>
+            <i class="fa-solid fa-star"></i>
+          </span>
           <span class="star" [ngClass]="{'filled': rating >= 4}" (click)="rate(4)">
-    <i class="fa-solid fa-star"></i>
-  </span>
+            <i class="fa-solid fa-star"></i>
+          </span>
           <span class="star" [ngClass]="{'filled': rating >= 5}" (click)="rate(5)">
-    <i class="fa-solid fa-star"></i>
-  </span>
+            <i class="fa-solid fa-star"></i>
+          </span>
         </div>
-
-
       </div>
-
       <!-- Textarea -->
       <div class="mb-3">
         <label for="comment" class="form-label fw-bold">Commento</label>
@@ -70,35 +60,33 @@
           placeholder="Scrivi un commento..."
           [(ngModel)]="comment"
           name="comment"
-          required
-        ></textarea>
+          required>
+        </textarea>
       </div>
-
       <div class="mb-3">
-        <label for="images" class="form-label">Carica Immagini</label>
+        <label for="reviewImages" class="form-label">Carica Immagini</label>
         <div
           class="drop-area border border-primary p-3 text-center"
           (click)="triggerFileInput()"
           (dragover)="onDragOver($event)"
           (dragleave)="onDragLeave($event)"
           (drop)="onDrop($event)"
-          (input)="imageError = ''; "
-        >
+          (input)="imageError = ''; ">
           <p>Trascina qui le immagini o clicca per selezionarle</p>
           <!-- Input file nascosto -->
           <input
             #fileInput
             type="file"
-            id="images"
+            id="reviewImages"
             class="d-none"
             (change)="onFileSelect($event)"
             accept="image/*"
             multiple
-            (input)="imageError = ''; "
-          />
+            (input)="imageError = ''; "/>
         </div>
         <ul class="mt-2">
           <li class="mb-2" *ngFor="let image of images; let i = index">
+            <img [src]="imagesUrl[i]" alt="Anteprima" class="me-2 preview">
             <span>{{ image.name }}</span>
             <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
           </li>
@@ -106,7 +94,6 @@
         <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
         <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
       </div>
-
       <!-- Pulsante di invio -->
       <button type="submit" class="btn btn-success" (click)="submitForm()" [disabled]="!comment || !selectedOption ">
         Invia

@@ -1,7 +1,7 @@
 import {
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, Inject,
   Input, NgZone, OnChanges,
   Output, SimpleChanges,
   ViewChild
@@ -38,7 +38,7 @@ export class UpdateUserComponent implements OnChanges {
   imageError: string = '';
   profileImageChanged: boolean = false;
 
-  constructor(private _clientService: ClientService, private ngZone: NgZone) {
+  constructor(private _clientService: ClientService, @Inject(NgZone) private ngZone: NgZone) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {

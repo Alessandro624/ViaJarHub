@@ -13,11 +13,9 @@
         name="title"
         required
         placeholder="Titolo"
-        (input)="alertMessage='';"
-      />
+        (input)="alertMessage='';"/>
       <label for="title" class="form-label">Titolo</label>
     </div>
-
     <div class="mb-3 form-check">
       <input
         type="checkbox"
@@ -28,7 +26,6 @@
         (input)="alertMessage='';">
       <label class="form-check-label" for="isCountry">Nazione?</label>
     </div>
-
     <!-- Date Picker: Data di Inizio -->
     <div class="mb-3 form-floating flex-grow-1">
       <input
@@ -42,12 +39,10 @@
         required
         placeholder="Data di Partenza"
         (input)="alertMessage='';"
-        [class.is-invalid]="dateErrors.startDateInvalid"
-      />
+        [class.is-invalid]="dateErrors.startDateInvalid"/>
       <label for="startDate" class="form-label">Data di Partenza</label>
       <div *ngIf="dateErrors.startDateInvalid" class="invalid-feedback d-block">{{ dateErrors.startDateInvalid }}</div>
     </div>
-
     <!-- Date Picker: Data di Fine -->
     <div class="mb-3 form-floating flex-grow-1">
       <input
@@ -61,12 +56,10 @@
         required
         placeholder="Data di Ritorno"
         (input)="alertMessage='';"
-        [class.is-invalid]="dateErrors.endDateInvalid"
-      />
+        [class.is-invalid]="dateErrors.endDateInvalid"/>
       <label for="endDate" class="form-label">Data di Ritorno</label>
       <div *ngIf="dateErrors.endDateInvalid" class="invalid-feedback d-block">{{ dateErrors.endDateInvalid }}</div>
     </div>
-
     <!-- Campo di testo: Prezzo -->
     <div class="mb-3 form-floating flex-grow-1">
       <input
@@ -74,7 +67,7 @@
         step="0.01"
         id="price"
         class="form-control"
-        [(ngModel)]="prezzo"
+        [(ngModel)]="travel.price"
         name="price"
         min="1"
         required
@@ -82,15 +75,13 @@
         (input)="alertMessage='';"/>
       <label for="price" class="form-label">Prezzo</label>
     </div>
-
     <div class="mb-4 form-floating flex-grow-1">
       <input type="number" id="seats"
              class="form-control"
-             [(ngModel)]="numeroposti"
+             [(ngModel)]="travel.maxParticipantsNumber"
              name="seats" min="1" required placeholder="Numero Posti" (input)="alertMessage='';"/>
       <label for="seats" class="form-label">Numero Posti</label>
     </div>
-
     <div class="mb-3 w-100">
       <label for="type" class="form-label">Tipo viaggio</label>
       <div class="btn-group dropdown w-100">
@@ -108,7 +99,6 @@
         </ul>
       </div>
     </div>
-
     <!-- Textarea: Descrizione -->
     <div class="mb-3 form-floating flex-grow-1">
       <textarea
@@ -123,7 +113,6 @@
       </textarea>
       <label for="description" class="form-label">Descrizione</label>
     </div>
-
     <div class="map-container mb-5">
       <label for="title" class="form-label">Destinazione</label>
       <gmp-map [center]="center" [zoom]="zoom" map-id="24dfd8a38027bce5">
@@ -133,18 +122,15 @@
         <gmp-advanced-marker [position]="markerPosition" [draggable]="false"></gmp-advanced-marker>
       </gmp-map>
     </div>
-
     <!-- Drop area per immagini -->
     <div class="mb-3">
       <label for="images" class="form-label">Carica Immagini</label>
-      <div
-        class="drop-area border border-primary p-3 text-center"
-        (click)="triggerFileInput()"
-        (dragover)="onDragOver($event)"
-        (dragleave)="onDragLeave($event)"
-        (drop)="onDrop($event)"
-        (input)="imageError = ''; alertMessage='';"
-      >
+      <div class="drop-area border border-primary p-3 text-center"
+           (click)="triggerFileInput()"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onDrop($event)"
+           (input)="imageError = ''; alertMessage='';">
         <p>Trascina qui le immagini o clicca per selezionarle</p>
         <!-- Input file nascosto -->
         <input
@@ -155,8 +141,7 @@
           (change)="onFileSelect($event)"
           accept="image/*"
           multiple
-          (input)="imageError = ''; alertMessage='';"
-        />
+          (input)="imageError = ''; alertMessage='';"/>
       </div>
       <ul class="mt-2">
         <li class="mb-2" *ngFor="let image of images; let i = index">
@@ -168,14 +153,12 @@
       <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
       <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
     </div>
-
     <!-- Pulsante di invio -->
     <button
       type="submit"
       class="btn btn-success me-2"
       [disabled]="isLoading || form.invalid || images.length === 0 || dateErrors.startDateInvalid || dateErrors.endDateInvalid || travel.travelType === TravelType.NESSUNO">
-      <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
-            aria-hidden="true"></span>
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       <span *ngIf="!isLoading">Invia</span>
     </button>
     <button type="button" class="btn btn-secondary" (click)="resetData()" [disabled]="isLoading">Ripristina</button>

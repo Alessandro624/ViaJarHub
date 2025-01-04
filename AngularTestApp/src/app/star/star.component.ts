@@ -1,4 +1,12 @@
-import {Component, ElementRef, Input, numberAttribute, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  Input,
+  NgZone,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 
 @Component({
@@ -19,8 +27,17 @@ export class StarComponent implements OnChanges {
   hasHalfStar: boolean = false;
   inDetails = false;
 
+  constructor(private elementRef: ElementRef, @Inject(NgZone) private ngZone: NgZone) {
+  }
 
-  constructor(private elementRef: ElementRef) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes) {
+      this.ngZone.runOutsideAngular(() => {
+        this.inDetails = this.isContainedIn('app-infotravel');
+        this.calculateStars();
+        console.log(this.rating);
+      });
+    }
   }
 
   calculateStars(): void {
@@ -41,11 +58,5 @@ export class StarComponent implements OnChanges {
       parent = parent.parentElement;
     }
     return false;
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.inDetails = this.isContainedIn('app-infotravel')
-    this.calculateStars()
-    console.log(this.rating);
   }
 }

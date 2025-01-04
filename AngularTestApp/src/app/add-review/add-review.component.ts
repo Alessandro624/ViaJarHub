@@ -22,9 +22,9 @@ import {RouterLink} from '@angular/router';
   styleUrl: './add-review.component.css'
 })
 export class AddReviewComponent implements OnInit {
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  @Output() closeModal = new EventEmitter<unknown>();//invia evento al padre
+  @Output() closeModal = new EventEmitter<void>();//invia evento al padre
   @Output() reviewAdded = new EventEmitter<Review>();
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   dropdownOptions: Travel[] = [];
   selectedOption: Travel | null = null;
   rating: number = 0
@@ -37,6 +37,10 @@ export class AddReviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadReviewable();
+  }
+
+  private loadReviewable() {
     this.reviewService.reviewable$.subscribe({
       next: (review) => {
         if (review) {
@@ -138,7 +142,6 @@ export class AddReviewComponent implements OnInit {
     this.images.splice(index, 1);
     this.imagesUrl.splice(index, 1);
   }
-
 
   formatDate(date: Date): string {
     const day = String(date.getDate()).padStart(2, '0');

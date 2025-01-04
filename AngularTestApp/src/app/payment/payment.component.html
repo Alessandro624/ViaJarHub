@@ -11,13 +11,9 @@
                step="1" [(ngModel)]="postiSelezionati" (input)="modificaPrezzo()">
       </div>
     </div>
-
-
   } @else {
     <p>Prezzo totale: <strong>{{ prezzo }} €</strong></p>
-
   }
-
   <form>
     <div class="mb-3">
       <label for="cardNumber" class="form-label">Numero di Carta</label>
@@ -27,8 +23,7 @@
         class="form-control"
         [(ngModel)]="cardNumber"
         name="cardNumber"
-        placeholder="4242 4242 4242 4242"
-      />
+        placeholder="4242 4242 4242 4242"/>
     </div>
     <div class="row">
       <div class="col-md-6 mb-3">
@@ -43,8 +38,7 @@
           placeholder="MM"
           min="1"
           max="12"
-          required
-        />
+          required/>
       </div>
       <div class="col-md-6 mb-3">
         <label for="expiryYear" class="form-label">Anno di Scadenza</label>
@@ -58,11 +52,9 @@
           placeholder="YYYY"
           min="2024"
           max="2040"
-          required
-        />
+          required/>
       </div>
     </div>
-
     <div class="mb-3">
       <label for="cvv" class="form-label">CVV</label>
       <input
@@ -71,8 +63,7 @@
         class="form-control"
         [(ngModel)]="cvv"
         name="cvv"
-        placeholder="123"
-      />
+        placeholder="123"/>
     </div>
   </form>
 </div>
@@ -80,8 +71,7 @@
   <button
     type="button"
     class="btn btn-secondary"
-    data-bs-dismiss="modal"
-  >
+    data-bs-dismiss="modal">
     Chiudi
   </button>
   <button type="button" class="btn btn-success" (click)="makePayment()" [disabled]="isLoading">
@@ -89,4 +79,3 @@
     <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
   </button>
 </div>
-

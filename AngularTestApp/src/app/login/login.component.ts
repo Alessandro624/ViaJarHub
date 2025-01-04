@@ -1,18 +1,15 @@
 import {
   Component,
-  EventEmitter,
   HostListener,
   Inject,
   Input,
   NgZone,
   OnInit,
-  Output,
   PLATFORM_ID
 } from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {Router} from '@angular/router';
 import {AuthenticationService} from './authentication.service';
-import {isPlatformBrowser, NgIf} from '@angular/common';
+import {isPlatformBrowser, NgClass, NgIf} from '@angular/common';
 import {environment} from '../../environments/environment';
 
 @Component({
@@ -20,13 +17,16 @@ import {environment} from '../../environments/environment';
   standalone: true,
   imports: [
     FormsModule,
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 
 export class LoginComponent implements OnInit {
+  @Input() currentForm!: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail';
+  @Input() isOpened!: boolean;
   firstName: string = '';
   lastName: string = '';
   birthDate: string = '';
@@ -39,29 +39,25 @@ export class LoginComponent implements OnInit {
   emailError: string = '';
   passwordError: string = '';
   confirmPasswordError: string = '';
-  @Input() currentForm!: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail';
-  @Input() isOpened: boolean = false;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   maxDate: string = new Date().toISOString().split('T')[0];
   alertMessage: string = '';
   isLoading: boolean = false;
-  @Output() setCurrentForm = new EventEmitter<void>();
 
-  constructor(@Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
+  constructor(@Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService) {
   }
 
   ngOnInit(): void {
-    this.setCurrentForm.emit();
     this.loadGoogleButton();
     this.changeForm(this.currentForm);
   }
 
-  validateEmail(email: string) {
+  private validateEmail(email: string) {
     return /^[A-z0-9.+_-]+@[A-z0-9._-]+\.[A-z]{2,6}$/.test(email);
   }
 
-  validatePassword(password: string) {
+  private validatePassword(password: string) {
     const hasNumber = /\d/;
     const hasLower = /[a-z]/;
     const hasUpper = /[A-Z]/;
@@ -75,11 +71,11 @@ export class LoginComponent implements OnInit {
     );
   };
 
-  validateName(name: string) {
+  private validateName(name: string) {
     return /^[a-zA-Zà-üÀ-Ü\s]*$/.test(name);
   }
 
-  validateBirthDate(birthDate: string) {
+  private validateBirthDate(birthDate: string) {
     return /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(birthDate);
   }
 
@@ -94,7 +90,7 @@ export class LoginComponent implements OnInit {
           this.isLoading = false;
           console.log('Login successful:', {email: this.email, password: this.password});
           alert("Login effettuato con successo");
-          //this.sendUserHome();
+          this.closePopup();
         }, error: error => {
           this.isLoading = false;
           this.alertMessage = error.message;
@@ -137,7 +133,7 @@ export class LoginComponent implements OnInit {
             birthDate: this.birthDate
           });
           alert("Email di conferma inviata con successo");
-          this.sendUserHome();
+          this.closePopup();
         }, error: error => {
           this.isLoading = false;
           console.log(error);
@@ -157,7 +153,7 @@ export class LoginComponent implements OnInit {
             this.isLoading = false;
             console.log('First step of password reset successful:', {email: this.email, password: this.confirmPassword});
             alert('Email di reset password inviata correttamente');
-            this.sendUserHome();
+            this.closePopup();
           }, error: error => {
             this.isLoading = false;
             console.log(error);
@@ -177,12 +173,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  resetFields() {
-    // tranne le password, gli altri campi posso essere usati come 'auto-completamento'
-    // this.firstName = '';
-    // this.lastName = '';
-    // this.telephone = '';
-    // this.email = '';
+  private resetFields() {
     this.password = '';
     this.confirmPassword = '';
     this.showPassword = false;
@@ -267,10 +258,9 @@ export class LoginComponent implements OnInit {
     $event.preventDefault();
   }
 
-  loadGoogleButton() {
+  private loadGoogleButton() {
     if (isPlatformBrowser(this.platformId)) {
       this.initGoogleButton();
-      this.waitForButtonAndRender();
     }
   }
 
@@ -286,12 +276,19 @@ export class LoginComponent implements OnInit {
   }
 
   private initGoogleButton() {
-    (globalThis as any).google.accounts.id.initialize({
-      client_id: environment.googleClientId,
-      callback: this.handleGoogleLogin.bind(this),
-      ux_mode: "popup",
-      auto_prompt: "false"
-    });
+    const interval = this.ngZone.runOutsideAngular(() =>
+      setInterval(() => {
+        const googleLoad = (globalThis as any).google.accounts.id.initialize({
+          client_id: environment.googleClientId,
+          callback: this.handleGoogleLogin.bind(this),
+          ux_mode: "popup",
+          auto_prompt: "false"
+        });
+        if (googleLoad) {
+          clearInterval(interval);
+          this.waitForButtonAndRender();
+        }
+      }, 100));
   }
 
   private renderGoogleButton() {
@@ -309,13 +306,13 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  handleGoogleLogin(response: any) {
+  private handleGoogleLogin(response: any) {
     const userInfo = this.decodeJwtResponse(response.credential);
     console.log('Informazioni utente: ', userInfo);
     this.sendTokenToBackend(response.credential);
   }
 
-  decodeJwtResponse(token: string) {
+  private decodeJwtResponse(token: string) {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     const jsonPayload = decodeURIComponent(
@@ -327,14 +324,14 @@ export class LoginComponent implements OnInit {
     return JSON.parse(jsonPayload);
   }
 
-  sendTokenToBackend(token: string) {
+  private sendTokenToBackend(token: string) {
     this.isLoading = true;
     this._authenticationService.onGoogleLogin(token).subscribe({
         next: () => {
           this.isLoading = false;
           console.log('Google login completato.');
           alert("Accesso con google effettuato correttamente")
-          this.sendUserHome();
+          this.closePopup();
         },
         error: error => {
           this.isLoading = false;
@@ -348,22 +345,13 @@ export class LoginComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   onOutsideClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-menu')) {
+    if (!target.closest('.dropdown-menu') && this.isOpened) {
       this.isOpened = false;
     }
   }
 
-  private sendUserHome() {
-    this._router.navigate([''], {
-      queryParams: {
-        isOpened: false,
-        currentForm: 'login'
-      }
-    }).then(this.reloadPage.bind(this));
-  }
-
-  reloadPage() {
-    // window.location.reload();
+  private closePopup() {
+    this.currentForm = 'login';
     this.isOpened = false;
   }
 }

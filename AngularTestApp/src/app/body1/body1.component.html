@@ -1,9 +1,7 @@
-<app-carousel></app-carousel>
-
+<app-carousel [filters]="filters"></app-carousel>
 <div class="container my-5">
   <app-filtri [filters]="filters" [alertMessage]="alertMessage" [isLoading]="isLoading" [maxPrice]="maxPrice"
               (loadTravel)="loadTravels(0)"></app-filtri>
-
   <div class="my-3 d-flex justify-content-end">
     <div class="btn-group me-2" role="group" aria-label="Ordinamento Viaggi">
       <button *ngFor="let order of travelOrders"
@@ -22,7 +20,6 @@
       Ordinamento Crescente
     </button>
   </div>
-
   @if (travelsMatrix && travelsMatrix.length > 0) {
     <div class="row" *ngFor="let travelRow of travelsMatrix">
       <div class="col-12 col-lg-4 my-3" *ngFor="let travel of travelRow">

@@ -11,7 +11,6 @@ import {Review} from '../../models/review/review.module';
 import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.component';
 import {WishlistComponent} from '../../wishlist/wishlist.component';
 import {PaymentService} from '../../payment/payment.service';
-import {TravelType} from '../../models/travel/travel-type.enum';
 
 @Component({
   selector: 'app-client',
@@ -65,108 +64,9 @@ export class ClientComponent implements OnInit {
     this.setUser();
     this.showBirthdate();
     this.showProfileImage();
-    this.reviewService.getReviewsByUser(this.user.email).subscribe({
-        next: data => {
-          this.reviews = data.reverse();
-          this.aggiornaRecensioniVisibili();
-          this.numrec = this.reviews.length;
-        }
-      }
-    )
-    /*this.reviewService.countReviewsByUser(this.user.email).subscribe({
-      next: data => {
-        this.numrec = data;
-      }
-    })*/
-    this.paymentService.booking$.subscribe({
-      next: data => {
-        if (data) {
-          this.numbook = data?.length;
-          for (let travel of data) {
-            console.log(travel.travelType);
-          }
-          this.culturaList = data.filter(item => String(item.travelType) === "CULTURA").length;
-          this.relaxList = data.filter(item => String(item.travelType) === "RELAX").length;
-          this.naturaList = data.filter(item => String(item.travelType) === "NATURA").length;
-          this.romanticoList = data.filter(item => String(item.travelType) === "ROMANTICO").length;
-          this.famigliaList = data.filter(item => String(item.travelType) === "FAMIGLIA").length;
-          console.log("cultura" + this.culturaList);
-          console.log(this.relaxList);
-          console.log(this.naturaList);
-          console.log(this.romanticoList);
-          console.log(this.famigliaList);
-          this.updateStrokeDashArray();
-          this.animateStrokeDashArray();
-          this.tipoViaggio = this.getHighestType();
-        }
-      }
-    })
+    this.loadReviews();
+    this.loadGraphData();
   }
-
-  aggiornaRecensioniVisibili() {
-    this.recensioniVisibili = this.reviews.slice(this.startIndex, this.startIndex + this.step);
-    this.loadBtnless = this.startIndex != 0;
-    console.log(this.startIndex);
-    console.log(this.reviews.length);
-    this.loadBtnmore = this.startIndex + this.step < this.reviews.length;
-    console.log(this.loadBtnless);
-    console.log(this.loadBtnmore);
-  }
-
-  animateStrokeDashArray() {
-    const circles = document.querySelectorAll<SVGCircleElement>('.grafo');
-    circles.forEach((circle, index) => {
-      const endValue = this.strokeDashArrayEnd[index];
-      this.animateValue(circle, this.strokeDashArrayStart, endValue);
-    });
-  }
-
-  animateValue(element: SVGCircleElement, from: string, to: string) {
-    const [fromDash] = from.split(',').map(Number);
-    const [toDash] = to.split(',').map(Number);
-    let currentDash = fromDash;
-    const step = (toDash - fromDash) / 60;
-    const animation = () => {
-      currentDash += step;
-      if ((step > 0 && currentDash >= toDash) || (step < 0 && currentDash <= toDash)) {
-        element.setAttribute('stroke-dasharray', to);
-      } else {
-        element.setAttribute('stroke-dasharray', `${currentDash}, 285`);
-        requestAnimationFrame(animation);
-      }
-    };
-    animation();
-  }
-
-
-  openPopup() {
-    this.isPopupVisible = true;
-  }
-
-  closePopup() {
-    this.isPopupVisible = false;
-  }
-
-
-  openPopup2() {
-    this.isPopupVisible2 = true;
-  }
-
-  closePopup2() {
-    console.log("prova");
-    this.isPopupVisible2 = false;
-  }
-
-  /*openPopup3(travel:Travel) {
-    this.isPopupVisible3 = true;
-    this.settedTravel = travel;
-  }
-
-  closePopup3() {
-    this.isPopupVisible3 = false;
-    this.settedTravel = undefined;
-  }*/
-
 
   private setUser() {
     this._authenticationService.currentUser$.subscribe({
@@ -200,7 +100,128 @@ export class ClientComponent implements OnInit {
           this.profileImageBlob = null;
         }
       }
-    )
+    );
+  }
+
+  private loadReviews() {
+    this.reviewService.getReviewsByUser(this.user.email).subscribe({
+        next: data => {
+          this.reviews = data.reverse();
+          this.aggiornaRecensioniVisibili();
+          this.numrec = this.reviews.length;
+        }
+      }
+    );
+  }
+
+  private loadGraphData() {
+    this.paymentService.booking$.subscribe({
+      next: data => {
+        if (data) {
+          this.numbook = data?.length;
+          for (let travel of data) {
+            console.log(travel.travelType);
+          }
+          this.culturaList = data.filter(item => String(item.travelType) === "CULTURA").length;
+          this.relaxList = data.filter(item => String(item.travelType) === "RELAX").length;
+          this.naturaList = data.filter(item => String(item.travelType) === "NATURA").length;
+          this.romanticoList = data.filter(item => String(item.travelType) === "ROMANTICO").length;
+          this.famigliaList = data.filter(item => String(item.travelType) === "FAMIGLIA").length;
+          console.log("cultura" + this.culturaList);
+          console.log(this.relaxList);
+          console.log(this.naturaList);
+          console.log(this.romanticoList);
+          console.log(this.famigliaList);
+          this.updateStrokeDashArray();
+          this.animateStrokeDashArray();
+          this.tipoViaggio = this.getHighestType();
+        }
+      }
+    });
+  }
+
+  private aggiornaRecensioniVisibili() {
+    this.recensioniVisibili = this.reviews.slice(this.startIndex, this.startIndex + this.step);
+    this.loadBtnless = this.startIndex != 0;
+    console.log(this.startIndex);
+    console.log(this.reviews.length);
+    this.loadBtnmore = this.startIndex + this.step < this.reviews.length;
+    console.log(this.loadBtnless);
+    console.log(this.loadBtnmore);
+  }
+
+  private animateStrokeDashArray() {
+    const circles = document.querySelectorAll<SVGCircleElement>('.grafo');
+    circles.forEach((circle, index) => {
+      const endValue = this.strokeDashArrayEnd[index];
+      this.animateValue(circle, this.strokeDashArrayStart, endValue);
+    });
+  }
+
+  private animateValue(element: SVGCircleElement, from: string, to: string) {
+    const [fromDash] = from.split(',').map(Number);
+    const [toDash] = to.split(',').map(Number);
+    let currentDash = fromDash;
+    const step = (toDash - fromDash) / 60;
+    const animation = () => {
+      currentDash += step;
+      if ((step > 0 && currentDash >= toDash) || (step < 0 && currentDash <= toDash)) {
+        element.setAttribute('stroke-dasharray', to);
+      } else {
+        element.setAttribute('stroke-dasharray', `${currentDash}, 285`);
+        requestAnimationFrame(animation);
+      }
+    };
+    animation();
+  }
+
+  private updateStrokeDashArray(): void {
+    const calculatePercentage = (count: number): number => (count / this.numbook) * 100;
+    const calculateStrokeDashArray = (percentage: number): string => {
+      const visible = (100 - percentage) * 2.85; // 285 * (100 - percentage) / 100
+      return `${visible.toFixed(0)}, 285`;
+    };
+    this.strokeDashArrayEnd = [
+      calculateStrokeDashArray(calculatePercentage(this.culturaList)),
+      calculateStrokeDashArray(calculatePercentage(this.relaxList)),
+      calculateStrokeDashArray(calculatePercentage(this.naturaList)),
+      calculateStrokeDashArray(calculatePercentage(this.romanticoList)),
+      calculateStrokeDashArray(calculatePercentage(this.famigliaList)),
+    ];
+  }
+
+  private getHighestType(): string {
+    // Definisci le chiavi del tipo
+    type TravelTypeKeys = keyof typeof travelTypes;
+    // Oggetto con i valori
+    const travelTypes = {
+      Cultura: this.culturaList,
+      Relax: this.relaxList,
+      Natura: this.naturaList,
+      Romantico: this.romanticoList,
+      Famiglia: this.famigliaList,
+    };
+    // Trova il tipo con il valore massimo
+    return (Object.keys(travelTypes) as TravelTypeKeys[]).reduce((prev, current) => {
+      return travelTypes[prev] > travelTypes[current] ? prev : current;
+    });
+  }
+
+  openPopup() {
+    this.isPopupVisible = true;
+  }
+
+  closePopup() {
+    this.isPopupVisible = false;
+  }
+
+  openPopup2() {
+    this.isPopupVisible2 = true;
+  }
+
+  closePopup2() {
+    console.log("prova");
+    this.isPopupVisible2 = false;
   }
 
   lessReview() {
@@ -239,7 +260,6 @@ export class ClientComponent implements OnInit {
     this.aggiornaRecensioniVisibili();
   }
 
-
   openPopup4(review: Review) {
     this.isPopupVisible4 = true;
     this.selectReview = review;
@@ -253,44 +273,4 @@ export class ClientComponent implements OnInit {
     this.rimuoviDaLista(review);
     this.aggiornaLista(review);
   }
-
-  updateStrokeDashArray(): void {
-    const calculatePercentage = (count: number): number => (count / this.numbook) * 100;
-
-    const calculateStrokeDashArray = (percentage: number): string => {
-      const visible = (100 - percentage) * 2.85; // 285 * (100 - percentage) / 100
-      return `${visible.toFixed(0)}, 285`;
-    };
-
-    this.strokeDashArrayEnd = [
-      calculateStrokeDashArray(calculatePercentage(this.culturaList)),
-      calculateStrokeDashArray(calculatePercentage(this.relaxList)),
-      calculateStrokeDashArray(calculatePercentage(this.naturaList)),
-      calculateStrokeDashArray(calculatePercentage(this.romanticoList)),
-      calculateStrokeDashArray(calculatePercentage(this.famigliaList)),
-    ];
-  }
-
-  getHighestType(): string {
-    // Definisci le chiavi del tipo
-    type TravelTypeKeys = keyof typeof travelTypes;
-
-    // Oggetto con i valori
-    const travelTypes = {
-      Cultura: this.culturaList,
-      Relax: this.relaxList,
-      Natura: this.naturaList,
-      Romantico: this.romanticoList,
-      Famiglia: this.famigliaList,
-    };
-
-    // Trova il tipo con il valore massimo
-    const highestType = (Object.keys(travelTypes) as TravelTypeKeys[]).reduce((prev, current) => {
-      return travelTypes[prev] > travelTypes[current] ? prev : current;
-    });
-
-    return highestType;
-  }
-
-
 }

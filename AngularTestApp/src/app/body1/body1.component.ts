@@ -62,16 +62,7 @@ export class Body1Component implements OnInit {
     });
   }
 
-  loadTravels(index: number) {
-    this.isLoading = true;
-    this.loadInit(index).subscribe(() => this.isLoading = false);
-  }
-
-  setSearchQuery(query: string) {
-    this.filters.searchQuery = query;
-  }
-
-  loadInit(index: number) {
+  private loadInit(index: number) {
     return this.countTravels().pipe(
       tap(data => (this.elementiTot = data)),
       switchMap(() => this._travelService.getTravelsPaginated(index, 9, this.filters)),
@@ -79,13 +70,24 @@ export class Body1Component implements OnInit {
         if (index === 0) {
           this.resetTravels();
         }
-
         this.travels = [...this.travels, ...travels];
         this.travelsMatrix = this.chunkArray(this.travels, 3);
         this.index = index + 9;
-
       })
     );
+  }
+
+  private countTravels() {
+    return this._travelService.getTravelsCount(this.filters);
+  }
+
+  private setSearchQuery(query: string) {
+    this.filters.searchQuery = query;
+  }
+
+  loadTravels(index: number) {
+    this.isLoading = true;
+    this.loadInit(index).subscribe(() => this.isLoading = false);
   }
 
   private chunkArray(array: Travel[], chunkSize: number): Travel[][] {
@@ -96,11 +98,7 @@ export class Body1Component implements OnInit {
     return chunks;
   }
 
-  private countTravels() {
-    return this._travelService.getTravelsCount(this.filters);
-  }
-
-  resetTravels() {
+  private resetTravels() {
     this.travels = [];
     this.travelsMatrix = [];
     this.index = 0;

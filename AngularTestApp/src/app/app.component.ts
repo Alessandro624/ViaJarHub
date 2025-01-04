@@ -18,14 +18,14 @@ import {ContactModalComponent} from './contact-modal/contact-modal.component';
 })
 
 export class AppComponent implements OnInit {
-  user!: User | null;
   protected readonly UserRole = UserRole;
-  isDropdownOpened: boolean = false;
-  currentFrom: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail' = 'login';
   protected readonly environment = environment;
+  user!: User | null;
+  currentFrom: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail' = 'login';
+  isDropdownOpened: boolean = false;
   isPopupVisible: boolean = false;
 
-  constructor(private _authenticationService: AuthenticationService, private _router: Router, private _activatedRoute: ActivatedRoute) {
+  constructor(private _authenticationService: AuthenticationService, private _activatedRoute: ActivatedRoute, private _router: Router) {
   }
 
   ngOnInit() {
@@ -36,18 +36,12 @@ export class AppComponent implements OnInit {
   onLogout() {
     this._authenticationService.onLogout().subscribe(
       () => {
-        this._router.navigate([''], {
-          queryParams: {
-            isOpened: false,
-            currentForm: 'login'
-          }
-        }).then(() => alert("Logout completato"));
+        this.isDropdownOpened = false;
+        this.currentFrom = 'login';
+        this._router.navigate(['']).then();
+        alert("Logout completato");
       }
     );
-  }
-
-  toggleDropdown() {
-    this.isDropdownOpened = !this.isDropdownOpened;
   }
 
   private setUser() {
@@ -58,15 +52,23 @@ export class AppComponent implements OnInit {
     });
   }
 
-  protected setCurrentForm() {
+  private setCurrentForm() {
     this._activatedRoute.queryParams.subscribe(params => {
       if (params['isOpened']) {
         this.isDropdownOpened = params['isOpened'] === 'true';
+      } else {
+        this.isDropdownOpened = false;
       }
       if (params['currentForm'] && params['currentForm'] !== 'registerStep2') {
         this.currentFrom = params['currentForm'];
+      } else {
+        this.currentFrom = 'login';
       }
     });
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpened = !this.isDropdownOpened;
   }
 
   openPopup() {

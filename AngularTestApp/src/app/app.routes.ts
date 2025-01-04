@@ -14,9 +14,7 @@ export const routes: Routes = [
   {path: '', redirectTo: 'body1', pathMatch: 'full'},
   {path: 'body1', component: Body1Component},
   {
-    path: 'client',
-    component: ClientComponent,
-    canActivate: [authenticationGuard],
+    path: 'client', component: ClientComponent, canActivate: [authenticationGuard],
     data: {requiredRoles: UserRole.USER}
   },
   {path: 'admin', component: AdminComponent, canActivate: [authenticationGuard], data: {requiredRoles: UserRole.ADMIN}},

@@ -40,6 +40,7 @@ div.is-invalid-container {
   padding: 0.5rem 1rem;
 }
 
-.dropdown-item:hover {
-  background-color: #f8f9fa;
+.dropdown-item:hover, .active {
+  background-color: #f0f0f0;
+  color: black;
 }

@@ -1,15 +1,14 @@
 import {
   Component,
   ElementRef,
-  EventEmitter,
-  Input,
+  EventEmitter, Inject,
+  Input, NgZone,
   OnChanges,
   Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {Review} from '../../models/review/review.module';
-import {TravelService} from '../../travel-detail/travel.service';
 import {ReviewService} from '../review.service';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {Travel} from '../../models/travel/travel.model';
@@ -32,13 +31,12 @@ import {StarComponent} from '../../star/star.component';
   styleUrls: ['./reviewmodal.component.css']
 })
 export class ReviewmodalComponent implements OnChanges {
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @Input() review: Review | null = null;
+  @Input() isOpen: boolean = false;
   @Output() closeModal = new EventEmitter<void>();
   @Output() reviewRemoved = new EventEmitter<Review>();
   @Output() reviewModified = new EventEmitter<Review>();
-
-  @Input() review: Review | null = null;
-  @Input() isOpen: boolean = false;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   immaginiURLs: string[] = [];
   travel: Travel | null = null;
@@ -54,12 +52,12 @@ export class ReviewmodalComponent implements OnChanges {
   star = 0;
   destinazione = '';
 
-  constructor(private _travelService: TravelService, private reviewService: ReviewService, private elementRef: ElementRef, private authentication: AuthenticationService) {
+  constructor(@Inject(NgZone) private ngZone: NgZone, private reviewService: ReviewService, private elementRef: ElementRef, private authentication: AuthenticationService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen'] && changes['isOpen'].currentValue) {
-      this.initialize(); // Inizializza il componente quando il modale è aperto
+      this.ngZone.runOutsideAngular(() => this.initialize()); // Inizializza il componente quando il modale è aperto
     }
   }
 
@@ -68,26 +66,8 @@ export class ReviewmodalComponent implements OnChanges {
       this.errorMessage = '';
       this.star = this.review.stars;
       this.isLoading = true;
-      this.reviewService.getReviewImages(this.review.travel.id, this.review.user.email).subscribe({
-        next: result => {
-          this.immaginiURLs = result.map(image => `data:image/jpeg;base64,${image}`);
-          if (this.review) {
-            this.star = this.review.stars;
-            this.destinazione = this.review.travel.destination;
-            this.isLoading = false;
-            if (this.immaginiURLs.length === 0) {
-              this.errorMessage = 'Nessuna immagine trovata.';
-            }
-          }
-        },
-        error: () => {
-          this.isLoading = false;
-          this.errorMessage = 'Errore durante il caricamento delle immagini.';
-        }
-      });
-
+      this.loadReviewImages();
     }
-
     this.inClient = this.isContainedIn('app-client');
   }
 
@@ -100,6 +80,26 @@ export class ReviewmodalComponent implements OnChanges {
       parent = parent.parentElement;
     }
     return false;
+  }
+
+  private loadReviewImages() {
+    this.reviewService.getReviewImages(this.review!.travel.id, this.review!.user.email).subscribe({
+      next: result => {
+        this.immaginiURLs = result.map(image => `data:image/jpeg;base64,${image}`);
+        if (this.review) {
+          this.star = this.review.stars;
+          this.destinazione = this.review.travel.destination;
+          this.isLoading = false;
+          if (this.immaginiURLs.length === 0) {
+            this.errorMessage = 'Nessuna immagine trovata.';
+          }
+        }
+      },
+      error: () => {
+        this.isLoading = false;
+        this.errorMessage = 'Errore durante il caricamento delle immagini.';
+      }
+    });
   }
 
   changeToUpdate() {
@@ -119,9 +119,7 @@ export class ReviewmodalComponent implements OnChanges {
           reviewTemp.stars = this.rating;
           reviewTemp.data = this.formatDate(new Date());
         }
-
         this.delete();
-
         if (reviewTemp) {
           this.reviewService.createReview(reviewTemp, this.images).subscribe({
             next: () => {
