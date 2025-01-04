@@ -74,6 +74,18 @@ public class AdminTravelController extends TravelController {
     }
 
     @Override
+    @RequestMapping(value = "/most-rated", method = RequestMethod.GET)
+    public ResponseEntity<List<Travel>> getMostRated() {
+        return super.getMostRated();
+    }
+
+    @Override
+    @RequestMapping(value = "/all-travel-number", method = RequestMethod.GET)
+    public ResponseEntity<Integer> getTravelNumber() {
+        return super.getTravelNumber();
+    }
+
+    @Override
     @RequestMapping(value = "/create-travel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createTravel(@RequestPart Travel travel, @RequestParam List<MultipartFile> travelImages) {
         return super.createTravel(travel, travelImages);
@@ -89,17 +101,5 @@ public class AdminTravelController extends TravelController {
     @RequestMapping(value = "/delete-travel", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteTravel(@RequestParam("id") Long id) {
         return super.deleteTravel(id);
-    }
-
-    @Override
-    @RequestMapping(value = "/most-rated",method = RequestMethod.GET)
-    public ResponseEntity<List<Travel>> getMostRated() {
-        return super.getMostRated();
-    }
-
-    @Override
-    @RequestMapping(value = "/all-travel-number" ,method = RequestMethod.GET)
-    public ResponseEntity<Integer[]> getTravelNumber() {
-        return super.getTravelNumber();
     }
 }

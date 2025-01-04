@@ -51,50 +51,33 @@ public class TravelService implements ITravelService {
     }
 
     @Override
-    public Integer[] getTravelNumber() {
-        Integer[] num=new Integer[1];
-        num[0]=travelDAO.getTravelNumber();
-        return num;
-
+    public int getTravelNumber() {
+        return travelDAO.getTravelNumber();
     }
 
     @Override
-    public Double[] getDailyIncome() {
-        Double[] num=new Double[1];
-        num[0]=travelDAO.getDailyIncome();
-        return num;
-
+    public double getDailyIncome() {
+        return travelDAO.getDailyIncome();
     }
 
     @Override
-    public Double[] getMonthlyIncome() {
-        Double[] num=new Double[1];
-        num[0]=travelDAO.getMonthly();
-        return num;
+    public double getMonthlyIncome() {
+        return travelDAO.getMonthly();
     }
 
     @Override
-    public Double[] getAllIncome() {
-        Double[] num=new Double[1];
-        num[0]=travelDAO.getAllIncome();
-        return num;
-
+    public double getAllIncome() {
+        return travelDAO.getAllIncome();
     }
 
     @Override
-    public Double[] getAnnualIncome() {
-        Double[] num=new Double[1];
-        num[0]=travelDAO.getAnnualIncome();
-        return num;
-
+    public double getAnnualIncome() {
+        return travelDAO.getAnnualIncome();
     }
 
     @Override
-    public Integer[] getMonthlyBooking(int mese) {
-        System.out.println(mese);
-        Integer[] num=new Integer[1];
-        num[0]=travelDAO.getMonthlyBooking(mese);
-        return num;
+    public int getMonthlyBooking(int month) {
+        return travelDAO.getMonthlyBooking(month);
     }
 
     @Override

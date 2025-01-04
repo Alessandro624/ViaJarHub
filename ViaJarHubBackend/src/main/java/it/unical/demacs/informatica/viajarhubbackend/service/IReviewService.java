@@ -16,8 +16,6 @@ public interface IReviewService {
 
     List<byte[]> getTravelImages(int id, String email) throws Exception;
 
-    Review updateReview(Long id, Review review, List<MultipartFile> reviewImages) throws Exception;
-
     Review save(Review review, List<MultipartFile> travelImages) throws Exception;
 
     void delete(Review review);

@@ -37,15 +37,15 @@ public interface ITravelService {
 
     List<Travel> getMostRated();
 
-    Integer[] getTravelNumber();
+    int getTravelNumber();
 
-    Double[] getDailyIncome();
+    double getDailyIncome();
 
-    Double[] getMonthlyIncome();
+    double getMonthlyIncome();
 
-    Double[] getAllIncome();
+    double getAllIncome();
 
-    Double[] getAnnualIncome();
+    double getAnnualIncome();
 
-    Integer[] getMonthlyBooking(int mese);
+    int getMonthlyBooking(int mese);
 }

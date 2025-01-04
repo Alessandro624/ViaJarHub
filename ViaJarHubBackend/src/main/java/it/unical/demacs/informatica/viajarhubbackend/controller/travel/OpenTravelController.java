@@ -76,6 +76,4 @@ public class OpenTravelController extends TravelController {
     public ResponseEntity<Double> getMaxPrice() {
         return super.getMaxPrice();
     }
-
-
 }
