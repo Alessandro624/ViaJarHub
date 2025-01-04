@@ -115,16 +115,6 @@ public abstract class TravelController {
         }
     }
 
-    public ResponseEntity<Double> getMaxPrice() {
-        try {
-            return ResponseEntity.ok(travelService.getMaxPrice(isAdmin()));
-        } catch (InvalidInputException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
     public ResponseEntity<Void> createTravel(Travel travel, List<MultipartFile> travelImages) {
         try {
             if (!isAdmin()) {
@@ -174,6 +164,37 @@ public abstract class TravelController {
             return ResponseEntity.ok().build();
         } catch (TravelNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    protected ResponseEntity<Double> getMaxPrice() {
+        try {
+            return ResponseEntity.ok(travelService.getMaxPrice(isAdmin()));
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    public ResponseEntity<List<Travel>>  getMostRated(){
+        try {
+
+            return ResponseEntity.ok(travelService.getMostRated());
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    protected ResponseEntity<Integer[]> getTravelNumber() {
+        try {
+
+            return ResponseEntity.ok(travelService.getTravelNumber());
+        } catch (InvalidInputException e) {
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

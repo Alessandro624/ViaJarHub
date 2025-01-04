@@ -90,4 +90,16 @@ public class AdminTravelController extends TravelController {
     public ResponseEntity<Void> deleteTravel(@RequestParam("id") Long id) {
         return super.deleteTravel(id);
     }
+
+    @Override
+    @RequestMapping(value = "/most-rated",method = RequestMethod.GET)
+    public ResponseEntity<List<Travel>> getMostRated() {
+        return super.getMostRated();
+    }
+
+    @Override
+    @RequestMapping(value = "/all-travel-number" ,method = RequestMethod.GET)
+    public ResponseEntity<Integer[]> getTravelNumber() {
+        return super.getTravelNumber();
+    }
 }
