@@ -5,6 +5,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Travel} from '../models/travel/travel.model';
 import {FormsModule} from '@angular/forms';
 import {TravelFilter} from '../models/travel/travel-filter.model';
+import {environment} from '../../environments/environment';
+
+declare function getRandomPhoto(resolution: string): string;
+
+declare var window: any;
 
 @Component({
   selector: 'app-carousel',
@@ -14,7 +19,7 @@ import {TravelFilter} from '../models/travel/travel-filter.model';
     NgClass,
     NgIf,
     FormsModule,
-    NgForOf
+    NgForOf,
   ],
   styleUrls: ['./carousel.component.css']
 })
@@ -29,12 +34,12 @@ export class CarouselComponent implements OnInit, OnDestroy {
   immaginiURLs: string[] = [];
   isExpanded: boolean = false;
   suggestions: string[] = [];
+  photos: string[] = [];
 
   constructor(private _router: Router, @Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    console.log("agasgsg")
     // Controlla se il componente è contenuto all'interno di Body1
     this.inBody = this.isContainedIn('app-body1');
     this.inReview = this.isContainedIn('app-reviewmodal');
@@ -45,7 +50,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
     console.log(this.inBody);
     // Esegui l'effetto macchina da scrivere solo dentro Body1
     if (this.inBody) {
-      this.ngZone.runOutsideAngular(() => this.typeWriterEffect());
+      this.ngZone.runOutsideAngular(() => {
+        this.loadCarouselImages();
+        this.typeWriterEffect()
+      });
       this.loadSearchQuery();
     } else {
       const id = Number(this._activatedRoute.parent?.snapshot.paramMap.get('id'));
@@ -54,6 +62,44 @@ export class CarouselComponent implements OnInit, OnDestroy {
       }
       this.loadTravel(id);
     }
+  }
+
+  private loadCarouselImages(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.configureFlickerAPIKey();
+      this.fetchFlickerPhotos();
+    }
+  }
+
+  private configureFlickerAPIKey(): void {
+    window.Flickr.configure({
+      apiKey: environment.flickerAPIKey,
+      baseUrl: environment.flickerBaseUrl
+    });
+  }
+
+  private fetchFlickerPhotos(): void {
+    window.Flickr.fetchPhotos(
+      {
+        content_type: 1,
+        safe_search: 1,
+        orientation: 'landscape',
+        tags: 'travel,nature,landscape',
+        tag_mode: 'all',
+        min_taken_date: '2024-01-01',
+        max_taken_date: '2024-12-31',
+        sort: 'interestingness-desc',
+      },
+      () => {
+        for (let i = 0; i < 3; i++) {
+          const photo = getRandomPhoto('b');
+          if (photo) {
+            this.photos.push(photo);
+          }
+        }
+        console.log(this.photos);
+      }
+    );
   }
 
   private loadTravel(id: number) {

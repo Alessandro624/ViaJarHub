@@ -4,12 +4,11 @@
       <div class="carousel-item home active">
         <img src="4646289.jpg" class="d-block w-100" alt="Slide 1">
       </div>
-      <div class="carousel-item home ">
-        <img src="4646289.jpg" class="d-block w-100" alt="Slide 2">
-      </div>
-      <div class="carousel-item home">
-        <img src="4646289.jpg" class="d-block w-100" alt="Slide 3">
-      </div>
+      @for (photo of photos; track photo; let i = $index) {
+        <div class="carousel-item home">
+          <img [src]=photo class="d-block w-100" alt="Slide {{i}}">
+        </div>
+      }
     </div>
     <!--Scritta sopra la search box-->
     <div class="overlay d-flex flex-column justify-content-center align-items-center">
