@@ -8,7 +8,7 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {Review} from '../../models/review/review.module';
+import {Review} from '../../models/review/review.model';
 import {ReviewService} from '../review.service';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {Travel} from '../../models/travel/travel.model';

@@ -13,7 +13,7 @@ import {UserRole} from '../models/user/user-role.enum';
 export class TravelService {
 
   APIUrl = "api";
-  
+
   constructor(private _http: HttpClient, private _authenticationService: AuthenticationService) {
   }
 

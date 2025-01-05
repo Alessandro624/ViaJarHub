@@ -8,7 +8,7 @@ import {User} from '../../models/user/user.model';
 import {ClientService} from '../client/client.service';
 import {AuthenticationService} from '../../login/authentication.service';
 import {ReviewService} from '../../review/review.service';
-import {Review} from '../../models/review/review.module';
+import {Review} from '../../models/review/review.model';
 import {MakeAdminModalComponent} from '../../make-admin-modal/make-admin-modal.component';
 import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.component';
 import {TravelService} from '../../travel-detail/travel.service';

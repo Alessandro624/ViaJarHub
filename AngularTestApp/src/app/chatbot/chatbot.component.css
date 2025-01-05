@@ -1,0 +1,11 @@
+#chat-toggle {
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  z-index: 1000;
+}
+
+.badge {
+  text-align: left;
+}

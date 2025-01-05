@@ -7,7 +7,7 @@ import {AuthenticationService} from '../../login/authentication.service';
 import {ClientService} from './client.service';
 import {User} from '../../models/user/user.model';
 import {ReviewService} from '../../review/review.service';
-import {Review} from '../../models/review/review.module';
+import {Review} from '../../models/review/review.model';
 import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.component';
 import {WishlistComponent} from '../../wishlist/wishlist.component';
 import {PaymentService} from '../../payment/payment.service';

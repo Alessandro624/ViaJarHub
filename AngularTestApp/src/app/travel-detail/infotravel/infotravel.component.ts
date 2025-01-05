@@ -8,7 +8,7 @@ import {environment} from '../../../environments/environment';
 import {ActivatedRoute} from '@angular/router';
 import {TravelService} from '../travel.service';
 import {ReviewService} from '../../review/review.service';
-import {Review} from '../../models/review/review.module';
+import {Review} from '../../models/review/review.model';
 import {StarComponent} from '../../star/star.component';
 import {ReviewmodalComponent} from '../../review/reviewmodal/reviewmodal.component';
 

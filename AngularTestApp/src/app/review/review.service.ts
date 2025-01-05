@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 import {BehaviorSubject, catchError, Observable, of, switchMap} from 'rxjs';
-import {Review} from '../models/review/review.module';
+import {Review} from '../models/review/review.model';
 import {Travel} from '../models/travel/travel.model';
 import {AuthenticationService} from '../login/authentication.service';
 

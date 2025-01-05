@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {ReviewService} from './review.service';
-import {Review} from '../models/review/review.module';
+import {Review} from '../models/review/review.model';
 import {TravelService} from '../travel-detail/travel.service';
 import {StarComponent} from '../star/star.component';
 

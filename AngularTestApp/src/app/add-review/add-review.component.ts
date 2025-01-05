@@ -2,7 +2,7 @@ import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@a
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {ReviewService} from '../review/review.service';
-import {Review} from '../models/review/review.module';
+import {Review} from '../models/review/review.model';
 import {AuthenticationService} from '../login/authentication.service';
 import {TravelService} from '../travel-detail/travel.service';
 import {Travel} from '../models/travel/travel.model';
