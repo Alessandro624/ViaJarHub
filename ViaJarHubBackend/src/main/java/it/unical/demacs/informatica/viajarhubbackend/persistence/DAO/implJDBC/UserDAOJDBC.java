@@ -236,7 +236,7 @@ public class UserDAOJDBC implements UserDAO {
     }
 
     private void resetRelationInBookingTable(String email) throws SQLException {
-        String query = "DELETE FROM booking WHERE email = ?";
+        String query = "DELETE FROM booking WHERE user_email = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, email);
         statement.execute();

@@ -90,49 +90,43 @@ public class TravelDAOJDBC implements TravelDAO {
     @Override
     public List<Travel> getMostRated() {
         String query = """
-        SELECT t.*
-        FROM travel t
-        WHERE t.id IN (
-            SELECT id
-            FROM travel_avg_stars
-            ORDER BY avg_stars DESC
-            LIMIT 3
-        );
-    """;
-
+                    SELECT t.*
+                    FROM travel t
+                    WHERE t.id IN (
+                        SELECT id
+                        FROM travel_avg_stars
+                        ORDER BY avg_stars DESC
+                        LIMIT 3
+                    );
+                """;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
             List<Travel> travels = new ArrayList<>();
-
             while (resultSet.next()) {
-                System.out.println("a");
                 travels.add(mapResultSetToTravel(resultSet));
             }
-
             return travels;
-        } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
-        }    }
-
-    @Override
-    public int getTravelNumber() {
-        String query = "SELECT COUNT(*) AS num_travels FROM travel WHERE start_date >= CURRENT_DATE";
-
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                return resultSet.getInt("num_travels"); // Ottiene il conteggio
-            }
-
-            return 0; // Nessun risultato
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
     }
 
     @Override
-    public Double getDailyIncome() {
+    public int getTravelNumber() {
+        String query = "SELECT COUNT(*) AS num_travels FROM travel WHERE start_date >= CURRENT_DATE";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("num_travels");
+            }
+            return 0;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public double getDailyIncome() {
         String query = "SELECT SUM(total_amount) AS daily_revenue " +
                 "FROM booking " +
                 "WHERE DATE(booking_date) = CURRENT_DATE";
@@ -142,77 +136,73 @@ public class TravelDAOJDBC implements TravelDAO {
             if (resultSet.next()) {
                 return resultSet.getDouble("daily_revenue");
             }
+            return 0.0;
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
-        return 0.0;    }
+    }
 
     @Override
-    public Double getMonthly() {
+    public double getMonthly() {
         String query = "SELECT SUM(total_amount) AS monthly_revenue " +
                 "FROM booking " +
                 "WHERE EXTRACT(YEAR FROM booking_date) = EXTRACT(YEAR FROM CURRENT_DATE) " +
                 "AND EXTRACT(MONTH FROM booking_date) = EXTRACT(MONTH FROM CURRENT_DATE)";
-
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getDouble("monthly_revenue");
             }
+            return 0.0;
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
-        return 0.0;
     }
 
     @Override
-    public Double getAllIncome() {
+    public double getAllIncome() {
         String query = "SELECT SUM(total_amount) AS total_revenue FROM booking";
-
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getDouble("total_revenue");
             }
+            return 0.0;
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
-        return 0.0;    }
+    }
 
     @Override
-    public Double getAnnualIncome() {
+    public double getAnnualIncome() {
         String query = "SELECT SUM(total_amount) AS annual_revenue " +
                 "FROM booking " +
                 "WHERE EXTRACT(YEAR FROM booking_date) = EXTRACT(YEAR FROM CURRENT_DATE)";
-
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getDouble("annual_revenue");
             }
+            return 0.0;
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
-        return 0.0;
     }
 
     @Override
-    public Integer getMonthlyBooking(int mese) {
+    public int getMonthlyBooking(int month) {
         String query = "SELECT COUNT(*) FROM booking WHERE EXTRACT(MONTH FROM booking_date) = ? AND EXTRACT(YEAR FROM booking_date) = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)){
-            statement.setInt(1, mese);
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, month);
             statement.setInt(2, LocalDate.now().getYear());
-
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
-
-
-        }catch (SQLException sqlException){
+            return 0;
+        } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
-        return 0;
     }
 
     @Override

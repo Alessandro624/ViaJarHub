@@ -25,11 +25,10 @@ public class ReviewDAOJDBC implements ReviewDAO {
             while (resultSet.next()) {
                 reviews.add(mapRowToReview(resultSet));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return reviews;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
         }
-        return reviews;
-
     }
 
     @Override
@@ -43,11 +42,10 @@ public class ReviewDAOJDBC implements ReviewDAO {
                     reviews.add(mapRowToReview(resultSet));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return reviews;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
         }
-        return reviews;
-
     }
 
     @Override
@@ -61,11 +59,10 @@ public class ReviewDAOJDBC implements ReviewDAO {
                     reviews.add(mapRowToReview(resultSet));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return reviews;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
         }
-        return reviews;
-
     }
 
     @Override
@@ -79,10 +76,10 @@ public class ReviewDAOJDBC implements ReviewDAO {
                     return mapRowToReview(resultSet);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return null;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
         }
-        return null;
     }
 
     @Override
@@ -95,10 +92,10 @@ public class ReviewDAOJDBC implements ReviewDAO {
                     return resultSet.getInt("count");
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return 0;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
         }
-        return 0;
     }
 
 
@@ -107,37 +104,22 @@ public class ReviewDAOJDBC implements ReviewDAO {
         String query = "INSERT INTO review (idtravel, email, stars, comment,images_paths,data) VALUES (?, ?, ?, ?,?,?) " +
                 "ON CONFLICT (idtravel, email) DO UPDATE SET stars = EXCLUDED.stars, comment = EXCLUDED.comment,images_paths = EXCLUDED.images_paths,data=EXCLUDED.data";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            System.out.println("provaSave");
             statement.setInt(1, review.getTravel().getId().intValue());
-            System.out.println("provaSave");
-
             statement.setString(2, review.getUser().getEmail());
-            System.out.println("provaSave");
-
             statement.setInt(3, review.getStars());
-            System.out.println("provaSave");
-
             statement.setString(4, review.getComment());
-            System.out.println("provaSave");
-
             List<String> imagesPaths = review.getImagesPaths();
             if (imagesPaths != null) {
-                System.out.println("provaSave");
-                System.out.println(imagesPaths);
                 Array sqlArray = connection.createArrayOf("text", imagesPaths.toArray());
-                System.out.println("provaSave");
                 statement.setArray(5, sqlArray);
             } else {
                 statement.setArray(5, null);
             }
-            System.out.println("provaSave");
             statement.setObject(6, review.getData());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
         }
-
-
     }
 
     @Override
@@ -147,10 +129,9 @@ public class ReviewDAOJDBC implements ReviewDAO {
             statement.setInt(1, review.getTravel().getId().intValue());
             statement.setString(2, review.getUser().getEmail());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
         }
-
     }
 
     private Review mapRowToReview(ResultSet resultSet) throws SQLException {

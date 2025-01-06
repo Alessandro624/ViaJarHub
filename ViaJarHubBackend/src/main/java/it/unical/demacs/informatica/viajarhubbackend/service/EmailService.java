@@ -25,18 +25,13 @@ public class EmailService implements IEmailService {
     @Override
     public void sendEmail(String to, String subject, String body) {
         try {
-            // Creazione del MimeMessage
             MimeMessage message = mailSender.createMimeMessage();
-
-            // Configurazione del MimeMessageHelper
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
             helper.setSubject(subject);
-
-            // Imposta il corpo HTML
-            helper.setText(body, true); // Il secondo parametro indica che il contenuto è HTML
+            helper.setText(body, true);
             ClassPathResource logo = new ClassPathResource("static/images/ViaJar-Hub.png");
-            helper.addInline("logo", logo);           // Invio dell'email
+            helper.addInline("logo", logo);
             mailSender.send(message);
         } catch (Exception e) {
             throw new EmailNotSentException("Errore durante l'invio dell'email: " + e.getMessage());

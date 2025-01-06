@@ -41,10 +41,8 @@ public class ReviewService implements IReviewService {
         if (reviews == null) {
             return Optional.empty();
         }
-
         return Optional.of(reviews);
     }
-
 
     public int countReviewsByUser(String email) {
         return reviewDAO.countReviewsByUser(email);
@@ -66,47 +64,17 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public Review updateReview(Long id, Review review, List<MultipartFile> reviewImages) throws Exception {
-        /*if (review == null) {
-            throw new InvalidInputException("Travel cannot be null");
-        }
-        checkNotNullFields(review);
-        System.out.println("provas");
-        checkNotDuplicate(review);
-        System.out.println("provas");
-        if (reviewImages != null && !reviewImages.isEmpty()) {
-            List<String> reviewImagesPaths = new ArrayList<>();
-            for (MultipartFile multipartFile : reviewImages) {
-                reviewImagesPaths.add(multipartFile.getOriginalFilename());
-            }
-            review.setImagesPaths(reviewImagesPaths);
-            System.out.println("provas" + review.getImagesPaths());
-        }
-        Travel existingTravel = checkReviewExistence(id, true);
-        if (travel.getPrice() != existingTravel.getPrice()) {
-            travel.setOldPrice(existingTravel.getPrice());
-        }
-        travelDAO.save(travel);
-        return travelDAO.findById(id, null);*/
-        return review;
-    }
-
-    @Override
     public Review save(Review review, List<MultipartFile> reviewImages) throws Exception {
         checkNotNullFields(review);
-        System.out.println("provas");
         checkNotDuplicate(review);
-        System.out.println("provas");
         if (reviewImages != null && !reviewImages.isEmpty()) {
             List<String> reviewImagesPaths = new ArrayList<>();
             for (MultipartFile multipartFile : reviewImages) {
                 reviewImagesPaths.add(multipartFile.getOriginalFilename());
             }
             review.setImagesPaths(reviewImagesPaths);
-            System.out.println("provas" + review.getImagesPaths());
         }
         reviewDAO.save(review);
-        System.out.println("provas");
         Optional<Review> savedReview = findReview(review.getTravel().getId().intValue(), review.getUser().getEmail());
         if (reviewImages != null && !reviewImages.isEmpty() && savedReview.isPresent()) {
             saveReviewImages(savedReview.get(), reviewImages);
@@ -115,12 +83,10 @@ public class ReviewService implements IReviewService {
         return review;
     }
 
-
     @Override
     public void delete(Review review) {
         Review existingReview = checkReviewExistence(review.getTravel().getId().intValue(), review.getUser().getEmail());
         reviewDAO.delete(existingReview);
-
     }
 
     private void checkNotNullFields(Review review) {
@@ -154,27 +120,19 @@ public class ReviewService implements IReviewService {
     }
 
     private void saveReviewImages(Review review, List<MultipartFile> reviewImages) throws Exception {
-        System.out.println(review.getTravel().getId());
         String reviewDirectory = String.valueOf(review.getTravel().getId()) + '-' + review.getUser().getEmail();
-        System.out.println("Directory " + reviewDirectory);
         File directory = new File(REVIEW_IMAGES_DIR + reviewDirectory);
         if (!directory.exists() && !directory.mkdirs()) {
             throw new Exception("Could not create directory");
         }
-        System.out.println("prova gggagagas " + reviewImages.toString());
         deleteExistingFiles(directory.listFiles());
         List<String> imagesPaths = new ArrayList<>();
-        System.out.println("prova gggagagas " + reviewImages);
-
         for (MultipartFile reviewImage : reviewImages) {
-            System.out.println("mannaia");
             String fileName = String.valueOf(review.getTravel().getId()) + '-' + review.getUser().getEmail() + '-' + reviewImage.getOriginalFilename();
-            System.out.println("mannaia" + fileName);
             Path path = Path.of(REVIEW_IMAGES_DIR + reviewDirectory, fileName);
             Files.copy(reviewImage.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             imagesPaths.add(fileName);
         }
-
         review.setImagesPaths(imagesPaths);
     }
 

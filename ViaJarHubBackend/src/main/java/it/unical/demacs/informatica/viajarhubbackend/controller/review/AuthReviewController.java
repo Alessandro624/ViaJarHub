@@ -20,21 +20,17 @@ import java.util.Objects;
 public class AuthReviewController {
     private final ReviewService reviewService;
 
-
     public AuthReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
 
     @RequestMapping(value = "/create-review", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createReview(@RequestPart Review review, @RequestParam(required = false) List<MultipartFile> reviewImages) {
-        System.out.println("prova");
         try {
             if (!Objects.equals(SecurityUtility.getCurrentUser().getUsername(), review.getUser().getEmail())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
-            System.out.println(review);
             Review createdReview = reviewService.save(review, reviewImages);
-            System.out.println(createdReview);
             if (createdReview == null) {
                 return ResponseEntity.badRequest().build();
             }
@@ -42,14 +38,13 @@ public class AuthReviewController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
+
     @RequestMapping(value = "/delete-review", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteReview(@RequestBody Review review) {
         try {
-
             if (!Objects.equals(SecurityUtility.getCurrentUser().getUsername(), review.getUser().getEmail())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
@@ -61,6 +56,7 @@ public class AuthReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
     @RequestMapping(value = "/reviews-by-user", method = RequestMethod.GET)
     public ResponseEntity<List<Review>> getReviewsByUser(@RequestParam("email") String email) {
         try {
@@ -72,23 +68,4 @@ public class AuthReviewController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
-
-/*
-    public ResponseEntity<Void> updateReview(Long id, Travel travel, List<MultipartFile> travelImages) {
-        try {
-
-            Travel updatedTravel = this.travelService.updateTravel(id, travel, travelImages);
-            if (updatedTravel == null) {
-                return ResponseEntity.badRequest().build();
-            }
-            return ResponseEntity.ok().build();
-        } catch (InvalidInputException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (TravelNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }*/
 }

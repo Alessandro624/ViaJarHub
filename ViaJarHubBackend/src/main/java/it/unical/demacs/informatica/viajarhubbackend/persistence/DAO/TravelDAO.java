@@ -37,13 +37,13 @@ public interface TravelDAO {
 
     int getTravelNumber();
 
-    Double getDailyIncome();
+    double getDailyIncome();
 
-    Double getMonthly();
+    double getMonthly();
 
-    Double getAllIncome();
+    double getAllIncome();
 
-    Double getAnnualIncome();
+    double getAnnualIncome();
 
-    Integer getMonthlyBooking(int mese);
+    int getMonthlyBooking(int month);
 }
