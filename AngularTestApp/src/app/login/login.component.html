@@ -1,4 +1,4 @@
-<div class="dropdown-menu dropdown-menu-end p-4 shadow-sm rounded position-absolute" [class.show]="isOpened"
+<div class="dropdown-menu dropdown-menu-end p-4 shadow-sm rounded position-absolute" [ngClass]="{'show': isOpened}"
      style="width: 350px; right: 0">
   @if (currentForm === 'login') {
     <form id="loginForm" (ngSubmit)="onLogin()" method="POST">

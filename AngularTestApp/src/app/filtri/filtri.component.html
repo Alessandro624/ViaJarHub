@@ -14,8 +14,6 @@
         <strong>Tipo:</strong> {{ type }}
     </span>
   </div>
-
-
   <!-- Pulsante per estendere -->
   @if (isExpanded) {
     <button class="btn btn-outline-primary" (click)="toggleFilters()">
@@ -27,7 +25,6 @@
     </button>
   }
 </div>
-
 @if (isExpanded) {
   <!-- Pannello di modifica filtri -->
   <div class="filter-panel mt-3 border p-3 rounded bg-light">
@@ -47,10 +44,8 @@
             [min]="minDate"
             [(ngModel)]="startDate"
             (change)="onStartDateChange($event)"
-            name="startDate"
-          />
+            name="startDate"/>
         </div>
-
         <!-- Secondo Date Picker -->
         <div class="col-6 mb-3">
           <label for="endDate" class="me-2">Data ritorno:</label>
@@ -60,12 +55,9 @@
             class="form-control"
             [min]="endDateMin"
             [(ngModel)]="endDate"
-            name="endDate"
-          />
+            name="endDate"/>
         </div>
-
         <!-- Valori Selezionati -->
-
       </div>
     </div>
     <!-- Range Slider -->
@@ -76,7 +68,6 @@
         [options]="options">
       </ngx-slider>
     </div>
-
     <div class="container">
       <div class="row">
         <div class="col-8 mb-3">
@@ -101,7 +92,7 @@
                   role="status"
                   aria-hidden="true"></span>
             <span *ngIf="!isLoading">Applica</span></button>
-          <button type="button" class="btn btn-secondary" (click)="resetFilters()" [disabled]="isLoading">
+          <button type="reset" class="btn btn-secondary" (click)="resetFilters()" [disabled]="isLoading">
             Ripristina
           </button>
         </div>

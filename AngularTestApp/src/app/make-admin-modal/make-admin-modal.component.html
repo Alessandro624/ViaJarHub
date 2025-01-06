@@ -18,12 +18,13 @@
                      (input)="onEmailInput()"
                      (focus)="onFocus()"
                      [class.is-invalid]="emailError"
+                     (keydown)="handleKeyDown($event)"
                      placeholder="Email">
               <label for="email" class="form-label">Email</label>
             </div>
-            <ul class="dropdown-menu" [class.show]="isInputFocused && filteredEmails.length">
-              <li *ngFor="let suggestion of filteredEmails" class="dropdown-item"
-                  (mousedown)="selectEmail(suggestion)">
+            <ul class="dropdown-menu" [class.show]="isInputFocused && filteredEmails.length > 0" role="listbox">
+              <li *ngFor="let suggestion of filteredEmails; let i = index" class="dropdown-item"
+                  (mousedown)="selectEmail(suggestion)" [ngClass]="{'active': i === selectedIndex}" role="option">
                 {{ suggestion }}
               </li>
             </ul>

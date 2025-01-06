@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, NgZone, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {NgxSliderModule, Options, LabelType} from '@angular-slider/ngx-slider';
@@ -52,14 +52,27 @@ export class FiltriComponent implements OnChanges, OnInit {
   endDateMin: string = this.minDate;
   type: TravelType = TravelType.NESSUNO;
 
-  setSliderOptions() {
+  constructor(@Inject(NgZone) private ngZone: NgZone) {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes) {
+      this.ngZone.runOutsideAngular(() => this.setSliderOptions());
+    }
+  }
+
+  ngOnInit(): void {
+    this.resetFilters();
+  }
+
+  private setSliderOptions() {
     const calculatedTickStep = this.calculateTickStep(this.maxPrice);
     this.options.tickStep = calculatedTickStep;
     this.options.tickValueStep = calculatedTickStep;
     this.options.ceil = this.maxPrice;
   }
 
-  calculateTickStep(maxValue: number): number {
+  private calculateTickStep(maxValue: number): number {
     if (maxValue <= 100) {
       return 10;
     } else if (maxValue <= 500) {
@@ -87,7 +100,7 @@ export class FiltriComponent implements OnChanges, OnInit {
     }
   }
 
-  formatDate(date: Date): string {
+  private formatDate(date: Date): string {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
@@ -167,13 +180,5 @@ export class FiltriComponent implements OnChanges, OnInit {
     this.isLoading = false;
     this.alertMessage = '';
     this.setSliderOptions();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.setSliderOptions();
-  }
-
-  ngOnInit(): void {
-    this.resetFilters();
   }
 }

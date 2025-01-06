@@ -1,12 +1,18 @@
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input, NgZone,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-
 import {Travel} from '../models/travel/travel.model';
 import {AuthenticationService} from '../login/authentication.service';
 import {PaymentService} from './payment.service';
-import {response} from 'express';
-
 
 @Component({
   selector: 'app-payment',
@@ -16,11 +22,10 @@ import {response} from 'express';
   styleUrls: ['./payment.component.css']
 })
 export class PaymentComponent implements OnChanges {
-  @Output() closeModal = new EventEmitter<void>();
-
   @Input() prezzo: number = 0;
   @Input() travel: Travel | undefined;
   @Input() numeroPartecipanti: number = 0;
+  @Output() closeModal = new EventEmitter<void>();
   cardNumber: string = '';
   expiryMonth: string = '';
   expiryYear: string = '';
@@ -31,44 +36,37 @@ export class PaymentComponent implements OnChanges {
   postiSelezionati: number = 1;
   prezzoFinale: number = 0;
 
+  constructor(@Inject(NgZone) private ngZone: NgZone, private _paymentService: PaymentService, private authentication: AuthenticationService, private elementRef: ElementRef) {
+  }
 
-  // Stato del pagamento
-  constructor(private _paymentService: PaymentService, private authentication: AuthenticationService, private elementRef: ElementRef) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes) {
+      this.ngZone.runOutsideAngular(() => {
+        this.modificaPrezzo();
+        this.inWishlist = this.isContainedIn('app-client');
+      });
+    }
   }
 
   makePayment() {
     this.isLoading = true;
-    const paymentData = {
-      cardNumber: this.cardNumber,
-      expiryMonth: this.expiryMonth,
-      expiryYear: this.expiryYear,
-      cvv: this.cvv,
-      amount: this.prezzoFinale,
-      destinazione: this.travel?.destination,
-      dataPartenza: this.travel?.startDate,
-      dataRitorno: this.travel?.endDate,
-      numeroPartecipanti: this.numeroPartecipanti,
-      email: this.authentication.currentUserSubject.getValue()?.email,
-      travelId: this.travel?.id
-    };
-    // Invio dati al backend
-    this._paymentService.makePayment(paymentData)
-      .subscribe({
-        next: (response: any) => {
-          console.log('Pagamento completato:', response);
-          alert('Pagamento riuscito');
-          this.isLoading = false;
-          this.closeModal.emit();
-        }, error: (error) => {
-          console.error('Errore durante il pagamento:', error);
-          alert('Errore durante il pagamento.');
-          this.isLoading = false;
-          this.closeModal.emit();
-        }
-      });
+    const paymentData = this.getPaymentData();
+    this._paymentService.makePayment(paymentData).subscribe({
+      next: (response: any) => {
+        console.log('Pagamento completato:', response);
+        alert('Pagamento riuscito');
+        this.isLoading = false;
+        this.closeModal.emit();
+      }, error: (error) => {
+        console.error('Errore durante il pagamento:', error);
+        alert('Errore durante il pagamento.');
+        this.isLoading = false;
+        this.closeModal.emit();
+      }
+    });
   }
 
-  isContainedIn(parentSelector: string): boolean {
+  private isContainedIn(parentSelector: string): boolean {
     let parent = this.elementRef.nativeElement.parentElement;
     while (parent) {
       if (parent.tagName.toLowerCase() === parentSelector.toLowerCase()) {
@@ -79,7 +77,6 @@ export class PaymentComponent implements OnChanges {
     return false;
   }
 
-
   modificaPrezzo() {
     console.log()
     if (this.travel) {
@@ -87,11 +84,6 @@ export class PaymentComponent implements OnChanges {
       console.log(this.prezzoFinale
       )
     }
-  }
-
-  ngOnChanges(): void {
-    this.modificaPrezzo();
-    this.inWishlist = this.isContainedIn('app-client');
   }
 
   validateExpiryMonth() {
@@ -112,5 +104,21 @@ export class PaymentComponent implements OnChanges {
         this.expiryYear = '2040';
       }
     }
+  }
+
+  private getPaymentData() {
+    return {
+      cardNumber: this.cardNumber,
+      expiryMonth: this.expiryMonth,
+      expiryYear: this.expiryYear,
+      cvv: this.cvv,
+      amount: this.prezzoFinale,
+      destinazione: this.travel?.destination,
+      dataPartenza: this.travel?.startDate,
+      dataRitorno: this.travel?.endDate,
+      numeroPartecipanti: this.numeroPartecipanti,
+      email: this.authentication.currentUserSubject.getValue()?.email,
+      travelId: this.travel?.id
+    };
   }
 }

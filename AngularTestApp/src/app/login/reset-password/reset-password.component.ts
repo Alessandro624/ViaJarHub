@@ -61,7 +61,7 @@ export class ResetPasswordComponent implements OnInit {
     }).then();
   }
 
-  validatePassword(password: string) {
+  private validatePassword(password: string) {
     const hasNumber = /\d/;
     const hasLower = /[a-z]/;
     const hasUpper = /[A-Z]/;

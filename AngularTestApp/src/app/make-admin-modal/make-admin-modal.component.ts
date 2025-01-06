@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, Input, NgZone, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
 import {NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {ClientService} from '../profile/client/client.service';
 import {FormsModule} from '@angular/forms';
@@ -26,6 +26,7 @@ export class MakeAdminModalComponent implements OnInit {
   emails: string[] = [];
   filteredEmails: string[] = [];
   isInputFocused: boolean = false;
+  selectedIndex: number = -1;
 
   constructor(private _clientService: ClientService) {
   }
@@ -50,6 +51,7 @@ export class MakeAdminModalComponent implements OnInit {
     this.alertMessage = "";
     this.isLoading = false;
     this.filteredEmails = [...this.emails];
+    this.selectedIndex = -1;
   }
 
   onSubmit() {
@@ -71,7 +73,7 @@ export class MakeAdminModalComponent implements OnInit {
     }
   }
 
-  validateEmail(email: string) {
+  private validateEmail(email: string) {
     return /^[A-z0-9.+_-]+@[A-z0-9._-]+\.[A-z]{2,6}$/.test(email);
   }
 
@@ -113,5 +115,41 @@ export class MakeAdminModalComponent implements OnInit {
 
   onFocus() {
     this.isInputFocused = true;
+  }
+
+  handleKeyDown($event: KeyboardEvent) {
+    switch ($event.key) {
+      case 'ArrowDown':
+        if (this.filteredEmails.length === 0) return;
+        this.selectedIndex = (this.selectedIndex + 1) % this.filteredEmails.length;
+        this.scrollToActiveItem();
+        $event.preventDefault();
+        break;
+      case 'ArrowUp':
+        if (this.filteredEmails.length === 0) return;
+        this.selectedIndex = (this.selectedIndex - 1 + this.filteredEmails.length) % this.filteredEmails.length;
+        this.scrollToActiveItem();
+        $event.preventDefault();
+        break;
+      case 'Enter':
+        if (this.selectedIndex >= 0) {
+          this.selectEmail(this.filteredEmails[this.selectedIndex]);
+        }
+        $event.preventDefault();
+        break;
+      case 'Escape':
+        this.selectEmail('');
+        const input = $event.target as HTMLInputElement;
+        input.blur();
+        break;
+    }
+  }
+
+  private scrollToActiveItem() {
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    if (this.selectedIndex >= 0 && this.selectedIndex < dropdownItems.length) {
+      const activeItem = dropdownItems[this.selectedIndex + 1] as HTMLElement;
+      activeItem.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
+    }
   }
 }

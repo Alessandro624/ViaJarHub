@@ -17,8 +17,7 @@
                       aria-expanded="false" data-bs-auto-close="outside" (click)="toggleDropdown()">
                 Accedi
               </button>
-              <app-login (setCurrentForm)="this.setCurrentForm()" [isOpened]="isDropdownOpened"
-                         [currentForm]="currentFrom"></app-login>
+              <app-login [isOpened]="isDropdownOpened" [currentForm]="currentFrom"></app-login>
             </li>
           } @else {
             <li class="nav-item dropdown">
@@ -56,6 +55,7 @@
     <app-alert></app-alert>
     <router-outlet></router-outlet>
   </main>
+  <app-chatbot></app-chatbot>
   <footer class="bg-dark text-white text-center py-3 mt-4">
     <div class="container">
       <p class="mb-0">© 2024 ViaJar Hub - All Rights Reserved</p>

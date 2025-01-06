@@ -5,8 +5,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Travel} from '../models/travel/travel.model';
 import {FormsModule} from '@angular/forms';
 import {TravelFilter} from '../models/travel/travel-filter.model';
-import {Review} from '../models/review/review.module';
-import {ReviewService} from '../review/review.service';
+import {environment} from '../../environments/environment';
+
+declare function getRandomPhoto(resolution: string): string;
+
+declare var window: any;
 
 @Component({
   selector: 'app-carousel',
@@ -16,76 +19,108 @@ import {ReviewService} from '../review/review.service';
     NgClass,
     NgIf,
     FormsModule,
-    NgForOf
+    NgForOf,
   ],
   styleUrls: ['./carousel.component.css']
 })
 
 export class CarouselComponent implements OnInit, OnDestroy {
-  @Input() review: Review | null = null;
+  @Input() filters?: TravelFilter;
   inBody: boolean = false; // Stato per indicare se è in Body1
   isFocused: boolean = false; // Controlla se la barra è illuminata
   inReview: boolean = false;
   selectedIndex: number = -1;
-
   travel!: Travel | undefined;
   immaginiURLs: string[] = [];
   isExpanded: boolean = false;
-
-  filters: TravelFilter = {
-    searchQuery: '',
-    startDate: '',
-    endDate: '',
-    minPrice: 0,
-    maxPrice: 0,
-    travelType: null,
-    travelOrder: null,
-    reverse: false,
-  }
-
   suggestions: string[] = [];
+  photos: string[] = [];
 
-  constructor(private _router: Router, private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private reviewService: ReviewService,) {
+  constructor(private _router: Router, @Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    console.log("agasgsg")
     // Controlla se il componente è contenuto all'interno di Body1
     this.inBody = this.isContainedIn('app-body1');
     this.inReview = this.isContainedIn('app-reviewmodal');
-
     // Configura il carosello con l'intervallo appropriato
     const interval = this.inBody ? 5000 : 20000; // 5 secondi dentro Body1, 20 secondi fuori
     this.enableCarouselTimer(interval);
     console.log(this.inReview);
     console.log(this.inBody);
-
     // Esegui l'effetto macchina da scrivere solo dentro Body1
     if (this.inBody) {
-      this.ngZone.runOutsideAngular(() => this.typeWriterEffect());
-      this._activatedRoute.queryParams.subscribe(params => {
-        const searchQuery = params['search'] || '';
-        this.selectSuggestion(searchQuery);
+      this.ngZone.runOutsideAngular(() => {
+        this.loadCarouselImages();
+        this.typeWriterEffect()
       });
+      this.loadSearchQuery();
     } else {
-
       const id = Number(this._activatedRoute.parent?.snapshot.paramMap.get('id'));
       if (id == null) {
         throw new Error("Viaggio non trovato");
-
       }
-      this._travelService.getTravelById(id).subscribe({
-        next: result => {
-          this.travel = result;
-          this._travelService.getTravelImages(this.travel.id).subscribe({
-            next: data => {
-              console.log(data);
-              this.immaginiURLs = data.map(image => `data:image/jpeg;base64,${image}`);
-            }
-          });
-        }
-      });
+      this.loadTravel(id);
     }
+  }
+
+  private loadCarouselImages(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.configureFlickerAPIKey();
+      this.fetchFlickerPhotos();
+    }
+  }
+
+  private configureFlickerAPIKey(): void {
+    window.Flickr.configure({
+      apiKey: environment.flickerAPIKey,
+      baseUrl: environment.flickerBaseUrl
+    });
+  }
+
+  private fetchFlickerPhotos(): void {
+    window.Flickr.fetchPhotos(
+      {
+        content_type: 1,
+        safe_search: 1,
+        orientation: 'landscape',
+        tags: 'travel,nature,landscape',
+        tag_mode: 'all',
+        min_taken_date: '2024-01-01',
+        max_taken_date: '2024-12-31',
+        sort: 'interestingness-desc',
+      },
+      () => {
+        for (let i = 0; i < 3; i++) {
+          const photo = getRandomPhoto('b');
+          if (photo) {
+            this.photos.push(photo);
+          }
+        }
+        console.log(this.photos);
+      }
+    );
+  }
+
+  private loadTravel(id: number) {
+    this._travelService.getTravelById(id).subscribe({
+      next: result => {
+        this.travel = result;
+        this._travelService.getTravelImages(this.travel.id).subscribe({
+          next: data => {
+            console.log(data);
+            this.immaginiURLs = data.map(image => `data:image/jpeg;base64,${image}`);
+          }
+        });
+      }
+    });
+  }
+
+  private loadSearchQuery() {
+    this._activatedRoute.queryParams.subscribe(params => {
+      const searchQuery = params['search'] || '';
+      this.selectSuggestion(searchQuery);
+    });
   }
 
   ngOnDestroy(): void {
@@ -98,12 +133,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
         carouselInstance.dispose();
       }
     }
-
     this.immaginiURLs.forEach(url => URL.revokeObjectURL(url));
-
   }
 
-  typeWriterEffect() {
+  private typeWriterEffect() {
     if (isPlatformBrowser(this.platformId)) {
       const textElement = document.getElementById('animatedText');
       if (!textElement) {
@@ -124,7 +157,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   // Funzione per verificare se il componente è contenuto in un altro componente
-  isContainedIn(parentSelector: string): boolean {
+  private isContainedIn(parentSelector: string): boolean {
     let parent = this.elementRef.nativeElement.parentElement;
     while (parent) {
       if (parent.tagName.toLowerCase() === parentSelector.toLowerCase()) {
@@ -136,7 +169,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   // Abilita il timer del carosello con un intervallo specifico
-  enableCarouselTimer(interval: number): void {
+  private enableCarouselTimer(interval: number): void {
     const carouselElement = this.elementRef.nativeElement.querySelector('#carouselExample');
     if (carouselElement && isPlatformBrowser(this.platformId)) {
       const bootstrap = (window as any).bootstrap;
@@ -149,14 +182,13 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
   }
 
-
   expandSearchBar(): void {
     this.isExpanded = true;
     this.isFocused = true;
   }
 
   collapseSearchBar(): void {
-    if (!this.filters.searchQuery) {
+    if (this.filters && !this.filters.searchQuery) {
       this.isExpanded = false;
       this.isFocused = false;
       this.onSearch();
@@ -164,11 +196,13 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   onSearch(): void {
-    this._router.navigate(['body1'], {queryParams: {search: this.filters.searchQuery}}).then();
+    if (this.filters) {
+      this._router.navigate(['body1'], {queryParams: {search: this.filters.searchQuery}}).then();
+    }
   }
 
   getAutocompleteSuggestions() {
-    if (this.filters.searchQuery.length > 2) {
+    if (this.filters && this.filters.searchQuery.length > 2) {
       this._travelService.getSuggestions(this.filters).subscribe({
         next: result => {
           this.suggestions = result;
@@ -183,9 +217,11 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   selectSuggestion(suggestion: string) {
-    this.filters.searchQuery = suggestion;
-    this.suggestions = [];
-    this.selectedIndex = -1;
+    if (this.filters) {
+      this.filters.searchQuery = suggestion;
+      this.suggestions = [];
+      this.selectedIndex = -1;
+    }
   }
 
   handleKeyDown($event: KeyboardEvent) {

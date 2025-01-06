@@ -44,8 +44,6 @@ export class AddTravelComponent implements OnInit {
     latitude: 0,
     longitude: 0
   };
-  prezzo = '';
-  numeroposti = '';
   alertMessage: string = '';
   imageError: string = '';
   isLoading: boolean = false;
@@ -131,7 +129,7 @@ export class AddTravelComponent implements OnInit {
     });
   }
 
-  getLocationDetails(location: google.maps.LatLng, infoWindow: google.maps.InfoWindow, map: {
+  private getLocationDetails(location: google.maps.LatLng, infoWindow: google.maps.InfoWindow, map: {
     innerMap: google.maps.InfoWindowOpenOptions | google.maps.Map | google.maps.StreetViewPanorama | null | undefined;
   }, marker: any) {
     const geocoder = new google.maps.Geocoder();
@@ -184,8 +182,6 @@ export class AddTravelComponent implements OnInit {
 
   onSubmit() {
     this.isLoading = true;
-    this.travel.price = Number(this.prezzo);
-    this.travel.maxParticipantsNumber = Number(this.numeroposti);
     console.log('Dati del form:', this.travel);
     console.log('Immagini caricate:', this.images);
     const travelType = this.travel.travelType;
@@ -203,16 +199,6 @@ export class AddTravelComponent implements OnInit {
       }
     });
   }
-
-  /*validateAndFormatPrice(event: any) {
-    const input = event.target.value;
-    const pricePattern = /^\d*\.?\d*$/;
-    if (!pricePattern.test(input)) {
-      event.target.value = input.slice(0, -1);
-    } else {
-      this.travel.price = input;
-    }
-  }*/
 
   onFileSelect(event: any) {
     this.checkAndAddFiles(event.target.files);

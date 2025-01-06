@@ -23,7 +23,6 @@ export class DeleteTravelComponent {
   }
 
   deleteTravel() {
-    console.log(this.travel.id);
     this.isLoading = true;
     this.alertMessage = '';
     this._travelService.deleteTravel(this.travel.id).subscribe({
