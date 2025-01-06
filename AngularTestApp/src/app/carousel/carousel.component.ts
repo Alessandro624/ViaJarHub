@@ -34,7 +34,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   immaginiURLs: string[] = [];
   isExpanded: boolean = false;
   suggestions: string[] = [];
-  photos: string[] = [];
+  photos: string[] = ['4646289.jpg', '4646289.jpg', '4646289.jpg'];
 
   constructor(private _router: Router, @Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
   }
@@ -44,7 +44,8 @@ export class CarouselComponent implements OnInit, OnDestroy {
     this.inBody = this.isContainedIn('app-body1');
     this.inReview = this.isContainedIn('app-reviewmodal');
     // Configura il carosello con l'intervallo appropriato
-    const interval = this.inBody ? 5000 : 20000; // 5 secondi dentro Body1, 20 secondi fuori
+    // 5 secondi dentro Body1, 20 secondi fuori
+    const interval = this.inBody ? 5000 : 20000;
     this.enableCarouselTimer(interval);
     console.log(this.inReview);
     console.log(this.inBody);
@@ -91,15 +92,27 @@ export class CarouselComponent implements OnInit, OnDestroy {
         sort: 'interestingness-desc',
       },
       () => {
+        const newPhotos: string[] = [];
         for (let i = 0; i < 3; i++) {
           const photo = getRandomPhoto('b');
           if (photo) {
-            this.photos.push(photo);
+            newPhotos.push(photo);
           }
         }
-        console.log(this.photos);
+        this.photos = [...this.photos, ...newPhotos];
       }
     );
+  }
+
+  onSlideChange($event: any) {
+    const activeIndex = $event.to;
+    if (activeIndex > 3) {
+      this.removePlaceholders();
+    }
+  }
+
+  removePlaceholders() {
+    this.photos = this.photos.slice(3);
   }
 
   private loadTravel(id: number) {
@@ -157,6 +170,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   // Funzione per verificare se il componente è contenuto in un altro componente
+
   private isContainedIn(parentSelector: string): boolean {
     let parent = this.elementRef.nativeElement.parentElement;
     while (parent) {
@@ -169,6 +183,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   // Abilita il timer del carosello con un intervallo specifico
+
   private enableCarouselTimer(interval: number): void {
     const carouselElement = this.elementRef.nativeElement.querySelector('#carouselExample');
     if (carouselElement && isPlatformBrowser(this.platformId)) {

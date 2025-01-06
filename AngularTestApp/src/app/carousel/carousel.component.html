@@ -1,14 +1,10 @@
-<div id="carouselExample" class="carousel slide mb-4" data-bs-ride="carousel">
+<div id="carouselExample" class="carousel slide mb-4" data-bs-ride="carousel"
+     (slide.bs.carousel)="onSlideChange($event)">
   @if (inBody) {
     <div class="carousel-inner">
-      <div class="carousel-item home active">
-        <img src="4646289.jpg" class="d-block w-100" alt="Slide 1">
+      <div *ngFor="let photo of photos; let i = index" class="carousel-item home" [class.active]="i === 0">
+        <img [src]="photo" class="d-block w-100" alt="Slide {{ i + 1 }}">
       </div>
-      @for (photo of photos; track photo; let i = $index) {
-        <div class="carousel-item home">
-          <img [src]=photo class="d-block w-100" alt="Slide {{i}}">
-        </div>
-      }
     </div>
     <!--Scritta sopra la search box-->
     <div class="overlay d-flex flex-column justify-content-center align-items-center">
