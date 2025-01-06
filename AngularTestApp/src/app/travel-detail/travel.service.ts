@@ -6,6 +6,8 @@ import {catchError, Observable, switchMap, throwError} from 'rxjs';
 import {TravelFilter} from '../models/travel/travel-filter.model';
 import {AuthenticationService} from '../login/authentication.service';
 import {UserRole} from '../models/user/user-role.enum';
+import {Router} from '@angular/router';
+import {NotfoundComponent} from '../notfound/notfound.component';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,7 @@ export class TravelService {
   APIUrl = "api";
 
 
-  constructor(private _http: HttpClient, private _authenticationService: AuthenticationService) {
+  constructor(private _http: HttpClient, private _authenticationService: AuthenticationService, private _router: Router) {
   }
 
   private checkUserAuthority() {
@@ -60,12 +62,16 @@ export class TravelService {
   }
 
   getTravelById(id: number) {
+    if (isNaN(id)) {
+      this._router.navigate(['**']);
+    }
     return this.checkUserAuthority().pipe(
       switchMap(user =>
         this._http.get<Travel>(
           `${this.APIUrl}/${this.getAPIType(user)}/v1/travel?id=${id}`
         )
       ),
+
       catchError(this.handleError)
     );
   }
@@ -151,7 +157,7 @@ export class TravelService {
     );
   }
 
-  private handleError(error: HttpErrorResponse) {
+  private handleError = (error: HttpErrorResponse) => {
     let errorMessage = 'Si è verificato un errore, riprovare più tardi';
     switch (error.status) {
       case 400:
@@ -162,6 +168,8 @@ export class TravelService {
         break;
       case 404:
         errorMessage = 'Viaggio non trovato';
+        console.error(errorMessage);
+        this._router.navigate(['**']); // Ora funziona
         break;
       case 409:
         errorMessage = 'Errore nella creazione del viaggio';
@@ -170,11 +178,15 @@ export class TravelService {
         errorMessage = 'Si è verificato un errore, riprovare più tardi';
     }
     return throwError(() => new Error(errorMessage));
-  }
+  };
+
 
   getAvailableSeats(travel: Travel) {
     return this._http.post<number>(`${this.APIUrl}/open/v1/available-seats`, travel).pipe(
       catchError(this.handleError)
     )
+  }
+
+  Error404() {
   }
 }

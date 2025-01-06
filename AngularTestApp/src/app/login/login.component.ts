@@ -14,6 +14,7 @@ import {Router} from '@angular/router';
 import {AuthenticationService} from './authentication.service';
 import {isPlatformBrowser, NgIf} from '@angular/common';
 import {environment} from '../../environments/environment';
+import {AlertService} from '../alert/alert.service';
 
 @Component({
   selector: 'app-login',
@@ -48,7 +49,7 @@ export class LoginComponent implements OnInit {
   isLoading: boolean = false;
   @Output() setCurrentForm = new EventEmitter<void>();
 
-  constructor(@Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router) {
+  constructor(@Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router, private _alertService: AlertService) {
   }
 
   ngOnInit(): void {
@@ -93,7 +94,7 @@ export class LoginComponent implements OnInit {
         next: () => {
           this.isLoading = false;
           console.log('Login successful:', {email: this.email, password: this.password});
-          alert("Login effettuato con successo");
+          this._alertService.showAlert("Login effettuato con successo", false);
           //this.sendUserHome();
         }, error: error => {
           this.isLoading = false;

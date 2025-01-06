@@ -109,6 +109,7 @@ export class TravelDetailComponent implements OnInit {
   private setTravel(id: number) {
     this._travelService.getTravelById(id).subscribe({
       next: result => {
+
         this.travel = result;
         this.type = this.travel.travelType.toLowerCase();
         this.modificaPrezzo();

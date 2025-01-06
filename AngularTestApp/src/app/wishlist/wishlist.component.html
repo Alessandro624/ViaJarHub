@@ -6,7 +6,7 @@
       <div *ngIf="!wishlist || wishlist.length === 0"
            class="d-flex flex-column align-items-center justify-content-center mt-5">
         <p class="text-muted">La tua lista dei desideri è vuota. Inizia ad aggiungere i tuoi viaggi preferiti!</p>
-        <button class="btn btn-primary" routerLink="">
+        <button class="btn btn-outline-primary" routerLink="">
           <i class="fa-solid fa-plus"></i> Scopri i viaggi
         </button>
       </div>
@@ -14,7 +14,7 @@
            class="row align-items-center justify-content-center prova"
            style="flex: 1;"> <!-- Permette di riempire lo spazio disponibile verticalmente -->
         <div class="col-1 d-flex justify-content-center">
-          <button *ngIf="index > 0" (click)="previewsWishlist()" class="btn btn-primary btn-circle">
+          <button *ngIf="index > 0" (click)="previewsWishlist()" class="btn btn-outline-primary btn-circle">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
         </div>
@@ -48,7 +48,7 @@
           </div>
         </div>
         <div class="col-1 d-flex justify-content-center">
-          <button *ngIf="index < wishlistLength" (click)="nextWishlist()" class="btn btn-primary btn-circle">
+          <button *ngIf="index < wishlistLength" (click)="nextWishlist()" class="btn btn-outline-primary btn-circle">
             <i class="fa-solid fa-chevron-right"></i>
           </button>
         </div>

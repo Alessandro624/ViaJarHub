@@ -9,6 +9,7 @@ import {authenticationGuard} from './login/authentication.guard';
 import {UserRole} from './models/user/user-role.enum';
 import {VerifyEmailComponent} from './login/verify-email/verify-email.component';
 import {ResetPasswordComponent} from './login/reset-password/reset-password.component';
+import {NotfoundComponent} from './notfound/notfound.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'body1', pathMatch: 'full'},
@@ -28,5 +29,7 @@ export const routes: Routes = [
     ]
   },
   {path: 'verify-email/:token', component: VerifyEmailComponent},
-  {path: 'reset-password/:token', component: ResetPasswordComponent}
+  {path: 'reset-password/:token', component: ResetPasswordComponent},
+  {path: '404', component: NotfoundComponent},
+  {path: '**', redirectTo: '/404'}
 ];

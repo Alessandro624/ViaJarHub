@@ -7,11 +7,12 @@ import {AuthenticationService} from './login/authentication.service';
 import {User} from './models/user/user.model';
 import {environment} from '../environments/environment';
 import {ContactModalComponent} from './contact-modal/contact-modal.component';
+import {AlertComponent} from './alert/alert.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoginComponent, ContactModalComponent],
+  imports: [CommonModule, RouterModule, LoginComponent, ContactModalComponent, AlertComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

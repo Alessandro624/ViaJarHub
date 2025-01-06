@@ -1,0 +1,8 @@
+<!-- alert.component.html -->
+<div
+  *ngIf="message"
+  class="alert-container"
+  [ngClass]="{'fade-out': isExiting, 'alert-success': isSuccess, 'alert-error': !isSuccess}"
+>
+  <p>{{ message }}</p>
+</div>

@@ -13,7 +13,7 @@
         <ul class="navbar-nav d-flex flex-row ms-auto gap-3">
           @if (!user) {
             <li class="nav-item dropdown">
-              <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+              <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
                       aria-expanded="false" data-bs-auto-close="outside" (click)="toggleDropdown()">
                 Accedi
               </button>
@@ -50,8 +50,10 @@
       </div>
     </nav>
   </header>
+
   <app-contact-modal [isPopupVisible]="isPopupVisible" (closePopup)="closePopup()"></app-contact-modal>
   <main class="flex-grow-1">
+    <app-alert></app-alert>
     <router-outlet></router-outlet>
   </main>
   <footer class="bg-dark text-white text-center py-3 mt-4">

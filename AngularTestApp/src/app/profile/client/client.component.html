@@ -17,7 +17,7 @@
         <!-- User Info -->
         <div class="d-flex flex-column">
           <div class="d-flex align-items-center"><h4 class="mb-1 me-2">{{ user.firstName }} {{ user.lastName }}</h4>
-            <button class="btn btn-sm btn-primary edit-btn" (click)="openPopup()">modifica</button>
+            <button class="btn btn-sm btn-outline-primary edit-btn" (click)="openPopup()">modifica</button>
           </div>
           <p class="text-muted mb-0">Cliente</p> <small
           class="text-muted">{{ birthdate }}</small></div>
@@ -68,7 +68,7 @@
             @if (this.loadBtnless) {
               <div class="col-2 ">
 
-                <button (click)="lessReview()" class="btn btn-primary btn-sm">
+                <button (click)="lessReview()" class="btn btn-outline-primary btn-sm">
                   <i class="fa-solid fa-minus "></i>
 
                 </button>
@@ -84,7 +84,7 @@
           @if (this.loadBtnmore) {
             <div class="row justify-content-end mt-0">
               <div class="col-2">
-                <button (click)="moreReview()" class="btn btn-primary btn-sm">
+                <button (click)="moreReview()" class="btn btn-outline-primary btn-sm">
                   <i class="fa-solid fa-plus fa-sm"></i>
                 </button>
               </div>
@@ -99,7 +99,7 @@
         }
         <div class="row justify-content-center mt-auto ">
           <div class="col-4">
-            <button class="btn btn-primary mt-2  " (click)="openPopup2()">aggiungi recensione</button>
+            <button class="btn btn-outline-primary mt-2  " (click)="openPopup2()">aggiungi recensione</button>
 
           </div>
 
