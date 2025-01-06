@@ -34,7 +34,7 @@ public class PaymentController {
     @PostConstruct
     public void init() {
         // Imposta la chiave segreta di Stripe
-        Stripe.apiKey = "sk_test_51QXRegAy1mElwXplBtKd1JF5OfVvXMBKbOk3DVRM64FDM9d9cbfuwB8RKM5feK1yOiHwZoyIbxYIw9HTZ4rJ4WPX00QrtOIGao"; // Sostituisci con la tua chiave segreta
+        Stripe.apiKey = System.getenv("STRIPE_VIAJARHUB");
     }
 
     private void addToBooking(Long travelId, Booking booking) {
@@ -44,12 +44,8 @@ public class PaymentController {
 
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> processPayment(@RequestBody Map<String, Object> paymentData) {
-        String stripeApiKey = "sk_test_51QXRegAy1mElwXplBtKd1JF5OfVvXMBKbOk3DVRM64FDM9d9cbfuwB8RKM5feK1yOiHwZoyIbxYIw9HTZ4rJ4WPX00QrtOIGao";
-        Stripe.apiKey = stripeApiKey;
-        System.out.println(stripeApiKey);
-        if (stripeApiKey == null || stripeApiKey.isEmpty()) {
-            throw new RuntimeException("Chiave API Stripe non configurata.");
-        }
+
+
         Map<String, Object> response = new HashMap<>();
         try {
             // Validazione dei dati in ingresso
