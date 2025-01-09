@@ -13,6 +13,7 @@ import {FormsModule} from '@angular/forms';
 import {Travel} from '../models/travel/travel.model';
 import {AuthenticationService} from '../login/authentication.service';
 import {PaymentService} from './payment.service';
+import {AlertService} from '../alert/alert.service';
 
 @Component({
   selector: 'app-payment',
@@ -36,7 +37,7 @@ export class PaymentComponent implements OnChanges {
   postiSelezionati: number = 1;
   prezzoFinale: number = 0;
 
-  constructor(@Inject(NgZone) private ngZone: NgZone, private _paymentService: PaymentService, private authentication: AuthenticationService, private elementRef: ElementRef) {
+  constructor(@Inject(NgZone) private ngZone: NgZone, private _paymentService: PaymentService, private authentication: AuthenticationService, private elementRef: ElementRef, private alertService: AlertService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -54,12 +55,12 @@ export class PaymentComponent implements OnChanges {
     this._paymentService.makePayment(paymentData).subscribe({
       next: (response: any) => {
         console.log('Pagamento completato:', response);
-        alert('Pagamento riuscito');
+        this.alertService.showAlert('Pagamento riuscito', true);
         this.isLoading = false;
         this.closeModal.emit();
       }, error: (error) => {
         console.error('Errore durante il pagamento:', error);
-        alert('Errore durante il pagamento.');
+        this.alertService.showAlert('Errore durante il pagamento.', false);
         this.isLoading = false;
         this.closeModal.emit();
       }

@@ -12,7 +12,7 @@ import {
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from './authentication.service';
-import {isPlatformBrowser, NgIf} from '@angular/common';
+import {isPlatformBrowser, NgClass, NgIf} from '@angular/common';
 import {environment} from '../../environments/environment';
 import {AlertService} from '../alert/alert.service';
 
@@ -21,7 +21,8 @@ import {AlertService} from '../alert/alert.service';
   standalone: true,
   imports: [
     FormsModule,
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -94,7 +95,7 @@ export class LoginComponent implements OnInit {
         next: () => {
           this.isLoading = false;
           console.log('Login successful:', {email: this.email, password: this.password});
-          this._alertService.showAlert("Login effettuato con successo", false);
+          this._alertService.showAlert("Login effettuato con successo", true);
           //this.sendUserHome();
         }, error: error => {
           this.isLoading = false;
@@ -137,7 +138,7 @@ export class LoginComponent implements OnInit {
             lastName: this.lastName,
             birthDate: this.birthDate
           });
-          alert("Email di conferma inviata con successo");
+          this._alertService.showAlert("Email di conferma inviata con successo", true);
           this.sendUserHome();
         }, error: error => {
           this.isLoading = false;
@@ -157,7 +158,7 @@ export class LoginComponent implements OnInit {
           next: () => {
             this.isLoading = false;
             console.log('First step of password reset successful:', {email: this.email, password: this.confirmPassword});
-            alert('Email di reset password inviata correttamente');
+            this._alertService.showAlert('Email di reset password inviata correttamente', true);
             this.sendUserHome();
           }, error: error => {
             this.isLoading = false;
@@ -334,7 +335,7 @@ export class LoginComponent implements OnInit {
         next: () => {
           this.isLoading = false;
           console.log('Google login completato.');
-          alert("Accesso con google effettuato correttamente")
+          this._alertService.showAlert("Accesso con google effettuato correttamente", true)
           this.sendUserHome();
         },
         error: error => {

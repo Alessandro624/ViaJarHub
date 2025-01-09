@@ -7,6 +7,7 @@ import {WishlistService} from './wishlist.service';
 import {TravelService} from '../travel-detail/travel.service';
 import {StarComponent} from '../star/star.component';
 import {Observable} from 'rxjs';
+import {AlertService} from '../alert/alert.service';
 
 @Component({
   selector: 'app-wishlist',
@@ -34,7 +35,7 @@ export class WishlistComponent implements OnInit {
   selectedTravel: Travel | undefined;
   starRatings: Map<number, number> = new Map();
 
-  constructor(private _wishlistService: WishlistService, private travelService: TravelService,) {
+  constructor(private _wishlistService: WishlistService, private travelService: TravelService, private alertService: AlertService) {
   }
 
   ngOnInit(): void {
@@ -70,7 +71,7 @@ export class WishlistComponent implements OnInit {
   removeFromWishlist(id: number) {
     this._wishlistService.removeFromWishlist(id).subscribe({
       next: () => {
-        alert("Removed");
+        this.alertService.showAlert("Removed", true);
         this.toRemoveTravel = null;
         this.isConfirmVisible = false;
       },

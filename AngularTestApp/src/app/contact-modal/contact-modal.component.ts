@@ -3,6 +3,7 @@ import {ClientService} from '../profile/client/client.service';
 import {ContactMessage} from '../models/contact/contact.model';
 import {FormsModule} from '@angular/forms';
 import {NgClass, NgIf, NgStyle} from '@angular/common';
+import {AlertService} from '../alert/alert.service';
 
 @Component({
   selector: 'app-contact-modal',
@@ -28,7 +29,7 @@ export class ContactModalComponent {
   bodyError = '';
   isLoading: boolean = false;
 
-  constructor(private _clientService: ClientService) {
+  constructor(private _clientService: ClientService, private alertService: AlertService) {
   }
 
   sendEmail() {
@@ -40,7 +41,7 @@ export class ContactModalComponent {
             this.isLoading = false;
             this.resetEmail();
             this.closePopup.emit();
-            alert("Email inviata con successo");
+            this.alertService.showAlert("Email inviata con successo", true);
           }, error: error => {
             this.isLoading = false;
             this.alertMessage = error.message;

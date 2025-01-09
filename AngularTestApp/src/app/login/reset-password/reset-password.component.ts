@@ -3,6 +3,7 @@ import {AuthenticationService} from '../authentication.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgClass, NgIf} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {AlertService} from '../../alert/alert.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -29,7 +30,7 @@ export class ResetPasswordComponent implements OnInit {
   showResetPasswordForm: boolean = false;
   alertMessage: string = '';
 
-  constructor(private _authenticationService: AuthenticationService, private _router: Router, private _activatedRoute: ActivatedRoute) {
+  constructor(private _authenticationService: AuthenticationService, private _router: Router, private _activatedRoute: ActivatedRoute, private alertService: AlertService) {
   }
 
   ngOnInit(): void {
@@ -87,7 +88,7 @@ export class ResetPasswordComponent implements OnInit {
           next: () => {
             this.isLoading = false;
             console.log('Password reset successful:', {token: this.resetToken, password: this.password});
-            alert('Password modificata correttamente:');
+            this.alertService.showAlert('Password modificata correttamente:', true);
             this.onClose();
           }, error: error => {
             this.isLoading = false;

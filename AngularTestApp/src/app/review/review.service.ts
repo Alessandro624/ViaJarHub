@@ -1,9 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpHeaders, HttpErrorResponse} from '@angular/common/http';
 import {BehaviorSubject, catchError, Observable, of, switchMap, throwError} from 'rxjs';
-import {Review} from '../models/review/review.module';
+
+
 import {Travel} from '../models/travel/travel.model';
 import {AuthenticationService} from '../login/authentication.service';
+import {Review} from '../models/review/review.model';
 
 @Injectable({
   providedIn: 'root'

@@ -9,6 +9,7 @@ import {
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {ClientService} from '../profile/client/client.service';
+import {AlertService} from '../alert/alert.service';
 
 @Component({
   selector: 'app-update-user',
@@ -38,7 +39,7 @@ export class UpdateUserComponent implements OnChanges {
   imageError: string = '';
   profileImageChanged: boolean = false;
 
-  constructor(private _clientService: ClientService, @Inject(NgZone) private ngZone: NgZone) {
+  constructor(private _clientService: ClientService, @Inject(NgZone) private ngZone: NgZone, private _alertService: AlertService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -73,7 +74,7 @@ export class UpdateUserComponent implements OnChanges {
         {
           next: () => {
             this.isLoading = false;
-            alert(`Form inviato con successo!\nNome: ${this.firstName}\nCognome: ${this.lastName}\nImmagine: ${this.image}`);
+            this._alertService.showAlert(`Form inviato con successo!\nNome: ${this.firstName}\nCognome: ${this.lastName}\nImmagine: ${this.image}`, true);
             this.updateUser();
             this.resetData();
             this.closeModal.emit();

@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Travel} from '../models/travel/travel.model';
 import {TravelService} from '../travel-detail/travel.service';
 import {NgIf} from '@angular/common';
+import {AlertService} from '../alert/alert.service';
 
 @Component({
   selector: 'app-delete-travel',
@@ -19,7 +20,7 @@ export class DeleteTravelComponent {
   isLoading: boolean = false;
   alertMessage: string = '';
 
-  constructor(private _travelService: TravelService) {
+  constructor(private _travelService: TravelService, private _alertService: AlertService) {
   }
 
   deleteTravel() {
@@ -29,7 +30,7 @@ export class DeleteTravelComponent {
         next: () => {
           this.isLoading = false;
           this.localDeleteTravel.emit();
-          alert("Viaggio eliminato con successo");
+          this._alertService.showAlert("Viaggio eliminato con successo", true);
           this.closeDeleteTravel.emit();
         }, error: error => {
           this.isLoading = false;

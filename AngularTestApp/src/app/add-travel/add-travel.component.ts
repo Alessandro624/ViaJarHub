@@ -14,6 +14,7 @@ import {Travel} from '../models/travel/travel.model';
 import {TravelService} from '../travel-detail/travel.service';
 import {environment} from '../../environments/environment';
 import {TravelType} from '../models/travel/travel-type.enum';
+import {AlertService} from '../alert/alert.service';
 
 @Component({
   selector: 'app-add-travel',
@@ -57,7 +58,7 @@ export class AddTravelComponent implements OnInit {
   protected readonly environment = environment;
   protected readonly TravelType = TravelType;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private travelService: TravelService) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private travelService: TravelService, private alertService: AlertService) {
   }
 
   ngOnInit(): void {
@@ -189,7 +190,8 @@ export class AddTravelComponent implements OnInit {
     this.travelService.addTravel(this.travel, this.images).subscribe({
       next: () => {
         this.isLoading = false;
-        alert(`Form inviato con successo!\nDestinazione: ${this.travel.destination}\nData di Partenza: ${this.travel.startDate}\nData di Ritorno: ${this.travel.endDate}\nDescrizione: ${this.travel.description}\nNumero di immagini: ${this.images.length}`);
+        this.alertService.showAlert("Form inviato con successo!\nDestinazione: ${this.travel.destination}\nData di Partenza: ${this.travel.startDate}\nData di Ritorno: ${this.travel.endDate}\nDescrizione: ${this.travel.description}\nNumero di immagini: ${this.images.length}", true)
+
         this.closeModal.emit();
         this.resetData();
       }, error: error => {

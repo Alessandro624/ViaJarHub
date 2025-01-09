@@ -9,6 +9,7 @@ import {environment} from '../environments/environment';
 import {ContactModalComponent} from './contact-modal/contact-modal.component';
 import {AlertComponent} from './alert/alert.component';
 import {ChatbotComponent} from './chatbot/chatbot.component';
+import {AlertService} from './alert/alert.service';
 
 
 @Component({
@@ -28,7 +29,7 @@ export class AppComponent implements OnInit {
   isDropdownOpened: boolean = false;
   isPopupVisible: boolean = false;
 
-  constructor(private _authenticationService: AuthenticationService, private _activatedRoute: ActivatedRoute, private _router: Router) {
+  constructor(private _authenticationService: AuthenticationService, private _activatedRoute: ActivatedRoute, private _router: Router, private _alertService: AlertService) {
   }
 
   ngOnInit() {
@@ -41,8 +42,9 @@ export class AppComponent implements OnInit {
       () => {
         this.isDropdownOpened = false;
         this.currentFrom = 'login';
-        this._router.navigate(['']).then();
-        alert("Logout completato");
+        this._router.navigate(['body1']).then();
+        this._alertService.showAlert("Logout completato", true);
+
       }
     );
   }

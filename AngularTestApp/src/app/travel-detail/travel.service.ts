@@ -185,7 +185,4 @@ export class TravelService {
   };
 
 
-
-
-
 }

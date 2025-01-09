@@ -2,6 +2,7 @@ import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@ang
 import {NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {ClientService} from '../profile/client/client.service';
 import {FormsModule} from '@angular/forms';
+import {AlertService} from '../alert/alert.service';
 
 @Component({
   selector: 'app-make-admin-modal',
@@ -28,7 +29,7 @@ export class MakeAdminModalComponent implements OnInit {
   isInputFocused: boolean = false;
   selectedIndex: number = -1;
 
-  constructor(private _clientService: ClientService) {
+  constructor(private _clientService: ClientService, private alertService: AlertService) {
   }
 
   ngOnInit(): void {
@@ -63,7 +64,7 @@ export class MakeAdminModalComponent implements OnInit {
           this.isLoading = false;
           this.resetEmail();
           this.closeMakeAdminPopup.emit();
-          alert("Utente reso admin con successo");
+          this.alertService.showAlert("Utente reso admin con successo", true);
         }, error: error => {
           this.isLoading = false;
           this.alertMessage = error.message;

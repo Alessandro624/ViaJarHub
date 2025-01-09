@@ -9,6 +9,7 @@ import {AuthenticationService} from '../login/authentication.service';
 import {WishlistService} from '../wishlist/wishlist.service';
 import {PaymentService} from '../payment/payment.service';
 import {tap} from 'rxjs';
+import {AlertService} from '../alert/alert.service';
 
 @Component({
   selector: 'app-travel-detail',
@@ -36,7 +37,7 @@ export class TravelDetailComponent implements OnInit {
   isInBooking: boolean = false;
   type = ''
 
-  constructor(private _paymentService: PaymentService, private _wishlistService: WishlistService, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService) {
+  constructor(private _paymentService: PaymentService, private _wishlistService: WishlistService, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService, private _alertService: AlertService) {
   }
 
   ngOnInit() {
@@ -59,10 +60,10 @@ export class TravelDetailComponent implements OnInit {
       if (this.postiSelezionati <= this.availableSeats) {
         this.isPopupVisible = true;
       } else {
-        alert("Numero di posti superiore a quelli disponibili")
+        this._alertService.showAlert("Numero di posti superiore a quelli disponibili", false)
       }
     } else {
-      alert("Attenzione:\nPer prenotare devi accedere al sistema!");
+      this._alertService.showAlert("Attenzione:\nPer prenotare devi accedere al sistema!", false);
     }
   }
 
@@ -74,9 +75,9 @@ export class TravelDetailComponent implements OnInit {
   addToWishlist() {
     this._wishlistService.addToWishlist(this.travel!.id).subscribe({
         next: () => {
-          alert("Added");
+          this._alertService.showAlert("Added", true);
         }, error: error => {
-          alert(error.message);
+          this._alertService.showAlert(error.message, false);
           console.log(error);
         }
       }
@@ -97,7 +98,7 @@ export class TravelDetailComponent implements OnInit {
   removeFromWishlist() {
     this._wishlistService.removeFromWishlist(this.travel!.id).subscribe({
       next: (result) => {
-        alert("Removed");
+        this._alertService.showAlert("Removed", true);
         console.log(result);
       },
       error: error => {

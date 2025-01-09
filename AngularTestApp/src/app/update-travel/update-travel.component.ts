@@ -3,6 +3,7 @@ import {Travel} from '../models/travel/travel.model';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {TravelService} from '../travel-detail/travel.service';
+import {AlertService} from '../alert/alert.service';
 
 @Component({
   selector: 'app-update-travel',
@@ -24,7 +25,7 @@ export class UpdateTravelComponent implements OnInit {
   today: string = new Date().toISOString().split('T')[0];
   dateErrors = {startDateInvalid: '', endDateInvalid: ''};
 
-  constructor(private _travelService: TravelService) {
+  constructor(private _travelService: TravelService, private _alertService: AlertService) {
   }
 
   ngOnInit(): void {
@@ -40,7 +41,7 @@ export class UpdateTravelComponent implements OnInit {
           next: () => {
             this.isLoading = false;
             this.setTravel();
-            alert("Viaggio modificato con successo");
+            this._alertService.showAlert("Viaggio modificato con successo", true);
             this.closeUpdateTravel.emit();
           }, error: error => {
             this.isLoading = false;

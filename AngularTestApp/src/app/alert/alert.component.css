@@ -13,12 +13,12 @@
 }
 
 .alert-success {
-  background-color: rgba(40, 167, 69, 0.9); /* Verde con trasparenza */
+  background-color: rgba(40, 167, 69, 0.95); /* Verde con trasparenza */
   color: #fff;
 }
 
 .alert-error {
-  background-color: rgba(220, 53, 69, 0.9); /* Rosso con trasparenza */
+  background-color: rgba(220, 53, 69, 0.95); /* Rosso con trasparenza */
   color: #fff;
 }
 
