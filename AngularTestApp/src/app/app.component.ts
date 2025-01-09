@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
   currentFrom: 'login' | 'registerStep1' | 'registerStep2' | 'forgotPasswordEmail' = 'login';
   isDropdownOpened: boolean = false;
   isPopupVisible: boolean = false;
+  currentYear = new Date().getFullYear();
 
   constructor(private _authenticationService: AuthenticationService, private _activatedRoute: ActivatedRoute, private _router: Router, private _alertService: AlertService) {
   }

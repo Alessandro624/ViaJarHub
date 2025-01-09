@@ -27,7 +27,7 @@
         </div>
       </h5>
       <div *ngIf="isAdmin" class="btn-group position-absolute top-0 end-0 m-2" style="display: none;">
-        <button class="btn btn-outline-primary" (click)="handleMouse($event); showUpdateTravel=true;">Modifica</button>
+        <button class="btn btn-primary" (click)="handleMouse($event); showUpdateTravel=true;">Modifica</button>
         <button class="btn btn-danger" (click)="handleMouse($event); showDeleteTravel=true;">Elimina</button>
       </div>
       <p class="card-text mb-1">{{ travel.description }}</p>

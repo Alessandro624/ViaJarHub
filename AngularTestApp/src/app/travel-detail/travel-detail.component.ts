@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {Travel} from '../models/travel/travel.model';
 import {TravelService} from './travel.service';
 import {FormsModule} from '@angular/forms';
@@ -8,7 +8,6 @@ import {PaymentComponent} from '../payment/payment.component';
 import {AuthenticationService} from '../login/authentication.service';
 import {WishlistService} from '../wishlist/wishlist.service';
 import {PaymentService} from '../payment/payment.service';
-import {tap} from 'rxjs';
 import {AlertService} from '../alert/alert.service';
 
 @Component({
@@ -37,7 +36,7 @@ export class TravelDetailComponent implements OnInit {
   isInBooking: boolean = false;
   type = ''
 
-  constructor(private _paymentService: PaymentService, private _wishlistService: WishlistService, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService, private _alertService: AlertService) {
+  constructor(private _router: Router, private _paymentService: PaymentService, private _wishlistService: WishlistService, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private authentication: AuthenticationService, private _alertService: AlertService) {
   }
 
   ngOnInit() {
@@ -110,12 +109,14 @@ export class TravelDetailComponent implements OnInit {
   private setTravel(id: number) {
     this._travelService.getTravelById(id).subscribe({
       next: result => {
-
         this.travel = result;
         this.type = this.travel.travelType.toLowerCase();
         this.modificaPrezzo();
         this.setAvailableSeats(result);
         this.checkIsInBooking(id, this.travel.startDate, this.travel.endDate);
+      }, error: error => {
+        console.log(error);
+        this._router.navigate(['**']).then();
       }
     });
   }
@@ -139,6 +140,4 @@ export class TravelDetailComponent implements OnInit {
       }
     });
   }
-
-  protected readonly tap = tap;
 }

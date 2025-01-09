@@ -7,7 +7,6 @@ import {TravelFilter} from '../models/travel/travel-filter.model';
 import {AuthenticationService} from '../login/authentication.service';
 import {UserRole} from '../models/user/user-role.enum';
 import {Router} from '@angular/router';
-import {NotfoundComponent} from '../notfound/notfound.component';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +14,6 @@ import {NotfoundComponent} from '../notfound/notfound.component';
 export class TravelService {
 
   APIUrl = "api";
-
 
   constructor(private _http: HttpClient, private _authenticationService: AuthenticationService, private _router: Router) {
 
@@ -64,7 +62,7 @@ export class TravelService {
 
   getTravelById(id: number) {
     if (isNaN(id)) {
-      this._router.navigate(['**']);
+      this._router.navigate(['**']).then();
     }
     return this.checkUserAuthority().pipe(
       switchMap(user =>
@@ -72,7 +70,6 @@ export class TravelService {
           `${this.APIUrl}/${this.getAPIType(user)}/v1/travel?id=${id}`
         )
       ),
-
       catchError(this.handleError)
     );
   }
@@ -172,8 +169,8 @@ export class TravelService {
         break;
       case 404:
         errorMessage = 'Viaggio non trovato';
-        console.error(errorMessage);
-        this._router.navigate(['**']); // Ora funziona
+        // console.error(errorMessage);
+        // this._router.navigate(['**']); // Ora funziona
         break;
       case 409:
         errorMessage = 'Errore nella creazione del viaggio';
@@ -183,6 +180,4 @@ export class TravelService {
     }
     return throwError(() => new Error(errorMessage));
   };
-
-
 }

@@ -5,7 +5,7 @@ import {ReviewComponent} from '../../review/review.component';
 import {GoogleMapsModule} from '@angular/google-maps';
 import {isPlatformBrowser, NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {environment} from '../../../environments/environment';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {TravelService} from '../travel.service';
 import {ReviewService} from '../../review/review.service';
 import {Review} from '../../models/review/review.model';
@@ -44,7 +44,7 @@ export class InfotravelComponent implements OnInit {
   selectReview: Review | null = null;
   isLoading: boolean = true;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private _reviewService: ReviewService) {
+  constructor(private _router: Router, @Inject(PLATFORM_ID) private platformId: Object, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private _reviewService: ReviewService) {
   }
 
   ngOnInit() {
@@ -65,6 +65,9 @@ export class InfotravelComponent implements OnInit {
             this.initMap().then();
           }
         }
+      }, error: error => {
+        console.log(error);
+        this._router.navigate(['**']).then();
       }
     });
   }

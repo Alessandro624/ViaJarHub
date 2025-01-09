@@ -125,6 +125,9 @@ export class CarouselComponent implements OnInit, OnDestroy {
             this.immaginiURLs = data.map(image => `data:image/jpeg;base64,${image}`);
           }
         });
+      }, error: error => {
+        console.log(error);
+        this._router.navigate(['**']).then();
       }
     });
   }
