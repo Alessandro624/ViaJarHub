@@ -12,10 +12,16 @@ import {Sender} from '../models/chatbot/sender.enum';
   providedIn: 'root'
 })
 export class ChatbotService {
-  private readonly apiUrl = environment.openAIBaseUrl;
-  private readonly apiKey = environment.openAIAPIKey;
-  private readonly apiOrganization = environment.openAIOrganization;
-  private readonly apiProjectId = environment.openAIProjectId;
+  private readonly apiOpenAIUrl = environment.openAIBaseUrl;
+  private readonly apiOpenAIKey = environment.openAIAPIKey;
+  private readonly apiOpenAIOrganization = environment.openAIOrganization;
+  private readonly apiOpenAIProjectId = environment.openAIProjectId;
+  private apiGoogleAIKey: string = environment.googleAIAPIKey;
+  private apiGoogleAIEndpoint: string = environment.googleAIBaseUrl;
+  private apiGoogleAIProjectId: string = environment.googleAIProjectId;
+  private apiGoogleAILocationId: string = environment.googleAILocationId;
+  private apiGoogleAIModelId: string = 'gemini-2.0-flash-exp';
+  private apiGoogleAIGenerateContent: string = 'streamGenerateContent';
   private travels: Travel[] = [];
   private readonly filters: TravelFilter = {
     searchQuery: '',
@@ -44,28 +50,103 @@ export class ChatbotService {
 
   sendMessage(message: string): Observable<any> {
     return this.loadTravels().pipe(
-      tap((travels) => console.log(travels)),
       switchMap(() => {
         this.addMessageToChat(message, Sender.USER);
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-          'OpenAI-Organization': this.apiOrganization,
-          'OpenAI-Project': this.apiProjectId,
+          Authorization: `Bearer ${this.apiGoogleAIKey}`,
         });
+        const chatHistory = this.currentMessagesSubject.value
+          .filter(({sender}) => sender === Sender.USER)
+          .slice(-3)
+          .map(({sender, text}) => ({sender, text}));
+        const minimalTravels = this.travels.map(({destination, startDate, endDate, price}) => ({
+          destination,
+          startDate,
+          endDate,
+          price,
+        }));
         const body = {
-          model: 'gpt-4o-mini',
-          messages: [{
-            role: 'system',
-            content: `Sei un assistente utile che fornisce aiuto agli utenti di ViaJarHub, una piattaforma per trovare il viaggio più adatto alle proprie esigenze.
-            Nascondi informazioni sensibili dei viaggi.
-            Ecco la cronologia della chat: ${JSON.stringify(this.currentMessagesSubject.value)}
-            Ecco i dati sui viaggi attuali: ${JSON.stringify(this.travels)}`,
+          contents: [
+            {role: 'user', parts: [{text: message}]},
+          ],
+          systemInstruction: {
+            parts: [
+              {
+                text: `Sei un assistente utile che aiuta gli utenti di ViaJarHub a trovare viaggi. Invia risposte non troppo lunghe.
+              Cronologia della chat: ${JSON.stringify(chatHistory)}
+              Dati dei viaggi: ${JSON.stringify(minimalTravels)}`
+              },
+            ],
           },
-            {role: 'user', content: message},
+          generationConfig: {
+            responseModalities: ['TEXT'],
+            temperature: 1,
+            maxOutputTokens: 8192,
+            topP: 0.95,
+          },
+          safetySettings: [
+            {category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'OFF'},
+            {category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'OFF'},
+            {category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'OFF'},
+            {category: 'HARM_CATEGORY_HARASSMENT', threshold: 'OFF'},
           ],
         };
-        return this.http.post(this.apiUrl, body, {headers}).pipe(
+        const url = `${this.apiGoogleAIEndpoint}/v1/projects/${this.apiGoogleAIProjectId}/locations/${this.apiGoogleAILocationId}/publishers/google/models/${this.apiGoogleAIModelId}:${this.apiGoogleAIGenerateContent}`;
+        return this.http.post(url, body, {headers}).pipe(
+          switchMap((res: any) => {
+            const fullResponse = res.map((item: { candidates: { content: { parts: any[]; }; }[]; }) =>
+              item.candidates[0]?.content?.parts.map(part => part.text).join('')
+            ).join('') || 'Risposta non disponibile';
+            const formattedContent = this.formatBotResponse(fullResponse);
+            this.addMessageToChat(formattedContent, Sender.CHATBOT);
+            return of(this.currentMessagesSubject.value);
+          }),
+          catchError((err) => {
+            this.addMessageToChat('Errore durante la richiesta', Sender.CHATBOT);
+            console.error('Errore durante la richiesta:', err);
+            return of(this.currentMessagesSubject.value);
+          })
+        );
+      })
+    );
+  }
+
+  sendMessageOpenAI(message: string): Observable<any> {
+    return this.loadTravels().pipe(
+      switchMap(() => {
+        this.addMessageToChat(message, Sender.USER);
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiOpenAIKey}`,
+          'OpenAI-Organization': this.apiOpenAIOrganization,
+          'OpenAI-Project': this.apiOpenAIProjectId,
+        });
+        const chatHistory = this.currentMessagesSubject.value
+          .filter(({sender}) => sender === Sender.USER)
+          .slice(-3)
+          .map(({sender, text}) => ({sender, text}));
+        const minimalTravels = this.travels.map(({destination, startDate, endDate, price}) => ({
+          destination,
+          startDate,
+          endDate,
+          price
+        }));
+        console.log(chatHistory);
+        console.log(minimalTravels);
+        const body = {
+          model: 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'system',
+              content: `Sei un assistente utile che aiuta gli utenti di ViaJarHub a trovare viaggi.
+            Ecco la cronologia della chat: ${JSON.stringify(chatHistory)}
+            Ecco i dati dei viaggi attuali: ${JSON.stringify(minimalTravels)}`,
+            },
+            {role: 'user', content: message},
+          ]
+        };
+        return this.http.post(this.apiOpenAIUrl, body, {headers}).pipe(
           switchMap((res: any) => {
             const rawContent = res.choices[0].message.content;
             const formattedContent = this.formatBotResponse(rawContent);
@@ -77,7 +158,7 @@ export class ChatbotService {
             console.error('Errore durante la richiesta:', err);
             return of(this.currentMessagesSubject.value);
           })
-        )
+        );
       })
     );
   }
@@ -85,30 +166,42 @@ export class ChatbotService {
   private formatBotResponse(content: string): string {
     // 1. Rimuovi spazi in eccesso all'inizio e alla fine
     let formattedContent = content.trim();
-    // 2. Rimuovi immagini
-    formattedContent = formattedContent.replace(/!\[([^\]]*)]\([^)]+\)/g, ''); // Rimuovi immagini in markdown
-    // 3. Gestisci eventuali simboli o markup non desiderati
-    formattedContent = formattedContent.replace(/\s{2,}/g, ' '); // Rimuovi spazi multipli
-    formattedContent = formattedContent.replace(/`{3}/g, ''); // Rimuovi tripli backtick se presenti
-    // 4. Aggiungi Markdown o evidenziazione
-    formattedContent = formattedContent.replace(/(\*\*|__)(.*?)\1/g, '<strong>$2</strong>'); // grassetto
-    formattedContent = formattedContent.replace(/([*_])(.*?)\1/g, '<em>$1</em>'); // corsivo
-    formattedContent = formattedContent.replace(/^([*\-+])\s+(.*)$/gm, '<ul><li>$2</li></ul>'); // elenchi puntati
-    formattedContent = formattedContent.replace(/<\/ul>\s*<ul>/g, ''); // <ul> nidificati
-    formattedContent = formattedContent.replace(/^(\d+\.)\s+(.*)$/gm, '<ol><li>$2</li></ol>'); // elenchi numerati
-    formattedContent = formattedContent.replace(/<\/ol>\s*<ol>/g, ''); // <ol> nidificati
-    formattedContent = formattedContent.replace(/^(#{1,6})\s+(.*)$/gm, (match, p1, p2) => {
-      const level = p1.length; // Determina il livello del titolo
-      return `<h${level}>${p2}</h${level}>`; // grandezza dei titoli
+    // 2. Rimuovi immagini in Markdown
+    formattedContent = formattedContent.replace(/!\[[^\]]*]\([^)]*\)/g, '');
+    // 3. Rimuovi spazi multipli
+    formattedContent = formattedContent.replace(/\s{2,}/g, ' ');
+    // 4. Rimuovi tripli backtick per il codice
+    formattedContent = formattedContent.replace(/```/g, '');
+    // 5. Aggiungi formattazione Markdown a HTML
+    // Grassetto e corsivo insieme
+    formattedContent = formattedContent.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+    // Grassetto
+    formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Corsivo
+    formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    // Elenchi puntati
+    formattedContent = formattedContent.replace(/^([*\-+])\s+(.*)$/gm, '<ul><li>$2</li></ul>');
+    formattedContent = formattedContent.replace(/(<\/ul>\s*)+<ul>/g, ''); // Rimuovi <ul> nidificati consecutivi
+    // Elenchi numerati
+    formattedContent = formattedContent.replace(/^(\d+)\.\s+(.*)$/gm, '<ol><li>$2</li></ol>');
+    formattedContent = formattedContent.replace(/(<\/ol>\s*)+<ol>/g, ''); // Rimuovi <ol> nidificati consecutivi
+    // Titoli
+    formattedContent = formattedContent.replace(/^(#{1,6})\s+(.*)$/gm, (_match, p1, p2) => {
+      const level = p1.length;
+      return `<h${level}>${p2}</h${level}>`;
     });
-    formattedContent = formattedContent.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>'); // grassetto e corsivo
-    formattedContent = formattedContent.replace(/^>\s+(.*)$/gm, '<blockquote>$1</blockquote>'); // Citazioni
-    // 5. Aggiungi ritorni a capo per separare sezioni troppo lunghe
+    // Citazioni
+    formattedContent = formattedContent.replace(/^>\s+(.*)$/gm, '<blockquote>$1</blockquote>');
+    // 6. Aggiungi ritorni a capo dopo punti, punti esclamativi o interrogativi
     formattedContent = formattedContent.replace(/([.!?])(\s|$)/g, '$1<br>');
+    // 7. Sanifica liste consecutive
+    formattedContent = formattedContent.replace(/(<\/li>\s*)+<ul>/g, '</li><ul>');
+    formattedContent = formattedContent.replace(/(<\/li>\s*)+<ol>/g, '</li><ol>');
     return formattedContent;
   }
 
   private addMessageToChat(message: string, sender: Sender) {
-    this.currentMessagesSubject.value.push({text: message, sender: sender});
+    const updatedMessages = [...this.currentMessagesSubject.value, {text: message, sender}];
+    this.currentMessagesSubject.next(updatedMessages);
   }
 }
