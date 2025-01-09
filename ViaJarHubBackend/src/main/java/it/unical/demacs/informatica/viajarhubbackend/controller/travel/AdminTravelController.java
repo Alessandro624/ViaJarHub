@@ -99,7 +99,7 @@ public class AdminTravelController extends TravelController {
 
     @Override
     @RequestMapping(value = "/all-travel-number" ,method = RequestMethod.GET)
-    public ResponseEntity<Integer[]> getTravelNumber() {
+    public ResponseEntity<Integer> getTravelNumber() {
         return super.getTravelNumber();
     }
 }
