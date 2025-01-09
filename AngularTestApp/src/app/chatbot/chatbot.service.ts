@@ -16,12 +16,13 @@ export class ChatbotService {
   private readonly apiOpenAIKey = environment.openAIAPIKey;
   private readonly apiOpenAIOrganization = environment.openAIOrganization;
   private readonly apiOpenAIProjectId = environment.openAIProjectId;
-  private apiGoogleAIKey: string = environment.googleAIAPIKey;
-  private apiGoogleAIEndpoint: string = environment.googleAIBaseUrl;
-  private apiGoogleAIProjectId: string = environment.googleAIProjectId;
-  private apiGoogleAILocationId: string = environment.googleAILocationId;
-  private apiGoogleAIModelId: string = 'gemini-2.0-flash-exp';
-  private apiGoogleAIGenerateContent: string = 'streamGenerateContent';
+  private readonly apiVertexAIKey: string = environment.vertexAIAPIKey;
+  private readonly apiVertexAIEndpoint: string = environment.vertexAIBaseUrl;
+  private readonly apiVertexAIProjectId: string = environment.vertexAIProjectId;
+  private readonly apiVertexAILocationId: string = environment.vertexAILocationId;
+  private readonly apiVertexAIModelId: string = 'gemini-2.0-flash-exp';
+  private readonly apiVertexAIGenerateContent: string = 'streamGenerateContent';
+  private readonly apiGoogleAIUrl: string = environment.googleAIURL;
   private travels: Travel[] = [];
   private readonly filters: TravelFilter = {
     searchQuery: '',
@@ -49,12 +50,12 @@ export class ChatbotService {
   }
 
   sendMessage(message: string): Observable<any> {
+    // API key generale utilizzabile all'infinito, poco sicura
     return this.loadTravels().pipe(
       switchMap(() => {
         this.addMessageToChat(message, Sender.USER);
         const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.apiGoogleAIKey}`,
+          'Content-Type': 'application/json'
         });
         const chatHistory = this.currentMessagesSubject.value
           .filter(({sender}) => sender === Sender.USER)
@@ -74,9 +75,11 @@ export class ChatbotService {
           systemInstruction: {
             parts: [
               {
-                text: `Sei un assistente utile che aiuta gli utenti di ViaJarHub a trovare viaggi. Invia risposte non troppo lunghe.
-              Cronologia della chat: ${JSON.stringify(chatHistory)}
-              Dati dei viaggi: ${JSON.stringify(minimalTravels)}`
+                text: `Sei un assistente utile che aiuta gli utenti di ViaJarHub a trovare viaggi.
+                Invia risposte non troppo lunghe. Non usare html nelle risposte.
+                Fornisci i link alle pagine dei viaggi. Non usare il markdown nei link.
+                Cronologia della chat: ${JSON.stringify(chatHistory)}
+                Dati dei viaggi: ${JSON.stringify(minimalTravels)}`
               },
             ],
           },
@@ -93,7 +96,73 @@ export class ChatbotService {
             {category: 'HARM_CATEGORY_HARASSMENT', threshold: 'OFF'},
           ],
         };
-        const url = `${this.apiGoogleAIEndpoint}/v1/projects/${this.apiGoogleAIProjectId}/locations/${this.apiGoogleAILocationId}/publishers/google/models/${this.apiGoogleAIModelId}:${this.apiGoogleAIGenerateContent}`;
+        return this.http.post(this.apiGoogleAIUrl, body, {headers}).pipe(
+          switchMap((res: any) => {
+            console.log(res);
+            const rawContent = res.candidates[0].content.parts[0].text;
+            const formattedContent = this.formatBotResponse(rawContent);
+            this.addMessageToChat(formattedContent, Sender.CHATBOT);
+            return of(this.currentMessagesSubject.value);
+          }),
+          catchError((err) => {
+            this.addMessageToChat('Errore durante la richiesta', Sender.CHATBOT);
+            console.error('Errore durante la richiesta:', err);
+            return of(this.currentMessagesSubject.value);
+          })
+        );
+      })
+    );
+  }
+
+  sendMessageVertexAI(message: string): Observable<any> {
+    // L'API key ha una durata massima di 1 ora, estendibile a 12 ore, non conviene
+    return this.loadTravels().pipe(
+      switchMap(() => {
+        this.addMessageToChat(message, Sender.USER);
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiVertexAIKey}`,
+        });
+        const chatHistory = this.currentMessagesSubject.value
+          .filter(({sender}) => sender === Sender.USER)
+          .slice(-3)
+          .map(({sender, text}) => ({sender, text}));
+        const minimalTravels = this.travels.map(({id, destination, startDate, endDate, price}) => ({
+          destination,
+          startDate,
+          endDate,
+          price,
+          link: `http://localhost:4200/body1/${id}`
+        }));
+        const body = {
+          contents: [
+            {role: 'user', parts: [{text: message}]},
+          ],
+          systemInstruction: {
+            parts: [
+              {
+                text: `Sei un assistente utile che aiuta gli utenti di ViaJarHub a trovare viaggi.
+                Invia risposte non troppo lunghe. Non usare html nelle risposte.
+                Fornisci i link alle pagine dei viaggi. Non usare il markdown nei link.
+                Cronologia della chat: ${JSON.stringify(chatHistory)}
+                Dati dei viaggi: ${JSON.stringify(minimalTravels)}`
+              },
+            ],
+          },
+          generationConfig: {
+            responseModalities: ['TEXT'],
+            temperature: 1,
+            maxOutputTokens: 8192,
+            topP: 0.95,
+          },
+          safetySettings: [
+            {category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'OFF'},
+            {category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'OFF'},
+            {category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'OFF'},
+            {category: 'HARM_CATEGORY_HARASSMENT', threshold: 'OFF'},
+          ],
+        };
+        const url = `${this.apiVertexAIEndpoint}/v1/projects/${this.apiVertexAIProjectId}/locations/${this.apiVertexAILocationId}/publishers/google/models/${this.apiVertexAIModelId}:${this.apiVertexAIGenerateContent}`;
         return this.http.post(url, body, {headers}).pipe(
           switchMap((res: any) => {
             const fullResponse = res.map((item: { candidates: { content: { parts: any[]; }; }[]; }) =>
@@ -114,6 +183,7 @@ export class ChatbotService {
   }
 
   sendMessageOpenAI(message: string): Observable<any> {
+    // PROBLEMA: Limiti per token in invio e risposta troppo bassi
     return this.loadTravels().pipe(
       switchMap(() => {
         this.addMessageToChat(message, Sender.USER);
@@ -127,11 +197,12 @@ export class ChatbotService {
           .filter(({sender}) => sender === Sender.USER)
           .slice(-3)
           .map(({sender, text}) => ({sender, text}));
-        const minimalTravels = this.travels.map(({destination, startDate, endDate, price}) => ({
+        const minimalTravels = this.travels.map(({id, destination, startDate, endDate, price}) => ({
           destination,
           startDate,
           endDate,
-          price
+          price,
+          link: `http://localhost:4200/body1/${id}`
         }));
         console.log(chatHistory);
         console.log(minimalTravels);
@@ -141,8 +212,10 @@ export class ChatbotService {
             {
               role: 'system',
               content: `Sei un assistente utile che aiuta gli utenti di ViaJarHub a trovare viaggi.
-            Ecco la cronologia della chat: ${JSON.stringify(chatHistory)}
-            Ecco i dati dei viaggi attuali: ${JSON.stringify(minimalTravels)}`,
+                Invia risposte non troppo lunghe. Non usare html nelle risposte.
+                Fornisci i link alle pagine dei viaggi. Non usare il markdown nei link.
+                Cronologia della chat: ${JSON.stringify(chatHistory)}
+                Dati dei viaggi: ${JSON.stringify(minimalTravels)}`
             },
             {role: 'user', content: message},
           ]
@@ -193,8 +266,10 @@ export class ChatbotService {
     });
     // Citazioni
     formattedContent = formattedContent.replace(/^>\s+(.*)$/gm, '<blockquote>$1</blockquote>');
-    // 6. Trasforma i link Markdown in tag HTML
-    formattedContent = formattedContent.replace(/(https?:\/\/\S+)/g, '<a href="$1" target="_blank" class="link-light link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover">Clicca qui</a>');
+    // 6. Trasforma i link
+    formattedContent = formattedContent.replace(/(https?:\/\/\S+)/g, (match) => {
+      return `<a href="${match}" target="_blank" class="link-light link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover">Clicca qui</a><br>`;
+    });
     // 7. Aggiungi ritorni a capo dopo punti, punti esclamativi o interrogativi
     formattedContent = formattedContent.replace(/([.!?])(\s|$)/g, '$1<br>');
     // 8. Sanifica liste consecutive
