@@ -60,11 +60,12 @@ export class ChatbotService {
           .filter(({sender}) => sender === Sender.USER)
           .slice(-3)
           .map(({sender, text}) => ({sender, text}));
-        const minimalTravels = this.travels.map(({destination, startDate, endDate, price}) => ({
+        const minimalTravels = this.travels.map(({id, destination, startDate, endDate, price}) => ({
           destination,
           startDate,
           endDate,
           price,
+          link: `http://localhost:4200/body1/${id}`
         }));
         const body = {
           contents: [
@@ -192,9 +193,11 @@ export class ChatbotService {
     });
     // Citazioni
     formattedContent = formattedContent.replace(/^>\s+(.*)$/gm, '<blockquote>$1</blockquote>');
-    // 6. Aggiungi ritorni a capo dopo punti, punti esclamativi o interrogativi
+    // 6. Trasforma i link Markdown in tag HTML
+    formattedContent = formattedContent.replace(/(https?:\/\/\S+)/g, '<a href="$1" target="_blank" class="link-light link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover">Clicca qui</a>');
+    // 7. Aggiungi ritorni a capo dopo punti, punti esclamativi o interrogativi
     formattedContent = formattedContent.replace(/([.!?])(\s|$)/g, '$1<br>');
-    // 7. Sanifica liste consecutive
+    // 8. Sanifica liste consecutive
     formattedContent = formattedContent.replace(/(<\/li>\s*)+<ul>/g, '</li><ul>');
     formattedContent = formattedContent.replace(/(<\/li>\s*)+<ol>/g, '</li><ol>');
     return formattedContent;
