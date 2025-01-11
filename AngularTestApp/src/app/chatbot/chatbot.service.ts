@@ -78,6 +78,7 @@ export class ChatbotService {
                 text: `Sei un assistente utile che aiuta gli utenti di ViaJarHub a trovare viaggi.
                 Invia risposte non troppo lunghe. Non usare html nelle risposte.
                 Fornisci i link alle pagine dei viaggi. Non usare il markdown nei link.
+                La valuta da utilizzare è l'EURO (€).
                 Cronologia della chat: ${JSON.stringify(chatHistory)}
                 Dati dei viaggi: ${JSON.stringify(minimalTravels)}`
               },
@@ -144,6 +145,7 @@ export class ChatbotService {
                 text: `Sei un assistente utile che aiuta gli utenti di ViaJarHub a trovare viaggi.
                 Invia risposte non troppo lunghe. Non usare html nelle risposte.
                 Fornisci i link alle pagine dei viaggi. Non usare il markdown nei link.
+                La valuta da utilizzare è l'EURO (€).
                 Cronologia della chat: ${JSON.stringify(chatHistory)}
                 Dati dei viaggi: ${JSON.stringify(minimalTravels)}`
               },
@@ -214,6 +216,7 @@ export class ChatbotService {
               content: `Sei un assistente utile che aiuta gli utenti di ViaJarHub a trovare viaggi.
                 Invia risposte non troppo lunghe. Non usare html nelle risposte.
                 Fornisci i link alle pagine dei viaggi. Non usare il markdown nei link.
+                La valuta da utilizzare è l'EURO (€).
                 Cronologia della chat: ${JSON.stringify(chatHistory)}
                 Dati dei viaggi: ${JSON.stringify(minimalTravels)}`
             },
@@ -240,13 +243,11 @@ export class ChatbotService {
   private formatBotResponse(content: string): string {
     // 1. Rimuovi spazi in eccesso all'inizio e alla fine
     let formattedContent = content.trim();
-    // 2. Rimuovi immagini in Markdown
-    formattedContent = formattedContent.replace(/!\[[^\]]*]\([^)]*\)/g, '');
-    // 3. Rimuovi spazi multipli
+    // 2. Rimuovi spazi multipli
     formattedContent = formattedContent.replace(/\s{2,}/g, ' ');
-    // 4. Rimuovi tripli backtick per il codice
+    // 3. Rimuovi tripli backtick per il codice
     formattedContent = formattedContent.replace(/```/g, '');
-    // 5. Aggiungi formattazione Markdown a HTML
+    // 4. Aggiungi formattazione Markdown a HTML
     // Grassetto e corsivo insieme
     formattedContent = formattedContent.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
     // Grassetto
@@ -266,15 +267,17 @@ export class ChatbotService {
     });
     // Citazioni
     formattedContent = formattedContent.replace(/^>\s+(.*)$/gm, '<blockquote>$1</blockquote>');
-    // 6. Trasforma i link
+    // 5. Trasforma i link
     formattedContent = formattedContent.replace(/(https?:\/\/\S+)/g, (match) => {
       return `<a href="${match}" target="_blank" class="link-light link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover">Clicca qui</a><br>`;
     });
-    // 7. Aggiungi ritorni a capo dopo punti, punti esclamativi o interrogativi
+    // 6. Aggiungi ritorni a capo dopo punti, punti esclamativi o interrogativi
     formattedContent = formattedContent.replace(/([.!?])(\s|$)/g, '$1<br>');
-    // 8. Sanifica liste consecutive
+    // 7. Sanifica liste consecutive
     formattedContent = formattedContent.replace(/(<\/li>\s*)+<ul>/g, '</li><ul>');
     formattedContent = formattedContent.replace(/(<\/li>\s*)+<ol>/g, '</li><ol>');
+    // 8. Aggiungi ritorni a capo dopo \n
+    formattedContent = formattedContent.replace(/\n+/g, '<br>');
     return formattedContent;
   }
 
