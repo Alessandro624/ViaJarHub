@@ -34,10 +34,12 @@ export class ChatbotService {
     travelOrder: null,
     reverse: false,
   };
+  private firstMessageSent: boolean = false;
   private currentMessagesSubject = new BehaviorSubject<Message[]>([]);
   messages$ = this.currentMessagesSubject.asObservable();
 
   constructor(private http: HttpClient, private travelService: TravelService) {
+    this.sendMessage("Ciao").subscribe();
   }
 
   private loadTravels(): Observable<Travel[]> {
@@ -53,7 +55,11 @@ export class ChatbotService {
     // API key generale utilizzabile all'infinito, poco sicura
     return this.loadTravels().pipe(
       switchMap(() => {
-        this.addMessageToChat(message, Sender.USER);
+        if (this.firstMessageSent) {
+          this.addMessageToChat(message, Sender.USER);
+        } else {
+          this.firstMessageSent = true;
+        }
         const headers = new HttpHeaders({
           'Content-Type': 'application/json'
         });
@@ -119,7 +125,11 @@ export class ChatbotService {
     // L'API key ha una durata massima di 1 ora, estendibile a 12 ore, non conviene
     return this.loadTravels().pipe(
       switchMap(() => {
-        this.addMessageToChat(message, Sender.USER);
+        if (this.firstMessageSent) {
+          this.addMessageToChat(message, Sender.USER);
+        } else {
+          this.firstMessageSent = true;
+        }
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.apiVertexAIKey}`,
@@ -188,7 +198,11 @@ export class ChatbotService {
     // PROBLEMA: Limiti per token in invio e risposta troppo bassi
     return this.loadTravels().pipe(
       switchMap(() => {
-        this.addMessageToChat(message, Sender.USER);
+        if (this.firstMessageSent) {
+          this.addMessageToChat(message, Sender.USER);
+        } else {
+          this.firstMessageSent = true;
+        }
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.apiOpenAIKey}`,
