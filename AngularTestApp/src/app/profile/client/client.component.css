@@ -28,7 +28,6 @@
   transition: width 0.5s ease;
 }
 
-
 .torta {
   transform: rotate(-90deg);
 }
@@ -62,45 +61,9 @@
   visibility: visible;
 }
 
-/*
-.btn-remove {
-  background-color: transparent;
-  border-color: var(--bs-danger); /* Bootstrap danger color
-  color: var(--bs-danger);
-  display: flex;
-  align-items: center;
-  padding: 5px 10px;
-}
-
-.btn-remove .trashicon {
-  width: 20px;
-  height: 20px;
-}
-
-.btn-remove:hover {
-  background-color: var(--bs-danger); /* Bootstrap danger color
-  color: white;
-}
-
-.btn-remove:hover .trashicon {
-  filter: invert(1); /* Change the icon color to white
-}
-*/
-
 .grafo {
   transition: stroke-dasharray 0.3s ease-in-out;
 }
-
-/*
-.position-relative {
-  text-align: center;
-}
-
-svg {
-  display: block;
-  margin: auto;
-}
-*/
 
 a {
   text-decoration: none;
@@ -118,5 +81,3 @@ a {
 .fa-plus {
   font-size: 10px;
 }
-
-

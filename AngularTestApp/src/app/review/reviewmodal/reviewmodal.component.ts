@@ -37,7 +37,6 @@ export class ReviewmodalComponent implements OnChanges {
   @Output() reviewRemoved = new EventEmitter<Review>();
   @Output() reviewModified = new EventEmitter<Review>();
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-
   immaginiURLs: string[] = [];
   travel: Travel | null = null;
   inClient: boolean = false;

@@ -3,7 +3,6 @@
     <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
       {{ alertMessage }}
     </div>
-    <!-- Campo di testo: Titolo -->
     <div class="mb-3 form-floating flex-grow-1">
       <input
         type="text"
@@ -26,7 +25,6 @@
         (input)="alertMessage='';">
       <label class="form-check-label" for="isCountry">Nazione?</label>
     </div>
-    <!-- Date Picker: Data di Inizio -->
     <div class="mb-3 form-floating flex-grow-1">
       <input
         type="date"
@@ -43,7 +41,6 @@
       <label for="startDate" class="form-label">Data di Partenza</label>
       <div *ngIf="dateErrors.startDateInvalid" class="invalid-feedback d-block">{{ dateErrors.startDateInvalid }}</div>
     </div>
-    <!-- Date Picker: Data di Fine -->
     <div class="mb-3 form-floating flex-grow-1">
       <input
         type="date"
@@ -60,7 +57,6 @@
       <label for="endDate" class="form-label">Data di Ritorno</label>
       <div *ngIf="dateErrors.endDateInvalid" class="invalid-feedback d-block">{{ dateErrors.endDateInvalid }}</div>
     </div>
-    <!-- Campo di testo: Prezzo -->
     <div class="mb-3 form-floating flex-grow-1">
       <input
         type="number"
@@ -92,14 +88,12 @@
           <span>{{ travel.travelType }}</span>
         </button>
         <ul class="dropdown-menu ">
-          <!-- Dropdown menu links -->
           <li *ngFor="let type of travelTypes">
             <a class="dropdown-item" (click)="selectType(type); alertMessage = '';">{{ type }}</a>
           </li>
         </ul>
       </div>
     </div>
-    <!-- Textarea: Descrizione -->
     <div class="mb-3 form-floating flex-grow-1">
       <textarea
         id="description"
@@ -122,7 +116,6 @@
         <gmp-advanced-marker [position]="markerPosition" [draggable]="false"></gmp-advanced-marker>
       </gmp-map>
     </div>
-    <!-- Drop area per immagini -->
     <div class="mb-3">
       <label for="images" class="form-label">Carica Immagini</label>
       <div class="drop-area border border-primary p-3 text-center"
@@ -132,7 +125,6 @@
            (drop)="onDrop($event)"
            (input)="imageError = ''; alertMessage='';">
         <p>Trascina qui le immagini o clicca per selezionarle</p>
-        <!-- Input file nascosto -->
         <input
           #fileInput
           type="file"
@@ -153,7 +145,6 @@
       <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
       <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
     </div>
-    <!-- Pulsante di invio -->
     <button
       type="submit"
       class="btn btn-success me-2"

@@ -1,16 +1,10 @@
 <div class="container mt-5">
   <div class="row align-items-center mt-5">
     <div class="col-md-8 mt-4">
-
       <h1 class="display-6 fw-bold mb-0">{{ travel?.destination }}</h1>
       <p> {{ type }}
       </p>
-
-
-      <h3 class="text-muted">{{
-          travel?.description
-        }}
-      </h3>
+      <h3 class="text-muted">{{ travel?.description }}</h3>
     </div>
     <div class="col-12 prova col-md-4 col-lg-4 my-3">
       <div class="p-3 border rounded shadow-sm h-100">
@@ -57,9 +51,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Immagine sotto il div con class="row align-items-center" -->
-
   <ul class="nav nav-tabs justify-content-center border-2">
     <li class="nav-item rounded-top border-4 ">
       <a class="nav-link" routerLink="info" aria-current="page" routerLinkActive="active">Info</a>
@@ -68,11 +59,9 @@
       <a class="nav-link" routerLink="img" aria-current="page" routerLinkActive="active">Immagini</a>
     </li>
   </ul>
-
   <div class="mt-3 mx-3">
     <router-outlet></router-outlet>
   </div>
-
   <div class="modal fade" [ngClass]="{'show': isPopupVisible}"
        [ngStyle]="{'display': isPopupVisible ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -82,12 +71,10 @@
           <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
         </div>
         <div class="modal-body shadow-lg">
-          <!-- Contenuto del modale -->
           <app-payment (closeModal)="closePopup() " [prezzo]="prezzoFinale" [travel]="travel"
                        [numeroPartecipanti]="postiSelezionati"></app-payment>
         </div>
       </div>
     </div>
   </div>
-
 </div>

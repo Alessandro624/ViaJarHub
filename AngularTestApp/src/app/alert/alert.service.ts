@@ -23,5 +23,4 @@ export class AlertService {
       }, 500);
     }, 2000);
   }
-
 }

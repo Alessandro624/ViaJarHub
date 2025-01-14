@@ -44,7 +44,7 @@ export class ChatbotService {
 
   private loadTravels(): Observable<Travel[]> {
     if (this.travels.length > 0) {
-      return new Observable((observer) => observer.next(this.travels));
+      return new Observable((observer) => observer.next());
     }
     return this.travelService.getTravelsPaginated(0, 100, this.filters).pipe(
       tap((value) => (this.travels = value))
@@ -105,15 +105,13 @@ export class ChatbotService {
         };
         return this.http.post(this.apiGoogleAIUrl, body, {headers}).pipe(
           switchMap((res: any) => {
-            console.log(res);
             const rawContent = res.candidates[0].content.parts[0].text;
             const formattedContent = this.formatBotResponse(rawContent);
             this.addMessageToChat(formattedContent, Sender.CHATBOT);
             return of(this.currentMessagesSubject.value);
           }),
-          catchError((err) => {
+          catchError(() => {
             this.addMessageToChat('Errore durante la richiesta', Sender.CHATBOT);
-            console.error('Errore durante la richiesta:', err);
             return of(this.currentMessagesSubject.value);
           })
         );
@@ -184,9 +182,8 @@ export class ChatbotService {
             this.addMessageToChat(formattedContent, Sender.CHATBOT);
             return of(this.currentMessagesSubject.value);
           }),
-          catchError((err) => {
+          catchError(() => {
             this.addMessageToChat('Errore durante la richiesta', Sender.CHATBOT);
-            console.error('Errore durante la richiesta:', err);
             return of(this.currentMessagesSubject.value);
           })
         );
@@ -220,8 +217,6 @@ export class ChatbotService {
           price,
           link: `http://localhost:4200/body1/${id}`
         }));
-        console.log(chatHistory);
-        console.log(minimalTravels);
         const body = {
           model: 'gpt-4o-mini',
           messages: [
@@ -244,9 +239,8 @@ export class ChatbotService {
             this.addMessageToChat(formattedContent, Sender.CHATBOT);
             return of(this.currentMessagesSubject.value);
           }),
-          catchError((err) => {
+          catchError(() => {
             this.addMessageToChat("Errore durante la richiesta", Sender.CHATBOT);
-            console.error('Errore durante la richiesta:', err);
             return of(this.currentMessagesSubject.value);
           })
         );

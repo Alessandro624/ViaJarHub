@@ -56,9 +56,6 @@
     </div>
   </div>
 </div>
-
-
-<!-- Modale di conferma -->
 <div class="modal fade" [ngClass]="{'show': isConfirmVisible}"
      [ngStyle]="{'display': isConfirmVisible ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
@@ -86,7 +83,6 @@
         <button type="button" class="btn-close" (click)="closePayment()" aria-label="Close"></button>
       </div>
       <div class="modal-body shadow-lg ">
-        <!-- Contenuto del modale -->
         <app-payment (closeModal)="closePayment() " [prezzo]="100" [travel]="selectedTravel"
                      [numeroPartecipanti]="1"></app-payment>
       </div>

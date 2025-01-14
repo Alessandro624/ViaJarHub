@@ -35,7 +35,6 @@ export class StarComponent implements OnChanges {
       this.ngZone.runOutsideAngular(() => {
         this.inDetails = this.isContainedIn('app-infotravel');
         this.calculateStars();
-        console.log(this.rating);
       });
     }
   }

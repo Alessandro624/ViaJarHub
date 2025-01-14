@@ -12,7 +12,6 @@ import {Router} from '@angular/router';
   providedIn: 'root'
 })
 export class TravelService {
-
   APIUrl = "api";
 
   constructor(private _http: HttpClient, private _authenticationService: AuthenticationService, private _router: Router) {
@@ -169,8 +168,6 @@ export class TravelService {
         break;
       case 404:
         errorMessage = 'Viaggio non trovato';
-        // console.error(errorMessage);
-        // this._router.navigate(['**']); // Ora funziona
         break;
       case 409:
         errorMessage = 'Errore nella creazione del viaggio';

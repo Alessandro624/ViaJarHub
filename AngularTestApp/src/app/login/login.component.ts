@@ -10,7 +10,6 @@ import {
   PLATFORM_ID
 } from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {Router} from '@angular/router';
 import {AuthenticationService} from './authentication.service';
 import {isPlatformBrowser, NgClass, NgIf} from '@angular/common';
 import {environment} from '../../environments/environment';
@@ -50,7 +49,7 @@ export class LoginComponent implements OnInit {
   isLoading: boolean = false;
   @Output() setCurrentForm = new EventEmitter<void>();
 
-  constructor(@Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _router: Router, private _alertService: AlertService) {
+  constructor(@Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private _authenticationService: AuthenticationService, private _alertService: AlertService) {
   }
 
   ngOnInit(): void {
@@ -94,13 +93,10 @@ export class LoginComponent implements OnInit {
       this._authenticationService.onLogin(this.email, this.password).subscribe({
         next: () => {
           this.isLoading = false;
-          console.log('Login successful:', {email: this.email, password: this.password});
           this._alertService.showAlert("Login effettuato con successo", true);
-          //this.sendUserHome();
         }, error: error => {
           this.isLoading = false;
           this.alertMessage = error.message;
-          console.log(error);
         }
       });
     }
@@ -112,11 +108,6 @@ export class LoginComponent implements OnInit {
     this.checkLastName();
     this.checkBirthDate();
     if (!this.firstNameError && !this.lastNameError && !this.birthDateError) {
-      console.log('Step 1 of register successful:', {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        birthDate: this.birthDate
-      });
       this.changeForm('registerStep2');
     }
   }
@@ -131,18 +122,10 @@ export class LoginComponent implements OnInit {
       this._authenticationService.onRegister(this.email, this.password, this.firstName, this.lastName, new Date(this.birthDate)).subscribe({
         next: () => {
           this.isLoading = false;
-          console.log('Register successful:', {
-            email: this.email,
-            password: this.confirmPassword,
-            firstName: this.firstName,
-            lastName: this.lastName,
-            birthDate: this.birthDate
-          });
           this._alertService.showAlert("Email di conferma inviata con successo", true);
           this.sendUserHome();
         }, error: error => {
           this.isLoading = false;
-          console.log(error);
           this.alertMessage = error.message;
         }
       });
@@ -157,12 +140,10 @@ export class LoginComponent implements OnInit {
       this._authenticationService.onForgotPassword(this.email).subscribe({
           next: () => {
             this.isLoading = false;
-            console.log('First step of password reset successful:', {email: this.email, password: this.confirmPassword});
             this._alertService.showAlert('Email di reset password inviata correttamente', true);
             this.sendUserHome();
           }, error: error => {
             this.isLoading = false;
-            console.log(error);
             this.alertMessage = error.message;
           }
         }
@@ -181,10 +162,6 @@ export class LoginComponent implements OnInit {
 
   resetFields() {
     // tranne le password, gli altri campi posso essere usati come 'auto-completamento'
-    // this.firstName = '';
-    // this.lastName = '';
-    // this.telephone = '';
-    // this.email = '';
     this.password = '';
     this.confirmPassword = '';
     this.showPassword = false;
@@ -312,12 +289,10 @@ export class LoginComponent implements OnInit {
   }
 
   handleGoogleLogin(response: any) {
-    const userInfo = this.decodeJwtResponse(response.credential);
-    console.log('Informazioni utente: ', userInfo);
     this.sendTokenToBackend(response.credential);
   }
 
-  decodeJwtResponse(token: string) {
+  /* decodeJwtResponse(token: string) {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     const jsonPayload = decodeURIComponent(
@@ -327,20 +302,18 @@ export class LoginComponent implements OnInit {
         .join('')
     );
     return JSON.parse(jsonPayload);
-  }
+  } */
 
   sendTokenToBackend(token: string) {
     this.isLoading = true;
     this._authenticationService.onGoogleLogin(token).subscribe({
         next: () => {
           this.isLoading = false;
-          console.log('Google login completato.');
           this._alertService.showAlert("Accesso con google effettuato correttamente", true)
           this.sendUserHome();
         },
         error: error => {
           this.isLoading = false;
-          console.error('Errore nel Google login:', error);
           this.alertMessage = error.message;
         }
       }
@@ -356,16 +329,18 @@ export class LoginComponent implements OnInit {
   }
 
   private sendUserHome() {
-    this._router.navigate([''], {
+    this.reloadPage();
+    /* this._router.navigate([''], {
       queryParams: {
         isOpened: false,
         currentForm: 'login'
       }
-    }).then(this.reloadPage.bind(this));
+    }).then(this.reloadPage.bind(this)); */
   }
 
   reloadPage() {
     // window.location.reload();
     this.isOpened = false;
+    this.changeForm('login');
   }
 }

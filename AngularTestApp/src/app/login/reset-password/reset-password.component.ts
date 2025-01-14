@@ -87,12 +87,10 @@ export class ResetPasswordComponent implements OnInit {
         this._authenticationService.onResetPassword(this.resetToken, this.password).subscribe({
           next: () => {
             this.isLoading = false;
-            console.log('Password reset successful:', {token: this.resetToken, password: this.password});
             this.alertService.showAlert('Password modificata correttamente:', true);
             this.onClose();
           }, error: error => {
             this.isLoading = false;
-            console.log(error);
             this.alertMessage = error.message;
           }
         });

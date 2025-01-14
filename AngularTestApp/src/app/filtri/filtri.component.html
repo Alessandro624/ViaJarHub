@@ -1,5 +1,4 @@
 <div class="filter-bar bg-light p-3 border d-flex align-items-center justify-content-between">
-  <!-- Valori dei filtri -->
   <div class="filters d-flex align-items-center flex-wrap">
     <span class="me-3 text-nowrap">
         <strong>Data partenza:</strong> {{ changeFormat(startDate) }}
@@ -14,7 +13,6 @@
         <strong>Tipo:</strong> {{ type }}
     </span>
   </div>
-  <!-- Pulsante per estendere -->
   @if (isExpanded) {
     <button class="btn btn-outline-primary" (click)="toggleFilters()">
       <i class="fa-solid fa-caret-up"></i>
@@ -26,14 +24,11 @@
   }
 </div>
 @if (isExpanded) {
-  <!-- Pannello di modifica filtri -->
   <div class="filter-panel mt-3 border p-3 rounded bg-light">
     <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
       {{ alertMessage }}
     </div>
-    <!-- Data Range Picker -->
     <div class="container mt-3">
-      <!-- Primo Date Picker -->
       <div class="row">
         <div class="col-6 mb-3">
           <label for="startDate" class="me-2">Data partenza:</label>
@@ -46,7 +41,6 @@
             (change)="onStartDateChange($event)"
             name="startDate"/>
         </div>
-        <!-- Secondo Date Picker -->
         <div class="col-6 mb-3">
           <label for="endDate" class="me-2">Data ritorno:</label>
           <input
@@ -57,10 +51,8 @@
             [(ngModel)]="endDate"
             name="endDate"/>
         </div>
-        <!-- Valori Selezionati -->
       </div>
     </div>
-    <!-- Range Slider -->
     <div class="mb-5">
       <ngx-slider
         [(value)]="minValue"
@@ -71,14 +63,13 @@
     <div class="container">
       <div class="row">
         <div class="col-8 mb-3">
-          <div class="btn-group dropend  w-25">
+          <div class="btn-group dropend w-25">
             <button type="button"
                     class="btn prova border dropdown-toggle d-flex justify-content-between align-items-center"
                     data-bs-toggle="dropdown" aria-expanded="false">
               <span>Tipo viaggio</span>
             </button>
             <ul class="dropdown-menu ">
-              <!-- Dropdown menu links -->
               <li *ngFor="let type of travelTypes">
                 <a class="dropdown-item" (click)="selectType(type)">{{ type }}</a>
               </li>

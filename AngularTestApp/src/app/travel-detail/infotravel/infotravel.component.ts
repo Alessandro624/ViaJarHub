@@ -65,8 +65,7 @@ export class InfotravelComponent implements OnInit {
             this.initMap().then();
           }
         }
-      }, error: error => {
-        console.log(error);
+      }, error: () => {
         this._router.navigate(['**']).then();
       }
     });
@@ -75,9 +74,7 @@ export class InfotravelComponent implements OnInit {
   private loadReviews(id: number) {
     this._reviewService.getReviewsByTravel(id).subscribe({
       next: result => {
-        console.log("prova " + result);
         this.reviews = result;
-        console.log(this.reviews.length);
       }
     });
   }
@@ -86,11 +83,9 @@ export class InfotravelComponent implements OnInit {
     this._travelService.getStars(id).subscribe({
       next: data => {
         this.stars = data;
-        console.log("prov" + this.stars)
         this.isLoading = false;
-      }, error: error => {
-        this.stars = 0;
-        console.log(error);
+      }, error: () => {
+        this.stars = 0
       }
     });
   }

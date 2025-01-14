@@ -6,7 +6,6 @@ import {Travel} from '../models/travel/travel.model';
 import {WishlistService} from './wishlist.service';
 import {TravelService} from '../travel-detail/travel.service';
 import {StarComponent} from '../star/star.component';
-import {Observable} from 'rxjs';
 import {AlertService} from '../alert/alert.service';
 
 @Component({
@@ -44,14 +43,12 @@ export class WishlistComponent implements OnInit {
           if (data) {
             this.wishlist = data;
             this.calculateStars();
-
             this.wishlistLength = this.wishlist.length - 3;
             this.setCurrentWishlist();
           } else {
             this.resetWishlist();
           }
-        }, error: error => {
-          console.log(error);
+        }, error: () => {
           this.resetWishlist();
         }
       }
@@ -61,7 +58,6 @@ export class WishlistComponent implements OnInit {
   openPayment(travel: Travel): void {
     this.selectedTravel = travel;
     this.isPaymentVisible = true;
-
   }
 
   closePayment() {
@@ -74,9 +70,6 @@ export class WishlistComponent implements OnInit {
         this.alertService.showAlert("Removed", true);
         this.toRemoveTravel = null;
         this.isConfirmVisible = false;
-      },
-      error: error => {
-        console.log(error);
       }
     });
   }
@@ -118,16 +111,12 @@ export class WishlistComponent implements OnInit {
   }
 
   calculateStars(): void {
-    console.log("proaroroa")
-    console.log(this.wishlist.length);
-
     this.wishlist.forEach((travel) => {
       this.travelService.getStars(travel.id).subscribe({
         next: (rating: number) => {
           this.starRatings.set(travel.id, rating); // Salva il rating nella mappa
         },
-        error: (error) => {
-          console.error(`Errore nel recupero delle stelle per il viaggio con ID ${travel.id}:`, error);
+        error: () => {
           this.starRatings.set(travel.id, 0); // Default a 0 in caso di errore
         },
       });
@@ -137,6 +126,4 @@ export class WishlistComponent implements OnInit {
   getStar(id: number): number {
     return this.starRatings.get(id) || 0;
   }
-
-
 }

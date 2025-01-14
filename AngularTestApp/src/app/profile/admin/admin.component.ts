@@ -107,7 +107,7 @@ export class AdminComponent implements OnInit {
         if (data) {
           this.user = data;
         }
-      }, error: error => console.log(error)
+      }
     });
   }
 
@@ -117,7 +117,6 @@ export class AdminComponent implements OnInit {
         const birthDateObj = new Date(this.user.birthDate);
         this.birthdate = birthDateObj.toLocaleDateString('it-IT');
       }
-      console.log(this.birthdate);
     }
   }
 
@@ -125,9 +124,6 @@ export class AdminComponent implements OnInit {
     this._clientService.getUserProfileImage().subscribe({
       next: data => {
         this.profileImageUrl = URL.createObjectURL(data);
-      },
-      error: error => {
-        console.log(error);
       }
     });
   }
@@ -148,7 +144,7 @@ export class AdminComponent implements OnInit {
         this.mostRated = data.reverse();
         this.calculateStars();
 
-      }, error: err => console.log(err)
+      }
     });
   }
 
@@ -156,7 +152,7 @@ export class AdminComponent implements OnInit {
     this.travelService.getTravelNumber().subscribe({
       next: data => {
         this.numTravel = data;
-      }, error: err => console.log(err)
+      }
     });
   }
 
@@ -165,11 +161,10 @@ export class AdminComponent implements OnInit {
       this.paymentService.getMonthlyBooking(month).subscribe({
         next: booking => {
           this.data[month - 1].value = booking;
-          console.log("msee" + booking);
           if (month === 12) {
             this.initializeAnimation();
           }
-        }, error: err => console.log(err)
+        }
       });
     }
   }
@@ -275,8 +270,7 @@ export class AdminComponent implements OnInit {
         next: (rating: number) => {
           this.starRatings.set(travel.id, rating); // Salva il rating nella mappa
         },
-        error: (error) => {
-          console.error(`Errore nel recupero delle stelle per il viaggio con ID ${travel.id}:`, error);
+        error: () => {
           this.starRatings.set(travel.id, 0); // Default a 0 in caso di errore
         },
       });

@@ -55,7 +55,6 @@ export class Body1Component implements OnInit {
         .subscribe({
           error: error => {
             this.alertMessage = error.message;
-            console.error('Errore nel caricamento dei viaggi:', error);
             this.isLoading = false;
           }
         });

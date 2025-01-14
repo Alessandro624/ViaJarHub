@@ -41,9 +41,6 @@ export class TravelDetailComponent implements OnInit {
 
   ngOnInit() {
     const id = Number(this._activatedRoute.snapshot.paramMap.get('id'));
-    if (id == null) {
-      throw new Error("Viaggio non trovato");
-    }
     this.setTravel(id);
     this.checkIsInWishlist(id);
   }
@@ -77,7 +74,6 @@ export class TravelDetailComponent implements OnInit {
           this._alertService.showAlert("Added", true);
         }, error: error => {
           this._alertService.showAlert(error.message, false);
-          console.log(error);
         }
       }
     )
@@ -87,8 +83,7 @@ export class TravelDetailComponent implements OnInit {
     this._wishlistService.wishlist$.subscribe({
       next: result => {
         this.isInWishlist = (!!result) && result.filter(item => item.id === id).length > 0;
-      }, error: error => {
-        console.log(error);
+      }, error: () => {
         this.isInWishlist = false;
       }
     });
@@ -96,12 +91,8 @@ export class TravelDetailComponent implements OnInit {
 
   removeFromWishlist() {
     this._wishlistService.removeFromWishlist(this.travel!.id).subscribe({
-      next: (result) => {
+      next: () => {
         this._alertService.showAlert("Removed", true);
-        console.log(result);
-      },
-      error: error => {
-        console.log(error);
       }
     });
   }
@@ -114,8 +105,7 @@ export class TravelDetailComponent implements OnInit {
         this.modificaPrezzo();
         this.setAvailableSeats(result);
         this.checkIsInBooking(id, this.travel.startDate, this.travel.endDate);
-      }, error: error => {
-        console.log(error);
+      }, error: () => {
         this._router.navigate(['**']).then();
       }
     });
@@ -134,8 +124,7 @@ export class TravelDetailComponent implements OnInit {
     this._paymentService.booking$.subscribe({
       next: result => {
         this.isInBooking = (!!result) && result.filter(item => item.id === id && item.startDate === startDate && item.endDate === endDate).length > 0;
-      }, error: error => {
-        console.log(error);
+      }, error: () => {
         this.isInBooking = false;
       }
     });

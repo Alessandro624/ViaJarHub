@@ -59,6 +59,9 @@ export class FiltriComponent implements OnChanges, OnInit {
     if (changes) {
       this.ngZone.runOutsideAngular(() => this.setSliderOptions());
     }
+    if (changes['maxPrice']) {
+      this.maxValue = this.maxPrice;
+    }
   }
 
   ngOnInit(): void {
@@ -91,7 +94,6 @@ export class FiltriComponent implements OnChanges, OnInit {
     const selectedStartDate = input.value;
     if (selectedStartDate) {
       this.endDateMin = selectedStartDate;
-
       if (this.endDate && new Date(this.endDate) < new Date(selectedStartDate)) {
         this.endDate = selectedStartDate;
       }
@@ -116,13 +118,11 @@ export class FiltriComponent implements OnChanges, OnInit {
   }
 
   toggleFilters(): void {
-    console.log('Stato corrente:', this.isExpanded);
     this.isExpanded = !this.isExpanded;
   }
 
   selectType(type: TravelType): void {
     this.type = type;
-    console.log('Tipo selezionato:', type);
   }
 
   applyFilters(): void {

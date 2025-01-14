@@ -18,7 +18,6 @@ export class ChatbotComponent implements OnInit {
   messages: Message[] = [];
   newMessage: string = "";
   isBotResponding: boolean = false;
-
   @ViewChild('chatBody') chatBody!: ElementRef;
   @ViewChild('messageInput') messageInput!: ElementRef;
 

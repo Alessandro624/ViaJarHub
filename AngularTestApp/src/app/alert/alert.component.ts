@@ -26,6 +26,4 @@ export class AlertComponent {
       this.isExiting = exiting;
     });
   }
-
-
 }

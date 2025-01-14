@@ -15,7 +15,6 @@ function configureFlickr(options) {
 
 function fetchFlickrPhotos(params, callback) {
   if (!apiKey) {
-    console.error('API key non configured. Use configureFlickr.');
     return;
   }
   const query = new URLSearchParams({
@@ -40,12 +39,10 @@ function jsonFlickrApi(json) {
 
 function getRandomPhoto(resolution) {
   if (!carouselPhotos || !carouselPhotos.photos || !carouselPhotos.photos.photo) {
-    console.error('No photos found.');
     return '';
   }
   const photosArray = carouselPhotos.photos.photo;
   if (usedIndices.length === photosArray.length) {
-    console.warn('All photos have been used. Resetting used indices.');
     usedIndices = [];
   }
   let index;

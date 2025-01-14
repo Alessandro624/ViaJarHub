@@ -68,7 +68,6 @@ export class MakeAdminModalComponent implements OnInit {
         }, error: error => {
           this.isLoading = false;
           this.alertMessage = error.message;
-          console.log(error);
         }
       });
     }
@@ -101,7 +100,6 @@ export class MakeAdminModalComponent implements OnInit {
   private filterEmails() {
     const query = this.email.toLowerCase();
     this.filteredEmails = this.emails.filter(email => email.toLowerCase().includes(query));
-    console.log(this.filteredEmails);
   }
 
   @HostListener('document:click', ['$event'])

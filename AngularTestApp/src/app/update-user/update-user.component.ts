@@ -67,7 +67,6 @@ export class UpdateUserComponent implements OnChanges {
   onSubmit() {
     this.checkFirstName();
     this.checkLastName();
-    console.log('Dati del form:', this.firstName, this.lastName, this.image);
     if (!this.firstNameError && !this.lastNameError) {
       this.isLoading = true;
       this._clientService.updateUtente(this.user.email, this.firstName, this.lastName, this.image).subscribe(

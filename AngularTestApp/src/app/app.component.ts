@@ -43,18 +43,16 @@ export class AppComponent implements OnInit {
       () => {
         this.isDropdownOpened = false;
         this.currentFrom = 'login';
-        this._router.navigate(['body1']).then();
+        this._router.navigate(['']).then();
         this._alertService.showAlert("Logout completato", true);
-
-      }
-    );
+      });
   }
 
   private setUser() {
     this._authenticationService.currentUser$.subscribe({
       next: data => {
         this.user = data;
-      }, error: error => console.log(error)
+      }
     });
   }
 

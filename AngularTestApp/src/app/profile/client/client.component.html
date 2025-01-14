@@ -1,11 +1,7 @@
 <div class="container my-5">
-  <!-- Header Section -->
-
-  <!-- Colonna Profilo -->
   <div class="card p-4 ">
     <div class="row justify-content-between">
       <div class="col-6 d-flex align-items-center">
-        <!-- Profile Image -->
         <div *ngIf="profileImageUrl">
           <img [src]="profileImageUrl" alt="Profile Picture"
                class="rounded-circle me-4" width="100"
@@ -14,7 +10,6 @@
         <div *ngIf="!profileImageUrl">
           <i class="fa-solid fa-circle-user fa-5x me-4"></i>
         </div>
-        <!-- User Info -->
         <div class="d-flex flex-column">
           <div class="d-flex align-items-center"><h4 class="mb-1 me-2">{{ user.firstName }} {{ user.lastName }}</h4>
             <button class="btn btn-sm btn-outline-primary edit-btn" (click)="openPopup()">modifica</button>
@@ -41,42 +36,29 @@
           <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
         </div>
         <div class="modal-body shadow-lg ">
-          <!-- Contenuto del modale -->
           <app-update-user [user]="user" [profileImage]="profileImageBlob" (showImage)="showProfileImage()"
                            (closeModal)="closePopup()"></app-update-user>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Skills and Stats Section -->
-
   <app-wishlist></app-wishlist>
-
   <div class="row mt-4 ">
-
     <div class="col-md-6 mb-4 ">
-
       <div class="card p-3 shadow-sm rec d-flex flex-column h-100">
         @if (reviews.length != 0) {
           <div class="row justify-content-between">
             <div class="col">
               <h5 class="fw-bold">Ultime recensioni</h5>
-
             </div>
-
             @if (this.loadBtnless) {
               <div class="col-2 ">
-
                 <button (click)="lessReview()" class="btn btn-outline-primary btn-sm">
                   <i class="fa-solid fa-minus "></i>
-
                 </button>
               </div>
             }
           </div>
-
-
           <div *ngFor="let review of recensioniVisibili"
                class="review-container flex-grow-1 d-flex flex-column justify-content-center">
             <app-review [review]="review" (click)="openPopup4(review)"></app-review>
@@ -88,23 +70,18 @@
                   <i class="fa-solid fa-plus fa-sm"></i>
                 </button>
               </div>
-
             </div>
           }
         } @else {
           <div class="row justify-content-center mt-auto text-center ">
             <h5><strong>Aggiungi la tua prima recensione!</strong></h5>
           </div>
-
         }
         <div class="row justify-content-center mt-auto ">
           <div class="col-4">
             <button class="btn btn-outline-primary mt-2  " (click)="openPopup2()">aggiungi recensione</button>
-
           </div>
-
         </div>
-
       </div>
     </div>
     <div class="modal fade" [ngClass]="{'show': isPopupVisible2}"
@@ -116,7 +93,6 @@
             <button type="button" class="btn-close" (click)="closePopup2()" aria-label="Close"></button>
           </div>
           <div class="modal-body shadow-lg ">
-            <!-- Contenuto del modale -->
             <app-add-review (closeModal)="closePopup2()" (reviewAdded)="aggiornaLista($event)"></app-add-review>
           </div>
         </div>
@@ -131,7 +107,6 @@
             <button type="button" class="btn-close" (click)="closePopup4()" aria-label="Close"></button>
           </div>
           <div class="modal-body shadow-lg ">
-            <!-- Contenuto del modale -->
             <app-reviewmodal (closeModal)="closePopup4()" [review]="selectReview"
                              (reviewRemoved)="rimuoviDaLista($event)" (reviewModified)="modificaLista($event)"
                              [isOpen]="isPopupVisible4"/>
@@ -139,12 +114,10 @@
         </div>
       </div>
     </div>
-    <!-- Hobby Activity -->
     <div class="col-md-6">
       <div class="card p-3 shadow-sm container-fluid">
         <h5 class="fw-bold mb-3">Ami i viaggi di tipo: {{ tipoViaggio }}!</h5>
         <div class="row g-3 justify-content-center">
-          <!-- Cultura -->
           <div class="col-6 text-center">
             <div class="d-inline-block position-relative">
               <svg class="torta" height="100" width="100">
@@ -155,7 +128,6 @@
               <div class="position-absolute top-50 start-50 translate-middle fw-bold">Cultura</div>
             </div>
           </div>
-          <!-- Relax -->
           <div class="col-6 text-center">
             <div class="d-inline-block position-relative">
               <svg class="torta" height="100" width="100">
@@ -168,7 +140,6 @@
           </div>
         </div>
         <div class="row g-3 justify-content-center">
-          <!-- Natura -->
           <div class="col-12 text-center">
             <div class="d-inline-block position-relative">
               <svg class="torta" height="100" width="100">
@@ -181,7 +152,6 @@
           </div>
         </div>
         <div class="row g-3 justify-content-center">
-          <!-- Romantico -->
           <div class="col-6 text-center">
             <div class="d-inline-block position-relative">
               <svg class="torta" height="100" width="100">
@@ -192,7 +162,6 @@
               <div class="position-absolute top-50 start-50 translate-middle fw-bold">Romantico</div>
             </div>
           </div>
-          <!-- Famiglia -->
           <div class="col-6 text-center">
             <div class="d-inline-block position-relative">
               <svg class="torta" height="100" width="100">

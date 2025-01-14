@@ -54,7 +54,7 @@ export class UpdateTravelComponent implements OnInit {
 
   validateDates() {
     const startDate = new Date(this.selectedTravel.startDate);
-    const endDate = new Date(this.selectedTravel.endDate); // Controlla se la data di partenza è minore di oggi (solo se una data di partenza è stata inserita) if (this.formData.startDate) { this.dateErrors.startDateInvalid = startDate < today.setHours(0, 0, 0, 0); } else { this.dateErrors.startDateInvalid = false; } // Controlla se la data di ritorno è minore della data di partenza (solo se entrambe le date sono state inserite)
+    const endDate = new Date(this.selectedTravel.endDate);
     if (startDate && endDate && endDate < startDate) {
       this.dateErrors.endDateInvalid = 'La data di ritorno non può essere precedente a quella di partenza';
     } else {

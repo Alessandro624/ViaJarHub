@@ -21,15 +21,11 @@
                   Elimina <i class="fa-solid fa-trash"></i>
                 </button>
               </li>
-
             </ul>
           </div>
         </div>
       }
     </div>
-
-
-
     @if (isLoading) {
       <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
         <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
@@ -67,27 +63,23 @@
     <div class="mb-3">
       <label class="form-label fw-bold">Voto: {{ rating }}</label>
       <div class="rating">
-  <span class="star" [ngClass]="{'filled': rating >= 1}" (click)="rate(1)">
-    <i class="fa-solid fa-star"></i>
-  </span>
+        <span class="star" [ngClass]="{'filled': rating >= 1}" (click)="rate(1)">
+          <i class="fa-solid fa-star"></i>
+        </span>
         <span class="star" [ngClass]="{'filled': rating >= 2}" (click)="rate(2)">
-    <i class="fa-solid fa-star"></i>
-  </span>
+          <i class="fa-solid fa-star"></i>
+        </span>
         <span class="star" [ngClass]="{'filled': rating >= 3}" (click)="rate(3)">
-    <i class="fa-solid fa-star"></i>
-  </span>
+          <i class="fa-solid fa-star"></i>
+        </span>
         <span class="star" [ngClass]="{'filled': rating >= 4}" (click)="rate(4)">
-    <i class="fa-solid fa-star"></i>
-  </span>
+          <i class="fa-solid fa-star"></i>
+        </span>
         <span class="star" [ngClass]="{'filled': rating >= 5}" (click)="rate(5)">
-    <i class="fa-solid fa-star"></i>
-  </span>
+          <i class="fa-solid fa-star"></i>
+        </span>
       </div>
-
-
     </div>
-
-    <!-- Textarea -->
     <div class="mb-3">
       <label for="comment" class="form-label fw-bold">Commento</label>
       <textarea
@@ -100,7 +92,6 @@
         required
       ></textarea>
     </div>
-
     <div class="mb-3">
       <label for="images" class="form-label">Carica Immagini</label>
       <div
@@ -109,10 +100,8 @@
         (dragover)="onDragOver($event)"
         (dragleave)="onDragLeave($event)"
         (drop)="onDrop($event)"
-        (input)="imageError = ''; "
-      >
+        (input)="imageError = ''; ">
         <p>Trascina qui le immagini o clicca per selezionarle</p>
-        <!-- Input file nascosto -->
         <input
           #fileInput
           type="file"
@@ -133,8 +122,6 @@
       <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
       <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
     </div>
-
-    <!-- Pulsante di invio -->
     <button type="submit" class="btn btn-success" (click)="submitForm()" [disabled]="comment=='' ">
       Invia
     </button>

@@ -69,7 +69,6 @@
   transform: scale(1.5);
 }
 
-
 /* Icona nella search bar */
 .search-bar .fa-search {
   transition: transform 0.3s ease, color 0.3s ease;
@@ -77,8 +76,6 @@
 }
 
 /* Icona ingrandita con hover */
-
-
 #animatedText {
   font-size: 3rem; /* Dimensione del font per il testo animato */
   white-space: nowrap;
@@ -104,8 +101,6 @@
     border-color: white;
   }
 }
-
-/*TODO se togli questi si risolve il problema dell'icona di ricerca*/
 
 /* Aggiungi media query per rendere il testo e il form responsive */
 @media (max-width: 768px) {

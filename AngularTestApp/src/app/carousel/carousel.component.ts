@@ -26,15 +26,15 @@ declare var window: any;
 
 export class CarouselComponent implements OnInit, OnDestroy {
   @Input() filters?: TravelFilter;
-  inBody: boolean = false; // Stato per indicare se è in Body1
-  isFocused: boolean = false; // Controlla se la barra è illuminata
+  inBody: boolean = false;
+  isFocused: boolean = false;
   inReview: boolean = false;
   selectedIndex: number = -1;
   travel!: Travel | undefined;
   immaginiURLs: string[] = [];
   isExpanded: boolean = false;
   suggestions: string[] = [];
-  photos: string[] = ['4646289.jpg', '4646289.jpg', '4646289.jpg'];
+  photos: string[] = ['assets/images/carousel_image1.jpg', 'assets/images/carousel_image2.jpg', 'assets/images/carousel_image3.jpg'];
 
   constructor(private _router: Router, @Inject(NgZone) private ngZone: NgZone, @Inject(PLATFORM_ID) private platformId: Object, private elementRef: ElementRef, private _travelService: TravelService, private _activatedRoute: ActivatedRoute) {
   }
@@ -43,13 +43,9 @@ export class CarouselComponent implements OnInit, OnDestroy {
     // Controlla se il componente è contenuto all'interno di Body1
     this.inBody = this.isContainedIn('app-body1');
     this.inReview = this.isContainedIn('app-reviewmodal');
-    // Configura il carosello con l'intervallo appropriato
-    // 5 secondi dentro Body1, 20 secondi fuori
+    // Configura il carosello con l'intervallo appropriato: 5 secondi dentro Body1, 20 secondi fuori
     const interval = this.inBody ? 5000 : 20000;
     this.enableCarouselTimer(interval);
-    console.log(this.inReview);
-    console.log(this.inBody);
-    // Esegui l'effetto macchina da scrivere solo dentro Body1
     if (this.inBody) {
       this.ngZone.runOutsideAngular(() => {
         this.loadCarouselImages();
@@ -58,9 +54,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
       this.loadSearchQuery();
     } else {
       const id = Number(this._activatedRoute.parent?.snapshot.paramMap.get('id'));
-      if (id == null) {
-        throw new Error("Viaggio non trovato");
-      }
       this.loadTravel(id);
     }
   }
@@ -121,12 +114,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.travel = result;
         this._travelService.getTravelImages(this.travel.id).subscribe({
           next: data => {
-            console.log(data);
             this.immaginiURLs = data.map(image => `data:image/jpeg;base64,${image}`);
           }
         });
-      }, error: error => {
-        console.log(error);
+      }, error: () => {
         this._router.navigate(['**']).then();
       }
     });
@@ -165,7 +156,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         if (index < text.length) {
           textElement.textContent += text.charAt(index);
           index++;
-          requestAnimationFrame(type); // animazione più fluida
+          requestAnimationFrame(type);
         }
       };
       type();
@@ -173,7 +164,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   // Funzione per verificare se il componente è contenuto in un altro componente
-
   private isContainedIn(parentSelector: string): boolean {
     let parent = this.elementRef.nativeElement.parentElement;
     while (parent) {
@@ -186,7 +176,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   // Abilita il timer del carosello con un intervallo specifico
-
   private enableCarouselTimer(interval: number): void {
     const carouselElement = this.elementRef.nativeElement.querySelector('#carouselExample');
     if (carouselElement && isPlatformBrowser(this.platformId)) {
@@ -194,7 +183,12 @@ export class CarouselComponent implements OnInit, OnDestroy {
       if (bootstrap) {
         bootstrap.Carousel.getOrCreateInstance(carouselElement, {
           interval: interval, // Imposta l'intervallo dinamicamente
-          wrap: true          // Consente il ciclo delle immagini
+          wrap: true,         // Consente il ciclo delle immagini
+          touch: false,
+          pause: false,
+          keyboard: false,
+          ride: "carousel",
+
         });
       }
     }
@@ -224,9 +218,8 @@ export class CarouselComponent implements OnInit, OnDestroy {
       this._travelService.getSuggestions(this.filters).subscribe({
         next: result => {
           this.suggestions = result;
-        }, error: error => {
+        }, error: () => {
           this.suggestions = [];
-          console.log(error);
         }
       });
     } else {

@@ -28,7 +28,6 @@ export class ClientService {
     if (image) {
       formData.append('profileImage', image);
     }
-    console.log(formData);
     return this._http.post<void>(`${this.APIUrl}/auth/v1/update-user`, formData, {withCredentials: true}).pipe(
       switchMap(() => this._authenticationService.getUser()),
       catchError(this.handleError)

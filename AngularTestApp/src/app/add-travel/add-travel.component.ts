@@ -29,7 +29,7 @@ import {AlertService} from '../alert/alert.service';
 })
 export class AddTravelComponent implements OnInit {
   @Output() closeModal = new EventEmitter<void>();
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;//consente di accedere all'elemento del DOM
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   today: string = new Date().toISOString().split('T')[0];
   travel: Travel = {
     id: 0,
@@ -69,18 +69,15 @@ export class AddTravelComponent implements OnInit {
 
   async initMap() {
     await customElements.whenDefined('gmp-map');
-
     const map = document.querySelector('gmp-map') as any;
     const marker = document.querySelector('gmp-advanced-marker') as any;
     const placePicker = document.querySelector('gmpx-place-picker') as any;
     const infoWindow = new google.maps.InfoWindow();
-
     map.innerMap.setOptions({
       mapTypeControl: false,
       streetViewControl: false,
       fullscreenControl: false
     });
-
     map.innerMap.addListener('click', (event: google.maps.MapMouseEvent) => {
       const location = event.latLng;
       if (!location) {
@@ -100,10 +97,8 @@ export class AddTravelComponent implements OnInit {
       map.innerMap.setZoom(this.zoom);
       this.getLocationDetails(location, infoWindow, map, marker);
     });
-
     placePicker.addEventListener('gmpx-placechange', () => {
       const place = placePicker.value;
-
       if (!place.location) {
         window.alert(
           "Nessun dettaglio per:  '" + place.name + "'"
@@ -113,7 +108,6 @@ export class AddTravelComponent implements OnInit {
         this.resetTravelCoordinates();
         return;
       }
-
       if (place.viewport) {
         map.innerMap.fitBounds(place.viewport);
       } else {
@@ -137,7 +131,6 @@ export class AddTravelComponent implements OnInit {
     geocoder.geocode({location: location}, (results, status) => {
       if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
         const location = results[0];
-        console.log(results[0]);
         const city = location.address_components.find(component =>
           component.types.includes('administrative_area_level_3')
         )?.long_name;
@@ -149,8 +142,6 @@ export class AddTravelComponent implements OnInit {
          <span>${location.formatted_address}</span>`
         );
         infoWindow.open(map.innerMap, marker);
-      } else {
-        console.error('Geocoding failed:', status);
       }
     }).then();
   }
@@ -183,15 +174,12 @@ export class AddTravelComponent implements OnInit {
 
   onSubmit() {
     this.isLoading = true;
-    console.log('Dati del form:', this.travel);
-    console.log('Immagini caricate:', this.images);
     const travelType = this.travel.travelType;
     this.travel.travelType = <TravelType>travelType.toUpperCase();
     this.travelService.addTravel(this.travel, this.images).subscribe({
       next: () => {
         this.isLoading = false;
-        this.alertService.showAlert("Form inviato con successo!\nDestinazione: ${this.travel.destination}\nData di Partenza: ${this.travel.startDate}\nData di Ritorno: ${this.travel.endDate}\nDescrizione: ${this.travel.description}\nNumero di immagini: ${this.images.length}", true)
-
+        this.alertService.showAlert(`Viaggio creato con successo`, true);
         this.closeModal.emit();
         this.resetData();
       }, error: error => {
@@ -223,13 +211,13 @@ export class AddTravelComponent implements OnInit {
   }
 
   triggerFileInput() {
-    this.fileInput.nativeElement.click(); // Attiva l'input file nascosto
+    this.fileInput.nativeElement.click();
   }
 
   validateDates() {
     const today = new Date();
     const startDate = new Date(this.travel.startDate);
-    const endDate = new Date(this.travel.endDate); // Controlla se la data di partenza è minore di oggi (solo se una data di partenza è stata inserita) if (this.formData.startDate) { this.dateErrors.startDateInvalid = startDate < today.setHours(0, 0, 0, 0); } else { this.dateErrors.startDateInvalid = false; } // Controlla se la data di ritorno è minore della data di partenza (solo se entrambe le date sono state inserite)
+    const endDate = new Date(this.travel.endDate);
     if (startDate && startDate < today) {
       this.dateErrors.startDateInvalid = 'La data di partenza non può essere precedente ad oggi'
     } else {

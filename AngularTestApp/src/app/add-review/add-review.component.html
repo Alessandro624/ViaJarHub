@@ -10,7 +10,6 @@
     </div>
   } @else {
     <form>
-      <!-- Dropdown -->
       <div class="mb-3">
         <div class="mb-3 dropdown">
           <button
@@ -23,13 +22,11 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <li *ngFor="let option of dropdownOptions">
-              <!--TODO eliminare id, lo uso solo per debug-->
-              <a class="dropdown-item" (click)="selectType(option)">{{ option.id }} - {{ option.destination }}</a>
+              <a class="dropdown-item" (click)="selectType(option)">{{ option.destination }}</a>
             </li>
           </ul>
         </div>
       </div>
-      <!-- Selezione stelle -->
       <div class="mb-3">
         <label class="form-label fw-bold">Voto: {{ rating }}</label>
         <div class="rating">
@@ -50,7 +47,6 @@
           </span>
         </div>
       </div>
-      <!-- Textarea -->
       <div class="mb-3">
         <label for="comment" class="form-label fw-bold">Commento</label>
         <textarea
@@ -73,7 +69,6 @@
           (drop)="onDrop($event)"
           (input)="imageError = ''; ">
           <p>Trascina qui le immagini o clicca per selezionarle</p>
-          <!-- Input file nascosto -->
           <input
             #fileInput
             type="file"
@@ -94,7 +89,6 @@
         <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
         <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
       </div>
-      <!-- Pulsante di invio -->
       <button type="submit" class="btn btn-success" (click)="submitForm()" [disabled]="!comment || !selectedOption ">
         Invia
       </button>

@@ -36,7 +36,6 @@ export class ReviewService {
 
   getAllReviews(): Observable<Review[]> {
     return this.http.get<Review[]>(`${this.APIUrl}/open/v1/reviews`).pipe(catchError(this.handleError));
-
   }
 
   // Recupera recensioni di un determinato viaggio
@@ -52,29 +51,21 @@ export class ReviewService {
   }
 
   // Recupera una recensione specifica
-  getReview(travelId: number, email: string): Observable<Review> {
-
+  /* getReview(travelId: number, email: string): Observable<Review> {
     const params = new HttpParams()
       .set('travelId', travelId.toString())
       .set('email', email);
     return this.http.get<Review>(`${this.APIUrl}/open/v1/review`, {params}).pipe(catchError(this.handleError));
-
-
-  }
+  } */
 
   // Crea una nuova recensione
   createReview(review: Review, images: File[]) {
     review.user.authorities = null;
     const formData = new FormData();
-    console.log(images);
-
     formData.append('review', new Blob([JSON.stringify(review)], {type: 'application/json'}));
-
     images.forEach((image) => {
       formData.append(`reviewImages`, image);
     });
-
-    console.log(formData);
     return this.http.post<void>(`${this.APIUrl}/auth/v1/create-review`, formData).pipe(
       switchMap(() => this.getReviewable()),
       catchError(this.handleError));
@@ -83,7 +74,6 @@ export class ReviewService {
   getReviewImages(id: number, email: string | undefined): Observable<string[]> {
     return this.http.get<string[]>(`${this.APIUrl}/open/v1/review-images?id=${id}&email=${email}`).pipe(catchError(this.handleError));
   }
-
 
   // Elimina una recensione specifica
   deleteReview(review: Review) {
@@ -95,7 +85,6 @@ export class ReviewService {
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Si è verificato un errore, riprovare più tardi';
-
     switch (error.status) {
       case 400:
         errorMessage = 'Richiesta non valida. Verifica i dati inseriti.';
@@ -118,7 +107,6 @@ export class ReviewService {
       default:
         errorMessage = 'Si è verificato un errore imprevisto. Riprova più tardi.';
     }
-
     return throwError(() => new Error(errorMessage));
   }
 }

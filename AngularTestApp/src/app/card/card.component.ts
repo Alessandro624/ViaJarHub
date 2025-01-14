@@ -49,9 +49,6 @@ export class CardComponent implements OnInit {
       {
         next: data => {
           this.copertina = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${data[0]}`);
-        },
-        error: error => {
-          console.log(error);
         }
       }
     );
@@ -61,9 +58,8 @@ export class CardComponent implements OnInit {
     this._travelService.getStars(this.travel.id).subscribe({
       next: data => {
         this.stars = data;
-      }, error: error => {
+      }, error: () => {
         this.stars = 0;
-        console.log(error);
       }
     });
   }

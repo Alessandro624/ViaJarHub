@@ -38,9 +38,7 @@ export class ClientComponent implements OnInit {
   profileImageBlob!: Blob | null;
   isPopupVisible2 = false;
   isPopupVisible = false;
-  // isPopupVisible3 = false;
   isPopupVisible4 = false;
-  // settedTravel: Travel | undefined = undefined;
   reviews: Review[] = [];
   recensioniVisibili: Review[] = [];
   loadBtnless = false;
@@ -74,7 +72,7 @@ export class ClientComponent implements OnInit {
         if (data) {
           this.user = data;
         }
-      }, error: error => console.log(error)
+      }
     });
   }
 
@@ -83,7 +81,6 @@ export class ClientComponent implements OnInit {
       const birthDateObj = new Date(this.user.birthDate);
       this.birthdate = birthDateObj.toLocaleDateString('it-IT');
     }
-    console.log(this.birthdate);
   }
 
   protected showProfileImage() {
@@ -92,10 +89,8 @@ export class ClientComponent implements OnInit {
         next: data => {
           this.profileImageUrl = URL.createObjectURL(data);
           this.profileImageBlob = data;
-          console.log(this.profileImageUrl);
         },
-        error: error => {
-          console.log(error);
+        error: () => {
           this.profileImageUrl = '';
           this.profileImageBlob = null;
         }
@@ -119,19 +114,11 @@ export class ClientComponent implements OnInit {
       next: data => {
         if (data) {
           this.numbook = data?.length;
-          for (let travel of data) {
-            console.log(travel.travelType);
-          }
           this.culturaList = data.filter(item => String(item.travelType) === "CULTURA").length;
           this.relaxList = data.filter(item => String(item.travelType) === "RELAX").length;
           this.naturaList = data.filter(item => String(item.travelType) === "NATURA").length;
           this.romanticoList = data.filter(item => String(item.travelType) === "ROMANTICO").length;
           this.famigliaList = data.filter(item => String(item.travelType) === "FAMIGLIA").length;
-          console.log("cultura" + this.culturaList);
-          console.log(this.relaxList);
-          console.log(this.naturaList);
-          console.log(this.romanticoList);
-          console.log(this.famigliaList);
           this.updateStrokeDashArray();
           this.animateStrokeDashArray();
           this.tipoViaggio = this.getHighestType();
@@ -143,11 +130,7 @@ export class ClientComponent implements OnInit {
   private aggiornaRecensioniVisibili() {
     this.recensioniVisibili = this.reviews.slice(this.startIndex, this.startIndex + this.step);
     this.loadBtnless = this.startIndex != 0;
-    console.log(this.startIndex);
-    console.log(this.reviews.length);
     this.loadBtnmore = this.startIndex + this.step < this.reviews.length;
-    console.log(this.loadBtnless);
-    console.log(this.loadBtnmore);
   }
 
   private animateStrokeDashArray() {
@@ -220,7 +203,6 @@ export class ClientComponent implements OnInit {
   }
 
   closePopup2() {
-    console.log("prova");
     this.isPopupVisible2 = false;
   }
 
@@ -239,7 +221,6 @@ export class ClientComponent implements OnInit {
   }
 
   aggiornaLista(review: Review) {
-    console.log("mannananan")
     this.reviews.unshift(review);
     this.startIndex = 0;
     this.numrec += 1;
@@ -247,14 +228,10 @@ export class ClientComponent implements OnInit {
   }
 
   rimuoviDaLista(review: Review) {
-    console.log("mannananan")
-    console.log(review.travel.id)
-    console.log(this.reviews)
     const index = this.reviews.findIndex(rev => rev.travel.id === review.travel.id);
     if (index !== -1) {
       this.reviews.splice(index, 1);
     }
-    console.log(this.reviews)
     this.startIndex = 0;
     this.numrec += 1;
     this.aggiornaRecensioniVisibili();

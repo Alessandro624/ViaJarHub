@@ -45,12 +45,10 @@ export class AddReviewComponent implements OnInit {
       next: (review) => {
         if (review) {
           this.dropdownOptions = review;
-          console.log(this.dropdownOptions);
         } else {
           this.dropdownOptions = [];
         }
-      }, error: error => {
-        console.error(error);
+      }, error: () => {
         this.dropdownOptions = [];
       }
     });
@@ -58,7 +56,6 @@ export class AddReviewComponent implements OnInit {
 
   rate(star: number) {
     this.rating = star;
-    console.log(this.rating);
   }
 
   selectType(option: Travel) {
@@ -66,9 +63,6 @@ export class AddReviewComponent implements OnInit {
   }
 
   submitForm() {
-    console.log('Opzione selezionata:', this.selectedOption);
-    console.log('Stelle selezionate:', this.rating);
-    console.log('Commento:', this.comment);
     this.authentication.currentUser$.subscribe(user => {
       if (user && this.selectedOption) {
         this.travelService.getTravelById(this.selectedOption.id).subscribe(travel => {
@@ -116,7 +110,7 @@ export class AddReviewComponent implements OnInit {
   }
 
   triggerFileInput() {
-    this.fileInput.nativeElement.click(); // Attiva l'input file nascosto
+    this.fileInput.nativeElement.click();
   }
 
   private checkAndAddFiles(files: FileList | undefined) {

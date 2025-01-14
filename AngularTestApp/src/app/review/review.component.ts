@@ -1,7 +1,5 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
-import {ReviewService} from './review.service';
 import {Review} from '../models/review/review.model';
-import {TravelService} from '../travel-detail/travel.service';
 import {StarComponent} from '../star/star.component';
 
 @Component({
@@ -17,13 +15,9 @@ export class ReviewComponent implements OnInit {
   inAdmin: boolean = false;
   inClient: boolean = false;
   inDetails: boolean = false;
-  travelName: string = '';
-  // immaginiURLs: string[] = [];
-
   @Input() review!: Review;
 
-
-  constructor(private elementRef: ElementRef, private reviewService: ReviewService, private travelService: TravelService) {
+  constructor(private elementRef: ElementRef) {
   }
 
   // Funzione per verificare se il componente è contenuto in un altro componente
@@ -42,18 +36,5 @@ export class ReviewComponent implements OnInit {
     this.inAdmin = this.isContainedIn('app-admin');
     this.inClient = this.isContainedIn('app-client');
     this.inDetails = this.isContainedIn('app-infotravel');
-
-    if (this.review) {
-      this.reviewService.getReview(this.review.travel.id, this.review.user.email).subscribe(
-        {
-          next: result => {
-            console.log(result);
-            if (this.review) {
-              this.travelName = this.review.travel.destination;
-            }
-          }
-        }
-      )
-    }
   }
 }
