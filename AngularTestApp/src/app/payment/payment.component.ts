@@ -52,12 +52,14 @@ export class PaymentComponent implements OnChanges {
   makePayment() {
     this.isLoading = true;
     const paymentData = this.getPaymentData();
+    console.log(paymentData);
     this._paymentService.makePayment(paymentData).subscribe({
       next: () => {
         this.alertService.showAlert('Pagamento riuscito', true);
         this.isLoading = false;
         this.closeModal.emit();
-      }, error: () => {
+      }, error: (err) => {
+        console.log(err)
         this.alertService.showAlert('Errore durante il pagamento.', false);
         this.isLoading = false;
         this.closeModal.emit();
@@ -77,8 +79,10 @@ export class PaymentComponent implements OnChanges {
   }
 
   modificaPrezzo() {
-    if (this.travel) {
+    if (this.travel && this.inWishlist) {
       this.prezzoFinale = this.travel.price * this.postiSelezionati;
+    } else if (this.travel && !this.inWishlist) {
+      this.prezzoFinale = this.prezzo;
     }
   }
 

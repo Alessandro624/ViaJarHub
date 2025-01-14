@@ -8,7 +8,7 @@
       <div class="col-6 text-end">
         <input type="number" class="increment-input" id="incrementInput" min="1"
                max="{{travel?.maxParticipantsNumber}}"
-               step="1" [(ngModel)]="postiSelezionati" (input)="modificaPrezzo()">
+               step="1" [(ngModel)]="postiSelezionati" (input)="modificaPrezzo()" name="seats">
       </div>
     </div>
   } @else {
@@ -71,7 +71,8 @@
   <button
     type="button"
     class="btn btn-secondary"
-    data-bs-dismiss="modal">
+    data-bs-dismiss="modal"
+    (click)="this.closeModal.emit()">
     Chiudi
   </button>
   <button type="button" class="btn btn-success" (click)="makePayment()" [disabled]="isLoading">
