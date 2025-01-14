@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable, NgZone} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
@@ -13,14 +13,17 @@ export class AlertService {
   alert$ = this.alertSubject.asObservable();
   isExiting$ = this.isExitingSubject.asObservable();
 
+  constructor(@Inject(NgZone) private ngZone: NgZone) {
+  }
+
   showAlert(message: string, isSuccess: boolean) {
     this.alertSubject.next({message, isSuccess});
     this.isExitingSubject.next(false);
-    setTimeout(() => {
+    this.ngZone.runOutsideAngular(() => setTimeout(() => {
       this.isExitingSubject.next(true);
       setTimeout(() => {
         this.alertSubject.next({message: null, isSuccess: null});
       }, 500);
-    }, 2000);
+    }, 2000));
   }
 }

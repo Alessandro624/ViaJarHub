@@ -116,6 +116,7 @@ export class TravelDetailComponent implements OnInit {
       next: result => {
         this.availableSeats = result;
         this.postiSelezionati = 1;
+        this.modificaPrezzo();
       }
     })
   }

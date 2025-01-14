@@ -1,4 +1,4 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, Inject, NgZone, OnInit, PLATFORM_ID} from '@angular/core';
 import {Travel} from '../../models/travel/travel.model';
 
 import {ReviewComponent} from '../../review/review.component';
@@ -44,7 +44,7 @@ export class InfotravelComponent implements OnInit {
   selectReview: Review | null = null;
   isLoading: boolean = true;
 
-  constructor(private _router: Router, @Inject(PLATFORM_ID) private platformId: Object, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private _reviewService: ReviewService) {
+  constructor(@Inject(NgZone) private ngZone: NgZone, private _router: Router, @Inject(PLATFORM_ID) private platformId: Object, private _travelService: TravelService, private _activatedRoute: ActivatedRoute, private _reviewService: ReviewService) {
   }
 
   ngOnInit() {
@@ -102,9 +102,9 @@ export class InfotravelComponent implements OnInit {
     });
 
     map.innerMap.addListener("center_changed", () => {
-      window.setTimeout(() => {
+      this.ngZone.runOutsideAngular(() => window.setTimeout(() => {
         map.innerMap.panTo(marker.position as google.maps.LatLng);
-      }, 5000);
+      }, 5000));
     });
 
     marker.addEventListener('click', () => {
@@ -121,5 +121,4 @@ export class InfotravelComponent implements OnInit {
   closePopup() {
     this.isPopupVisible = false;
   }
-
 }

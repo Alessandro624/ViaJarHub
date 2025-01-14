@@ -52,7 +52,6 @@ export class PaymentComponent implements OnChanges {
   makePayment() {
     this.isLoading = true;
     const paymentData = this.getPaymentData();
-    console.log(paymentData);
     this._paymentService.makePayment(paymentData).subscribe({
       next: () => {
         this.alertService.showAlert('Pagamento riuscito', true);
