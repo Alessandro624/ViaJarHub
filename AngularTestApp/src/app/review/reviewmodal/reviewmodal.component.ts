@@ -68,6 +68,7 @@ export class ReviewmodalComponent implements OnChanges {
       this.loadReviewImages();
     }
     this.inClient = this.isContainedIn('app-client');
+    this.reviewService.getReviewable().subscribe(); // for testing purpose
   }
 
   isContainedIn(parentSelector: string): boolean {

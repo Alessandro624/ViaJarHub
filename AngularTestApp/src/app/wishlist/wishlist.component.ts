@@ -7,6 +7,7 @@ import {WishlistService} from './wishlist.service';
 import {TravelService} from '../travel-detail/travel.service';
 import {StarComponent} from '../star/star.component';
 import {AlertService} from '../alert/alert.service';
+import {PaymentService} from '../payment/payment.service';
 
 @Component({
   selector: 'app-wishlist',
@@ -33,8 +34,9 @@ export class WishlistComponent implements OnInit {
   toRemoveTravel: Travel | null = null;
   selectedTravel: Travel | undefined;
   starRatings: Map<number, number> = new Map();
+  bookingStatus = new Map<string, boolean>();
 
-  constructor(private _wishlistService: WishlistService, private travelService: TravelService, private alertService: AlertService) {
+  constructor(private _wishlistService: WishlistService, private travelService: TravelService, private alertService: AlertService, private _paymentService: PaymentService) {
   }
 
   ngOnInit(): void {
@@ -43,6 +45,7 @@ export class WishlistComponent implements OnInit {
           if (data) {
             this.wishlist = data;
             this.calculateStars();
+            this.calculateBookingStatus();
             this.wishlistLength = this.wishlist.length - 3;
             this.setCurrentWishlist();
           } else {
@@ -98,7 +101,6 @@ export class WishlistComponent implements OnInit {
     this.currentWishlist = [];
   }
 
-
   confirmRemove(travel: Travel) {
     this.isConfirmVisible = true;
     this.toRemoveTravel = travel;
@@ -110,7 +112,7 @@ export class WishlistComponent implements OnInit {
     this.toRemoveTravel = null;
   }
 
-  calculateStars(): void {
+  private calculateStars(): void {
     this.wishlist.forEach((travel) => {
       this.travelService.getStars(travel.id).subscribe({
         next: (rating: number) => {
@@ -125,5 +127,30 @@ export class WishlistComponent implements OnInit {
 
   getStar(id: number): number {
     return this.starRatings.get(id) || 0;
+  }
+
+  private calculateBookingStatus(): void {
+    this._paymentService.booking$.subscribe({
+      next: (result) => {
+        if (result) {
+          result.forEach((item: { id: number; startDate: string; endDate: string }) => {
+            const key = this.createKey(item.id, item.startDate, item.endDate);
+            this.bookingStatus.set(key, true);
+          });
+        }
+      },
+      error: () => {
+        this.bookingStatus.clear();
+      },
+    });
+  }
+
+  isInBooking(id: number, startDate: string, endDate: string): boolean {
+    const key = this.createKey(id, startDate, endDate);
+    return this.bookingStatus.get(key) || false;
+  }
+
+  private createKey(id: number, startDate: string, endDate: string): string {
+    return `${id}-${startDate}-${endDate}`;
   }
 }

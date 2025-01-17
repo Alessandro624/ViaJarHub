@@ -37,7 +37,8 @@
                 </div>
               </div>
               <div class="col-2 d-flex align-items-center">
-                <button class="btn btn-outline-success me-3" (click)="openPayment(travel)">
+                <button class="btn btn-outline-success me-3" (click)="openPayment(travel)"
+                        [disabled]="isInBooking(travel.id, travel.startDate, travel.endDate)">
                   <i class="fa-solid fa-cart-shopping"></i>
                 </button>
                 <button class="btn btn-outline-danger" (click)="confirmRemove(travel)">
