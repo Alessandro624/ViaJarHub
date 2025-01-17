@@ -1,0 +1,217 @@
+.carousel {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  z-index: 10; /* Assicurati che sia sopra le immagini */
+  width: 100%; /* Assicurati che l'overlay sia largo quanto il carosello */
+  height: 100%; /* Assicurati che l'overlay copra l'intera altezza del carosello */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 15px; /* Aggiungi padding per dispositivi mobili */
+}
+
+.text-container {
+  display: inline-block;
+  margin-bottom: 1rem; /* Aggiungi margine per separare il testo dalla barra di ricerca */
+}
+
+.search-bar {
+  width: 200px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  background-color: white;
+}
+
+/* Stato espanso */
+.search-bar.focused {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Effetto illuminato */
+  width: 400px; /* Aumenta larghezza */
+}
+
+/* Input nella search bar */
+.search-bar input {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  transition: background-color 0.3s ease;
+}
+
+/* Rimuove bordo input */
+.search-bar input:focus {
+  box-shadow: none;
+}
+
+/* Pulsante nella search bar */
+.search-bar button {
+  border: none;
+  transition: transform 0.3s ease;
+  color: black;
+}
+
+.search-bar button:hover {
+  color: black;
+}
+
+.search-bar button:hover i {
+  transform: scale(1.5);
+}
+
+/* Icona nella search bar */
+.search-bar .fa-search {
+  transition: transform 0.3s ease, color 0.3s ease;
+  color: black; /* Colore dell'icona di default */
+}
+
+/* Icona ingrandita con hover */
+#animatedText {
+  font-size: 3rem; /* Dimensione del font per il testo animato */
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: .15em solid white; /* Effetto cursore */
+  animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0
+  }
+  to {
+    width: 100%
+  }
+}
+
+@keyframes blink-caret {
+  from, to {
+    border-color: transparent
+  }
+  50% {
+    border-color: white;
+  }
+}
+
+/* Aggiungi media query per rendere il testo e il form responsive */
+@media (max-width: 768px) {
+  .overlay {
+    padding: 0 10px; /* Riduci il padding su schermi più piccoli */
+  }
+
+  #animatedText {
+    font-size: 2rem; /* Riduci la dimensione del font su schermi più piccoli */
+  }
+
+  .search-input {
+    max-width: 200px; /* Riduci la larghezza massima della barra di ricerca su schermi più piccoli */
+  }
+
+  .search-button {
+    padding: 0.25rem; /* Riduci il padding del pulsante su schermi più piccoli */
+  }
+}
+
+@media (max-width: 576px) {
+  .overlay {
+    padding: 0 5px; /* Riduci ulteriormente il padding su schermi molto piccoli */
+  }
+
+  #animatedText {
+    font-size: 1.5rem; /* Riduci ulteriormente la dimensione del font su schermi molto piccoli */
+  }
+
+  .search-input {
+    max-width: 150px; /* Riduci ulteriormente la larghezza massima della barra di ricerca su schermi molto piccoli */
+  }
+
+  .search-button {
+    padding: 0.2rem; /* Riduci ulteriormente il padding del pulsante su schermi molto piccoli */
+  }
+}
+
+.carousel-item.home {
+  max-width: 100%; /* Imposta la larghezza massima al 100% del contenitore */
+  max-height: 700px; /* Imposta un'altezza massima per l'immagine */
+  height: auto;
+}
+
+.carousel-img {
+  height: 100%; /* Imposta l'altezza al 100% del contenitore */
+  max-height: 90%;
+  width: auto; /* Mantiene la proporzione dell'immagine */
+  object-fit: contain; /* Assicura che l'intera immagine sia visibile senza tagli */
+}
+
+.carousel-item {
+  height: 500px; /* Imposta l'altezza fissa del carosello */
+}
+
+.carousel-inner {
+  height: 100%; /* Assicura che l'interno del carosello occupi l'intera altezza */
+}
+
+.carousel-control-prev {
+  color: blue !important;
+}
+
+.fa-caret-left {
+  font-size: 3rem;
+}
+
+.carousel-control-next {
+  color: blue !important;
+}
+
+.fa-caret-right {
+  font-size: 3rem;
+}
+
+.caret-div {
+  border-radius: 10px;
+  background: white !important;
+  border: blue !important;
+}
+
+/* CSS per il container della lista */
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 10;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+/* CSS per gli elementi della lista */
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: black;
+  transition: background-color 0.2s;
+}
+
+/* Hover effect */
+.suggestion-item:hover, .active {
+  background-color: #f0f0f0;
+  color: black;
+}

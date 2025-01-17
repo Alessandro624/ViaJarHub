@@ -1,0 +1,82 @@
+<div>
+  @if (inWishlist) {
+    <p>Prezzo totale: <strong>{{ prezzoFinale }} €</strong></p>
+    <div class="row justify-content-between">
+      <div class="col-6 mt-2">
+        <p class="fw-bold">Numero di partecipanti:</p>
+      </div>
+      <div class="col-6 text-end">
+        <input type="number" class="increment-input" id="incrementInput" min="1"
+               max="{{travel?.maxParticipantsNumber}}"
+               step="1" [(ngModel)]="postiSelezionati" (input)="modificaPrezzo()" name="seats">
+      </div>
+    </div>
+  } @else {
+    <p>Prezzo totale: <strong>{{ prezzo }} €</strong></p>
+  }
+  <form>
+    <div class="mb-3">
+      <label for="cardNumber" class="form-label">Numero di Carta</label>
+      <input
+        type="text"
+        id="cardNumber"
+        class="form-control"
+        [(ngModel)]="cardNumber"
+        name="cardNumber"
+        placeholder="4242 4242 4242 4242"/>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="expiryMonth" class="form-label">Mese di Scadenza</label>
+        <input
+          type="number"
+          id="expiryMonth"
+          class="form-control"
+          [(ngModel)]="expiryMonth"
+          (blur)="validateExpiryMonth()"
+          name="expiryMonth"
+          placeholder="MM"
+          min="1"
+          max="12"
+          required/>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="expiryYear" class="form-label">Anno di Scadenza</label>
+        <input
+          type="number"
+          id="expiryYear"
+          class="form-control"
+          [(ngModel)]="expiryYear"
+          (blur)="validateExpiryYear()"
+          name="expiryYear"
+          placeholder="YYYY"
+          min="2024"
+          max="2040"
+          required/>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="cvv" class="form-label">CVV</label>
+      <input
+        type="password"
+        id="cvv"
+        class="form-control"
+        [(ngModel)]="cvv"
+        name="cvv"
+        placeholder="123"/>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    data-bs-dismiss="modal"
+    (click)="this.closeModal.emit()">
+    Chiudi
+  </button>
+  <button type="button" class="btn btn-success" (click)="makePayment()" [disabled]="isLoading">
+    <span *ngIf="!isLoading">Paga</span>
+    <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+  </button>
+</div>

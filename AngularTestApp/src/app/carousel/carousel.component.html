@@ -1,0 +1,64 @@
+<div id="carouselExample" class="carousel slide mb-4" (slide.bs.carousel)="onSlideChange($event)">
+  @if (inBody) {
+    <div class="carousel-inner">
+      <div *ngFor="let photo of photos; let i = index" class="carousel-item home" [class.active]="i === 0">
+        <img [src]="photo" class="d-block w-100" alt="Slide {{ i + 1 }}">
+      </div>
+    </div>
+    <div class="overlay d-flex flex-column justify-content-center align-items-center">
+      <div class="text-container">
+        <h5 id="animatedText" class="display-4">Esplora. Sogna. Parti.</h5>
+      </div>
+      <form (ngSubmit)="onSearch()" class="d-flex mt-2 search-form" autocomplete="off">
+        <div class="d-flex align-items-center">
+          <div class="input-group search-bar position-relative" [ngClass]="{ 'focused': isFocused }">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Cerca..."
+              [(ngModel)]="filters!.searchQuery"
+              name="searchQuery"
+              (focus)="expandSearchBar()"
+              (blur)="collapseSearchBar()"
+              (input)="getAutocompleteSuggestions(); onSearch();"
+              (keydown)="handleKeyDown($event)"/>
+            <button
+              class="btn"
+              type="submit"
+              *ngIf="isExpanded">
+              <i class="fa-solid fa-search"></i>
+            </button>
+            <ul class="suggestions-list" *ngIf="suggestions.length > 0 && isExpanded" role="listbox">
+              <li *ngFor="let suggestion of suggestions; let i = index"
+                  (click)="selectSuggestion(suggestion); onSearch();"
+                  class="suggestion-item"
+                  [ngClass]="{'active': i === selectedIndex}"
+                  role="option">
+                {{ suggestion }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </div>
+  } @else {
+    <div class="carousel-inner">
+      <div class="carousel-item active" *ngFor="let imgURL of immaginiURLs; let i = index" [class.active]="i === 0">
+        <img [src]="imgURL" class="d-block w-100 carousel-img" alt="Slide {{ i + 1 }}">
+      </div>
+    </div>
+    <button class="carousel-control-prev " type="button" data-bs-target="#carouselExample"
+            data-bs-slide="prev">
+      <div class="caret-div">
+        <span class="fa-solid fa-caret-left mx-2" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </div>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+      <div class="caret-div">
+        <span class="fa-solid fa-caret-right mx-2" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </div>
+    </button>
+  }
+</div>

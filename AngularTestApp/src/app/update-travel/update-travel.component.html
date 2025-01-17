@@ -1,0 +1,111 @@
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Aggiorna Viaggio</h5>
+        <button type="button" class="btn-close" (click)="closeUpdateTravel.emit()" [disabled]="isLoading"></button>
+      </div>
+      <div class="modal-body">
+        <form #form="ngForm">
+          <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+            {{ alertMessage }}
+          </div>
+          <div class="mb-3 form-floating flex-grow-1">
+            <input
+              type="text"
+              id="title"
+              class="form-control"
+              [(ngModel)]="selectedTravel.destination"
+              name="title"
+              required
+              placeholder="Titolo"
+              (input)="alertMessage='';"
+            />
+            <label for="title" class="form-label">Titolo</label>
+          </div>
+          <div class="mb-3 form-floating flex-grow-1">
+            <input
+              type="date"
+              id="startDate"
+              class="form-control"
+              [(ngModel)]="selectedTravel.startDate"
+              name="startDate"
+              (change)="validateDates()"
+              [min]="today"
+              required
+              placeholder="Data di Partenza"
+              (input)="alertMessage='';"
+              [class.is-invalid]="dateErrors.startDateInvalid"
+            />
+            <label for="startDate" class="form-label">Data di Partenza</label>
+            <div *ngIf="dateErrors.startDateInvalid"
+                 class="invalid-feedback d-block">{{ dateErrors.startDateInvalid }}
+            </div>
+          </div>
+          <div class="mb-3 form-floating flex-grow-1">
+            <input
+              type="date"
+              id="endDate"
+              class="form-control"
+              [(ngModel)]="selectedTravel.endDate"
+              name="endDate"
+              (change)="validateDates()"
+              [min]="selectedTravel.startDate || today"
+              required
+              placeholder="Data di Ritorno"
+              (input)="alertMessage='';"
+              [class.is-invalid]="dateErrors.endDateInvalid"
+            />
+            <label for="endDate" class="form-label">Data di Ritorno</label>
+            <div *ngIf="dateErrors.endDateInvalid" class="invalid-feedback d-block">{{ dateErrors.endDateInvalid }}
+            </div>
+          </div>
+          <div class="mb-3 form-floating flex-grow-1">
+            <input
+              type="number"
+              step="0.01"
+              id="price"
+              class="form-control"
+              [(ngModel)]="selectedTravel.price"
+              name="price"
+              min="1"
+              required
+              placeholder="Prezzo"
+              (input)="alertMessage='';"/>
+            <label for="price" class="form-label">Prezzo</label>
+          </div>
+          <div class="mb-4 form-floating flex-grow-1">
+            <input type="number" id="seats"
+                   class="form-control"
+                   [(ngModel)]="selectedTravel.maxParticipantsNumber"
+                   name="seats" min="1" required placeholder="Numero Posti" (input)="alertMessage='';"/>
+            <label for="seats" class="form-label">Numero Posti</label>
+          </div>
+          <div class="mb-3 form-floating flex-grow-1">
+          <textarea
+            id="description"
+            class="form-control description-area"
+            [(ngModel)]="selectedTravel.description"
+            name="description"
+            rows="4"
+            required
+            placeholder="Descrizione"
+            (input)="alertMessage='';">
+            </textarea>
+            <label for="description" class="form-label">Descrizione</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeUpdateTravel.emit()" [disabled]="isLoading">
+          Chiudi
+        </button>
+        <button type="button" class="btn btn-success" [disabled]="isLoading || notValidForm() || form.invalid"
+                (click)="updateTravel()">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span *ngIf="!isLoading">Salva</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

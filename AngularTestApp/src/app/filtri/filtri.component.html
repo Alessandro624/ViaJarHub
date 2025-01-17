@@ -1,0 +1,93 @@
+<div class="filter-bar bg-light p-3 border d-flex align-items-center justify-content-between">
+  <div class="filters d-flex align-items-center flex-wrap">
+    <span class="me-3 text-nowrap">
+        <strong>Data partenza:</strong> {{ changeFormat(startDate) }}
+    </span>
+    <span class="me-3 text-nowrap">
+        <strong>Data ritorno:</strong> {{ changeFormat(endDate) }}
+    </span>
+    <span class="me-3 text-nowrap">
+        <strong>Prezzo:</strong> {{ filters.minPrice }} - {{ filters.maxPrice }} €
+    </span>
+    <span class="me-3 text-nowrap">
+        <strong>Tipo:</strong> {{ type }}
+    </span>
+  </div>
+  @if (isExpanded) {
+    <button class="btn btn-outline-primary" (click)="toggleFilters()">
+      <i class="fa-solid fa-caret-up"></i>
+    </button>
+  } @else {
+    <button class="btn btn-outline-primary" (click)="toggleFilters()">
+      <i class="fa-solid fa-caret-down"></i>
+    </button>
+  }
+</div>
+@if (isExpanded) {
+  <div class="filter-panel mt-3 border p-3 rounded bg-light">
+    <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+      {{ alertMessage }}
+    </div>
+    <div class="container mt-3">
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label for="startDate" class="me-2">Data partenza:</label>
+          <input
+            type="date"
+            id="startDate"
+            class="form-control"
+            [min]="minDate"
+            [(ngModel)]="startDate"
+            (change)="onStartDateChange($event)"
+            name="startDate"/>
+        </div>
+        <div class="col-6 mb-3">
+          <label for="endDate" class="me-2">Data ritorno:</label>
+          <input
+            type="date"
+            id="endDate"
+            class="form-control"
+            [min]="endDateMin"
+            [(ngModel)]="endDate"
+            name="endDate"/>
+        </div>
+      </div>
+    </div>
+    <div class="mb-5">
+      <ngx-slider
+        [(value)]="minValue"
+        [(highValue)]="maxValue"
+        [options]="options">
+      </ngx-slider>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-8 mb-3">
+          <div class="btn-group dropend w-25">
+            <button type="button"
+                    class="btn prova border dropdown-toggle d-flex justify-content-between align-items-center"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+              <span>Tipo viaggio</span>
+            </button>
+            <ul class="dropdown-menu ">
+              <li *ngFor="let type of travelTypes">
+                <a class="dropdown-item" (click)="selectType(type)">{{ type }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-success me-2" (click)="applyFilters()" [disabled]="isLoading">
+            <span *ngIf="isLoading"
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"></span>
+            <span *ngIf="!isLoading">Applica</span></button>
+          <button type="reset" class="btn btn-secondary" (click)="resetFilters()" [disabled]="isLoading">
+            Ripristina
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

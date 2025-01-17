@@ -1,0 +1,30 @@
+.star {
+  color: grey; /* colore delle stelle non cliccate */
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.star:hover {
+  transform: scale(1.2);
+}
+
+.filled {
+  color: #ffcc00;
+}
+
+.dropdown-item {
+  cursor: pointer;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+  background-color: #0D6EFD !important;
+}
+
+.button {
+  border-color: black !important;
+  background-color: white !important;
+}
+
+.container {
+  min-height: 300px;
+}

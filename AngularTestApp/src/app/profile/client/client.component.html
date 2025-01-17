@@ -1,0 +1,179 @@
+<div class="container my-5">
+  <div class="card p-4 ">
+    <div class="row justify-content-between">
+      <div class="col-6 d-flex align-items-center">
+        <div *ngIf="profileImageUrl">
+          <img [src]="profileImageUrl" alt="Profile Picture"
+               class="rounded-circle me-4" width="100"
+               height="100"/>
+        </div>
+        <div *ngIf="!profileImageUrl">
+          <i class="fa-solid fa-circle-user fa-5x me-4"></i>
+        </div>
+        <div class="d-flex flex-column">
+          <div class="d-flex align-items-center"><h4 class="mb-1 me-2">{{ user.firstName }} {{ user.lastName }}</h4>
+            <button class="btn btn-sm btn-outline-primary edit-btn" (click)="openPopup()">modifica</button>
+          </div>
+          <p class="text-muted mb-0">Cliente</p> <small
+          class="text-muted">{{ birthdate }}</small></div>
+      </div>
+      <div class="col-lg-6 col-12">
+        <div class="row">
+          <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Prenotazioni effettuate:</h5>
+            <p class="fs-4">{{ numbook }}</p></div>
+          <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Recensioni effettuate:</h5>
+            <p class="fs-4">{{ reviews.length }}</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" [ngClass]="{'show': isPopupVisible}"
+       [ngStyle]="{'display': isPopupVisible ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifica profilo</h5>
+          <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body shadow-lg ">
+          <app-update-user [user]="user" [profileImage]="profileImageBlob" (showImage)="showProfileImage()"
+                           (closeModal)="closePopup()"></app-update-user>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-wishlist></app-wishlist>
+  <div class="row mt-4 ">
+    <div class="col-md-6 mb-4 ">
+      <div class="card p-3 shadow-sm rec d-flex flex-column h-100">
+        @if (reviews.length != 0) {
+          <div class="row justify-content-between">
+            <div class="col">
+              <h5 class="fw-bold">Ultime recensioni</h5>
+            </div>
+            @if (this.loadBtnless) {
+              <div class="col-2 ">
+                <button (click)="lessReview()" class="btn btn-outline-primary btn-sm">
+                  <i class="fa-solid fa-minus "></i>
+                </button>
+              </div>
+            }
+          </div>
+          <div *ngFor="let review of recensioniVisibili"
+               class="review-container flex-grow-1 d-flex flex-column justify-content-center">
+            <app-review [review]="review" (click)="openPopup4(review)"></app-review>
+          </div>
+          @if (this.loadBtnmore) {
+            <div class="row justify-content-end mt-0">
+              <div class="col-2">
+                <button (click)="moreReview()" class="btn btn-outline-primary btn-sm">
+                  <i class="fa-solid fa-plus fa-sm"></i>
+                </button>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="row justify-content-center mt-auto text-center ">
+            <h5><strong>Aggiungi la tua prima recensione!</strong></h5>
+          </div>
+        }
+        <div class="row justify-content-center mt-auto ">
+          <div class="col-4">
+            <button class="btn btn-outline-primary mt-2  " (click)="openPopup2()">aggiungi recensione</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" [ngClass]="{'show': isPopupVisible2}"
+         [ngStyle]="{'display': isPopupVisible2 ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Aggiungi recensione</h5>
+            <button type="button" class="btn-close" (click)="closePopup2()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body shadow-lg ">
+            <app-add-review (closeModal)="closePopup2()" (reviewAdded)="aggiornaLista($event)"></app-add-review>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" [ngClass]="{'show': isPopupVisible4}"
+         [ngStyle]="{'display': isPopupVisible4 ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Recensione</h5>
+            <button type="button" class="btn-close" (click)="closePopup4()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body shadow-lg ">
+            <app-reviewmodal (closeModal)="closePopup4()" [review]="selectReview"
+                             (reviewRemoved)="rimuoviDaLista($event)" (reviewModified)="modificaLista($event)"
+                             [isOpen]="isPopupVisible4"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm container-fluid">
+        <h5 class="fw-bold mb-3">Ami i viaggi di tipo: {{ tipoViaggio }}!</h5>
+        <div class="row g-3 justify-content-center">
+          <div class="col-6 text-center">
+            <div class="d-inline-block position-relative">
+              <svg class="torta" height="100" width="100">
+                <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
+                <circle class="grafo" cx="50" cy="50" r="45" stroke="#F5F5F5" stroke-width="10"
+                        [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
+              </svg>
+              <div class="position-absolute top-50 start-50 translate-middle fw-bold">Cultura</div>
+            </div>
+          </div>
+          <div class="col-6 text-center">
+            <div class="d-inline-block position-relative">
+              <svg class="torta" height="100" width="100">
+                <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
+                <circle class="grafo" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                        [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
+              </svg>
+              <div class="position-absolute top-50 start-50 translate-middle fw-bold">Relax</div>
+            </div>
+          </div>
+        </div>
+        <div class="row g-3 justify-content-center">
+          <div class="col-12 text-center">
+            <div class="d-inline-block position-relative">
+              <svg class="torta" height="100" width="100">
+                <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
+                <circle class="grafo" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                        [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
+              </svg>
+              <div class="position-absolute top-50 start-50 translate-middle fw-bold">Natura</div>
+            </div>
+          </div>
+        </div>
+        <div class="row g-3 justify-content-center">
+          <div class="col-6 text-center">
+            <div class="d-inline-block position-relative">
+              <svg class="torta" height="100" width="100">
+                <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
+                <circle class="grafo" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                        [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
+              </svg>
+              <div class="position-absolute top-50 start-50 translate-middle fw-bold">Romantico</div>
+            </div>
+          </div>
+          <div class="col-6 text-center">
+            <div class="d-inline-block position-relative">
+              <svg class="torta" height="100" width="100">
+                <circle cx="50" cy="50" r="45" stroke="#0D6EFD" stroke-width="10" fill="none"/>
+                <circle class="grafo" cx="50" cy="50" r="45" stroke="#E8EBF4" stroke-width="10"
+                        [attr.stroke-dasharray]="strokeDashArrayStart" fill="none"/>
+              </svg>
+              <div class="position-absolute top-50 start-50 translate-middle fw-bold">Famiglia</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

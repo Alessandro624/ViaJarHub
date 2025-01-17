@@ -1,0 +1,80 @@
+<div class="container mt-5">
+  <div class="row align-items-center mt-5">
+    <div class="col-md-8 mt-4">
+      <h1 class="display-6 fw-bold mb-0">{{ travel?.destination }}</h1>
+      <p> {{ type }}
+      </p>
+      <h3 class="text-muted">{{ travel?.description }}</h3>
+    </div>
+    <div class="col-12 prova col-md-4 col-lg-4 my-3">
+      <div class="p-3 border rounded shadow-sm h-100">
+        <div class="row">
+          <h4 class="col-12 d-flex flex-row flex-md-column flex-xl-row justify-content-between">
+            <span class="text-nowrap fw-bold">Data partenza:</span>
+            <span class="text-nowrap">{{ travel?.startDate }}</span>
+          </h4>
+        </div>
+        <div class="row mb-2">
+          <h4 class="col-12 d-flex flex-row flex-md-column flex-xl-row justify-content-between">
+            <span class="text-nowrap fw-bold">Data ritorno:</span>
+            <span class="text-nowrap">{{ travel?.endDate }}</span>
+          </h4>
+        </div>
+        <div class="col-12 d-flex flex-row flex-md-column flex-xl-row justify-content-between mb-2 number-input">
+          <h5 class="fw-bold">Numero di partecipanti:</h5>
+          <input type="number" class="increment-input" id="incrementInput" min="1"
+                 max="{{availableSeats}}"
+                 step="1" [(ngModel)]="postiSelezionati" (input)="modificaPrezzo()">
+        </div>
+        <div class="col-12 text-end text-md-start text-xl-end">
+          <h5><strong>{{ prezzoFinale }}€</strong></h5>
+        </div>
+        <div class="col-12 mt-3">
+          <button type="button" class="btn btn-success w-100" (click)="openPopup()" [disabled]="isInBooking"><i
+            class="fa-solid fa-cart-shopping me-2"></i>
+            {{ isInBooking ? 'Già prenotato' : 'Prenota ora' }}
+          </button>
+        </div>
+        <div *ngIf="!isInWishlist" class="col-12 my-2">
+          <button type="button" class="btn btn-outline-primary w-100" (click)="addToWishlist()"><i
+            class="fa-regular fa-heart me-2"></i>
+            Aggiungi alla lista dei desideri
+          </button>
+        </div>
+        <div *ngIf="isInWishlist" class="col-12 my-2">
+          <button type="button" class="btn btn-outline-danger w-100"
+                  (click)="removeFromWishlist()"><i
+            class="fa-solid fa-trash me-2"></i>
+            Rimuovi dalla lista dei desideri
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ul class="nav nav-tabs justify-content-center border-2">
+    <li class="nav-item rounded-top border-4 ">
+      <a class="nav-link" routerLink="info" aria-current="page" routerLinkActive="active">Info</a>
+    </li>
+    <li class="nav-item rounded-top border-4">
+      <a class="nav-link" routerLink="img" aria-current="page" routerLinkActive="active">Immagini</a>
+    </li>
+  </ul>
+  <div class="mt-3 mx-3">
+    <router-outlet></router-outlet>
+  </div>
+  <div class="modal fade" [ngClass]="{'show': isPopupVisible}"
+       [ngStyle]="{'display': isPopupVisible ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Aggiungi un viaggio</h5>
+          <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body shadow-lg">
+          <app-payment (closeModal)="closePopup() " [prezzo]="prezzoFinale" [travel]="travel"
+                       [numeroPartecipanti]="postiSelezionati"></app-payment>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<form (ngSubmit)="onSubmit()" method="POST">
+  <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+    {{ alertMessage }}
+  </div>
+  <div class="mb-3 form-floating flex-grow-1">
+    <input
+      type="text"
+      id="firstName"
+      class="form-control"
+      [(ngModel)]="firstName"
+      name="firstName"
+      required
+      placeholder="Nome"
+      (input)="firstNameError = ''; alertMessage='';"
+      [class.is-invalid]="firstNameError"
+    />
+    <label for="firstName" class="form-label">Nome</label>
+    <div *ngIf="firstNameError" class="invalid-feedback d-block">{{ firstNameError }}</div>
+  </div>
+  <div class="mb-3 form-floating flex-grow-1">
+    <input
+      type="text"
+      id="lastName"
+      class="form-control"
+      [(ngModel)]="lastName"
+      name="lastName"
+      required
+      placeholder="Cognome"
+      (input)="lastNameError = ''; alertMessage='';"
+      [class.is-invalid]="lastNameError"
+    />
+    <label for="lastName" class="form-label">Cognome</label>
+    <div *ngIf="lastNameError" class="invalid-feedback d-block">{{ lastNameError }}</div>
+  </div>
+  <div class="mb-3">
+    <label for="images" class="form-label">Carica Immagini</label>
+    <div
+      class="drop-area border border-primary p-3 text-center"
+      (click)="triggerFileInput()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+      (input)="imageError = ''; alertMessage='';"
+    >
+      <p>Trascina qui l'immagine o clicca per selezionarla</p>
+      <input
+        #fileInput
+        type="file"
+        id="images"
+        class="d-none"
+        (change)="onFileSelect($event)"
+        accept="image/*"
+        (input)="imageError = ''; alertMessage='';"
+      />
+    </div>
+    <div *ngIf="image" class="mt-2">
+      <img [src]="imageUrl" alt="Anteprima" class="me-2 preview">
+      <span>{{ image.name }}</span>
+      <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage()">Rimuovi</button>
+    </div>
+    <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
+  </div>
+  <button type="submit" class="btn btn-success me-2"
+          [disabled]="isLoading || (firstName===user.firstName && lastName===user.lastName && !profileImageChanged)">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+    <span *ngIf="!isLoading">Modifica</span>
+  </button>
+  <button type="button" class="btn btn-secondary" (click)="resetData()" [disabled]="isLoading">
+    <span *ngIf="!isLoading">Ripristina</span>
+  </button>
+</form>

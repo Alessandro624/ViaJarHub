@@ -1,0 +1,89 @@
+.custom-container {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 4px 0 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.review-card {
+  margin-bottom: 1.5rem;
+}
+
+.review-card .card-body {
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+}
+
+.review-card .card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.review-card .card-text {
+  font-size: 1rem;
+}
+
+.star {
+  color: #ffcc00;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+.increment-input {
+  width: 80px;
+  padding: 5px 10px;
+  font-size: 16px;
+  border: 2px solid #007bff;
+  border-radius: 4px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.increment-input:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 5px rgba(0, 91, 187, 0.5);
+  outline: none;
+}
+
+.nav {
+  border-color: var(--bs-primary);
+
+}
+
+/* Stile per i link non attivi */
+.nav-link:not(.active) {
+  color: gray; /* Testo grigio */
+  background-color: transparent; /* Sfondo trasparente */
+  border: none; /* Nessun bordo */
+  transition: all 0.3s ease; /* Transizione fluida */
+  transform: translateY(3px); /* Abbassa di 5px */
+
+}
+
+
+/* Hover sui link non attivi */
+.nav-link:not(.active):hover {
+  color: white; /* Testo bianco */
+  background-color: var(--bs-primary); /* Sfondo primary */
+  text-decoration: none; /* Nessuna sottolineatura */
+  transform: translateY(3px); /* Abbassa di 5px */
+  transition: transform 0.2s ease-in-out; /* Aggiunge un'animazione fluida */
+
+
+}
+
+/* Stile per il link attivo */
+.nav-link.active {
+  color: var(--bs-primary); /* Testo bianco */
+  background-color: transparent; /* Sfondo trasparente */
+  border: 2px solid var(--bs-primary); /* Bordo primary */
+  transition: all 0.1s ease; /* Transizione fluida */
+}
+
+/* Hover sul link attivo */
+.nav-link.active:hover {
+  color: white; /* Testo bianco */
+  background-color: var(--bs-primary); /* Sfondo primary */
+}

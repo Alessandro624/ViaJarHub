@@ -1,0 +1,44 @@
+<app-carousel [filters]="filters"></app-carousel>
+<div class="container my-5">
+  <app-filtri [filters]="filters" [alertMessage]="alertMessage" [isLoading]="isLoading" [maxPrice]="maxPrice"
+              (loadTravel)="loadTravels(0)"></app-filtri>
+  <div class="my-3 d-flex justify-content-end">
+    <div class="btn-group me-2" role="group" aria-label="Ordinamento Viaggi">
+      <button *ngFor="let order of travelOrders"
+              type="button"
+              class="btn btn-outline-primary"
+              [ngClass]="{'active': filters.travelOrder === translateTravelOrder(order)}"
+              (click)="setOrder(order)"> {{ order }}
+      </button>
+    </div>
+    <button *ngIf="filters.reverse" type="button" class="btn btn-outline-secondary" (click)="toggleReverse()">
+      <i class="fa-solid fa-arrow-up-wide-short"></i>
+      Ordinamento Decrescente
+    </button>
+    <button *ngIf="!filters.reverse" type="button" class="btn btn-outline-secondary" (click)="toggleReverse()">
+      <i class="fa-solid fa-arrow-down-wide-short"></i>
+      Ordinamento Crescente
+    </button>
+  </div>
+  @if (travelsMatrix && travelsMatrix.length > 0) {
+    <div class="row" *ngFor="let travelRow of travelsMatrix">
+      <div class="col-12 col-lg-4 my-3" *ngFor="let travel of travelRow">
+        <app-card *ngIf="travel" [travel]="travel" (localDeleteTravel)="localDeleteTravel(travel.id)"></app-card>
+      </div>
+    </div>
+  } @else {
+    <div class="d-flex flex-column justify-content-end align-items-center   text-center my-5 "
+         style="height: 170px;">
+      <p class="text-muted fs-5 "><strong>Non è presente alcun viaggio con i criteri selezionati.</strong></p>
+    </div>
+  }
+  @if (index < elementiTot && travelsMatrix.length != 0) {
+    <button type="button" class="btn btn-outline-primary mt-2" (click)="loadTravels(this.index)" [disabled]="isLoading">
+      <span *ngIf="isLoading"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"></span>
+      <span *ngIf="!isLoading">Mostra altri</span>
+    </button>
+  }
+</div>

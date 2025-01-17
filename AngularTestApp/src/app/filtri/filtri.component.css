@@ -1,0 +1,15 @@
+.dropdown-item {
+  cursor: pointer;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+  background-color: #0D6EFD !important;
+}
+
+.filter-bar {
+  border-radius: 15px;
+}
+
+.prova {
+  background-color: white;
+}

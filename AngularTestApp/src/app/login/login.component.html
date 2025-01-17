@@ -1,0 +1,261 @@
+<div class="dropdown-menu dropdown-menu-end p-4 shadow-sm rounded position-absolute" [ngClass]="{'show': isOpened}"
+     style="width: 350px; right: 0">
+  @if (currentForm === 'login') {
+    <form id="loginForm" (ngSubmit)="onLogin()" method="POST">
+      <h3 class="mb-3">Accedi</h3>
+      <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+        {{ alertMessage }}
+      </div>
+      <div class="input-group" [class.is-invalid-container]="emailError">
+        <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+        <div class="form-floating flex-grow-1">
+          <input id="loginEmail" type="email" class="form-control" [(ngModel)]="email" name="email" required
+                 (input)="emailError = ''; alertMessage='';"
+                 [class.is-invalid]="emailError"
+                 placeholder="Email">
+          <label for="loginEmail" class="form-label">Email</label>
+        </div>
+      </div>
+      <div *ngIf="emailError" class="invalid-feedback d-block">{{ emailError }}</div>
+      <div class="mt-3 input-group" [class.is-invalid-container]="passwordError">
+        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+        <div class="form-floating flex-grow-1">
+          <input id="loginPassword" type="password" class="form-control" [(ngModel)]="password" name="password" required
+                 [type]="showPassword ? 'text' : 'password'"
+                 (input)="passwordError = ''; alertMessage = '';"
+                 [class.is-invalid]="passwordError"
+                 placeholder="Password">
+          <label for="loginPassword" class="form-label">Password</label>
+        </div>
+        @if (showPassword) {
+          <span class="input-group-text password-toggle"
+                (click)="togglePasswordVisibility()">
+              <i class="fa-solid fa-eye-slash"></i>
+          </span>
+        } @else {
+          <span class="input-group-text password-toggle"
+                (click)="togglePasswordVisibility()">
+              <i class="fa-solid fa-eye"></i>
+          </span>
+        }
+      </div>
+      <div *ngIf="passwordError" class="invalid-feedback d-block">{{ passwordError }}</div>
+      <div class="mt-3">
+        <button type="submit" class="btn btn-outline-primary w-100" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+          <span *ngIf="!isLoading">Accedi</span>
+        </button>
+      </div>
+      <div class="mt-3 text-center">
+        <div id="google-signin-wrapper" class="d-flex justify-content-center">
+          <div id="google-signin-button"></div>
+        </div>
+      </div>
+    </form>
+    <div class="text-center mt-3">
+      <a href="#" id="registerLink" (click)="preventClose($event); changeForm('registerStep1')"
+         [class.disabled]="isLoading">Registrati</a> |
+      <a href="#" id="forgotPasswordLink" (click)="preventClose($event); changeForm('forgotPasswordEmail')"
+         [class.disabled]="isLoading">Password
+        dimenticata?</a>
+    </div>
+  } @else if (currentForm === 'registerStep1') {
+    <form id="registerStep1Form" (ngSubmit)="onRegisterStep1()" method="POST">
+      <h3 class="mb-3">Registrati</h3>
+      <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+        {{ alertMessage }}
+      </div>
+      <div class="input-group" [class.is-invalid-container]="firstNameError">
+        <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+        <div class="form-floating flex-grow-1">
+          <input
+            id="registerFirstName"
+            type="text"
+            class="form-control"
+            [(ngModel)]="firstName"
+            name="firstName"
+            required
+            (input)="firstNameError = ''; alertMessage = '';"
+            [class.is-invalid]="firstNameError"
+            placeholder="Nome">
+          <label for="registerFirstName">Nome</label>
+        </div>
+      </div>
+      <div *ngIf="firstNameError" class="invalid-feedback d-block">{{ firstNameError }}</div>
+      <div class="input-group mt-3" [class.is-invalid-container]="lastNameError">
+        <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+        <div class="form-floating flex-grow-1">
+          <input
+            id="registerLastName"
+            type="text"
+            class="form-control"
+            [(ngModel)]="lastName"
+            name="lastName"
+            required
+            (input)="lastNameError = ''; alertMessage = '';"
+            [class.is-invalid]="lastNameError"
+            placeholder="Cognome">
+          <label for="registerLastName">Cognome</label>
+        </div>
+      </div>
+      <div *ngIf="lastNameError" class="invalid-feedback d-block">{{ lastNameError }}</div>
+      <div class="input-group mt-3" [class.is-invalid-container]="birthDateError">
+        <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+        <div class="form-floating flex-grow-1">
+          <input
+            id="registerBirthDate"
+            type="date"
+            class="form-control"
+            [(ngModel)]="birthDate"
+            name="birthDate"
+            required
+            onClick="this.showPicker()"
+            (input)="birthDateError = ''; alertMessage = '';"
+            [class.is-invalid]="birthDateError"
+            [max]="maxDate"
+            placeholder="Data di nascita">
+          <label for="registerBirthDate">Data di nascita</label>
+        </div>
+      </div>
+      <div *ngIf="birthDateError" class="invalid-feedback d-block">{{ birthDateError }}</div>
+      <div class="mt-3">
+        <button type="submit" class="btn btn-outline-primary w-100" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+          <span *ngIf="!isLoading">Prosegui</span>
+        </button>
+      </div>
+    </form>
+    <div class="text-center mt-3">
+      <a href="#" (click)="preventClose($event); changeForm('login')" [class.disabled]="isLoading">Hai già un account?
+        Accedi</a>
+    </div>
+  } @else if (currentForm === 'registerStep2') {
+    <form id="registerStep2Form" (ngSubmit)="onRegisterStep2()" method="POST">
+      <button type="button" class="btn btn-outline-secondary mb-3" (click)="changeForm('registerStep1')">
+        <i class="fa-solid fa-arrow-left"></i> Indietro
+      </button>
+      <h3 class="mb-3">Registrati</h3>
+      <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+        {{ alertMessage }}
+      </div>
+      <div class="input-group" [class.is-invalid-container]="emailError">
+        <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+        <div class="form-floating flex-grow-1">
+          <input
+            id="registerEmail"
+            type="email"
+            class="form-control"
+            [(ngModel)]="email"
+            name="email"
+            required
+            (input)="emailError = ''; alertMessage = '';"
+            [class.is-invalid]="emailError"
+            placeholder="Email">
+          <label for="registerEmail" class="form-label">Email</label>
+        </div>
+      </div>
+      <div *ngIf="emailError" class="invalid-feedback d-block">{{ emailError }}</div>
+      <div class="mt-3 input-group" [class.is-invalid-container]="passwordError">
+        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+        <div class="form-floating flex-grow-1">
+          <input
+            id="registerPassword"
+            type="password"
+            class="form-control"
+            [(ngModel)]="password"
+            name="password"
+            required
+            [type]="showPassword ? 'text' : 'password'"
+            (input)="passwordError = ''; alertMessage = '';"
+            [class.is-invalid]="passwordError"
+            placeholder="Password">
+          <label for="registerPassword" class="form-label">Password</label>
+        </div>
+        @if (showPassword) {
+          <span class="input-group-text password-toggle" (click)="togglePasswordVisibility()">
+              <i class="fa-solid fa-eye-slash"></i>
+          </span>
+        } @else {
+          <span class="input-group-text password-toggle" (click)="togglePasswordVisibility()">
+              <i class="fa-solid fa-eye"></i>
+          </span>
+        }
+      </div>
+      <div *ngIf="passwordError" class="invalid-feedback d-block">{{ passwordError }}</div>
+      <div class="mt-3 input-group" [class.is-invalid-container]="confirmPasswordError">
+        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+        <div class="form-floating flex-grow-1">
+          <input
+            id="confirmPassword"
+            type="password"
+            class="form-control"
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            required
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            (input)="confirmPasswordError = ''; alertMessage = '';"
+            [class.is-invalid]="confirmPasswordError"
+            placeholder="Conferma Password">
+          <label for="confirmPassword" class="form-label">Conferma Password</label>
+        </div>
+        @if (showConfirmPassword) {
+          <span class="input-group-text password-toggle" (click)="toggleConfirmPasswordVisibility()">
+              <i class="fa-solid fa-eye-slash"></i>
+          </span>
+        } @else {
+          <span class="input-group-text password-toggle" (click)="toggleConfirmPasswordVisibility()">
+              <i class="fa-solid fa-eye"></i>
+          </span>
+        }
+      </div>
+      <div *ngIf="confirmPasswordError" class="invalid-feedback d-block">{{ confirmPasswordError }}</div>
+      <div class="mt-3">
+        <button type="submit" class="btn btn-outline-primary w-100" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+          <span *ngIf="!isLoading">Registrati</span>
+        </button>
+      </div>
+    </form>
+    <div class="text-center mt-3">
+      <a href="#" (click)="preventClose($event); changeForm('login')" [class.disabled]="isLoading">Hai già un account?
+        Accedi</a>
+    </div>
+  } @else if (currentForm === 'forgotPasswordEmail') {
+    <form id="forgotPasswordEmailForm" (ngSubmit)="onForgotPasswordEmail()" method="POST">
+      <h3 class="mb-3">Recupera Password</h3>
+      <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+        {{ alertMessage }}
+      </div>
+      <div class="input-group" [class.is-invalid-container]="emailError">
+        <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+        <div class="form-floating flex-grow-1">
+          <input
+            id="forgotPasswordEmail"
+            type="email"
+            class="form-control"
+            [(ngModel)]="email"
+            name="email"
+            required
+            (input)="emailError = ''; alertMessage = '';"
+            [class.is-invalid]="emailError"
+            placeholder="Email">
+          <label for="forgotPasswordEmail" class="form-label">Email</label>
+        </div>
+      </div>
+      <div *ngIf="emailError" class="invalid-feedback d-block">{{ emailError }}</div>
+      <div class="mt-3">
+        <button type="submit" class="btn btn-outline-primary w-100" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+          <span *ngIf="!isLoading">Invia</span>
+        </button>
+      </div>
+    </form>
+    <div class="text-center mt-3">
+      <a href="#" (click)="preventClose($event); changeForm('login')" [class.disabled]="isLoading">Torna all'accesso</a>
+    </div>
+  }
+</div>

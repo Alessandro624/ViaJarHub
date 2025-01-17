@@ -1,0 +1,157 @@
+<div>
+  <form (ngSubmit)="onSubmit()" #form="ngForm">
+    <div *ngIf="alertMessage" class="alert alert-danger" role="alert">
+      {{ alertMessage }}
+    </div>
+    <div class="mb-3 form-floating flex-grow-1">
+      <input
+        type="text"
+        id="title"
+        class="form-control"
+        [(ngModel)]="travel.destination"
+        name="title"
+        required
+        placeholder="Titolo"
+        (input)="alertMessage='';"/>
+      <label for="title" class="form-label">Titolo</label>
+    </div>
+    <div class="mb-3 form-check">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        id="isCountry"
+        [(ngModel)]="travel.isCountry"
+        name="isCountry"
+        (input)="alertMessage='';">
+      <label class="form-check-label" for="isCountry">Nazione?</label>
+    </div>
+    <div class="mb-3 form-floating flex-grow-1">
+      <input
+        type="date"
+        id="startDate"
+        class="form-control"
+        [(ngModel)]="travel.startDate"
+        name="startDate"
+        (change)="validateDates()"
+        [min]="today"
+        required
+        placeholder="Data di Partenza"
+        (input)="alertMessage='';"
+        [class.is-invalid]="dateErrors.startDateInvalid"/>
+      <label for="startDate" class="form-label">Data di Partenza</label>
+      <div *ngIf="dateErrors.startDateInvalid" class="invalid-feedback d-block">{{ dateErrors.startDateInvalid }}</div>
+    </div>
+    <div class="mb-3 form-floating flex-grow-1">
+      <input
+        type="date"
+        id="endDate"
+        class="form-control"
+        [(ngModel)]="travel.endDate"
+        name="endDate"
+        (change)="validateDates()"
+        [min]="travel.startDate || today"
+        required
+        placeholder="Data di Ritorno"
+        (input)="alertMessage='';"
+        [class.is-invalid]="dateErrors.endDateInvalid"/>
+      <label for="endDate" class="form-label">Data di Ritorno</label>
+      <div *ngIf="dateErrors.endDateInvalid" class="invalid-feedback d-block">{{ dateErrors.endDateInvalid }}</div>
+    </div>
+    <div class="mb-3 form-floating flex-grow-1">
+      <input
+        type="number"
+        step="0.01"
+        id="price"
+        class="form-control"
+        [(ngModel)]="travel.price"
+        name="price"
+        min="1"
+        required
+        placeholder="Prezzo"
+        (input)="alertMessage='';"/>
+      <label for="price" class="form-label">Prezzo</label>
+    </div>
+    <div class="mb-4 form-floating flex-grow-1">
+      <input type="number" id="seats"
+             class="form-control"
+             [(ngModel)]="travel.maxParticipantsNumber"
+             name="seats" min="1" required placeholder="Numero Posti" (input)="alertMessage='';"/>
+      <label for="seats" class="form-label">Numero Posti</label>
+    </div>
+    <div class="mb-3 w-100">
+      <label for="type" class="form-label">Tipo viaggio</label>
+      <div class="btn-group dropdown w-100">
+        <button type="button"
+                id="type"
+                class="btn prova border dropdown-toggle d-flex justify-content-between align-items-center"
+                data-bs-toggle="dropdown" aria-expanded="false">
+          <span>{{ travel.travelType }}</span>
+        </button>
+        <ul class="dropdown-menu ">
+          <li *ngFor="let type of travelTypes">
+            <a class="dropdown-item" (click)="selectType(type); alertMessage = '';">{{ type }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="mb-3 form-floating flex-grow-1">
+      <textarea
+        id="description"
+        class="form-control description-area"
+        [(ngModel)]="travel.description"
+        name="description"
+        rows="4"
+        required
+        placeholder="Descrizione"
+        (input)="alertMessage='';">
+      </textarea>
+      <label for="description" class="form-label">Descrizione</label>
+    </div>
+    <div class="map-container mb-5">
+      <label for="title" class="form-label">Destinazione</label>
+      <gmp-map [center]="center" [zoom]="zoom" map-id="24dfd8a38027bce5">
+        <div slot="control-block-start-inline-start" class="p-3">
+          <gmpx-place-picker placeholder="Inserisci la destinazione"></gmpx-place-picker>
+        </div>
+        <gmp-advanced-marker [position]="markerPosition" [draggable]="false"></gmp-advanced-marker>
+      </gmp-map>
+    </div>
+    <div class="mb-3">
+      <label for="images" class="form-label">Carica Immagini</label>
+      <div class="drop-area border border-primary p-3 text-center"
+           (click)="triggerFileInput()"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onDrop($event)"
+           (input)="imageError = ''; alertMessage='';">
+        <p>Trascina qui le immagini o clicca per selezionarle</p>
+        <input
+          #fileInput
+          type="file"
+          id="images"
+          class="d-none"
+          (change)="onFileSelect($event)"
+          accept="image/*"
+          multiple
+          (input)="imageError = ''; alertMessage='';"/>
+      </div>
+      <ul class="mt-2">
+        <li class="mb-2" *ngFor="let image of images; let i = index">
+          <img [src]="imagesUrl[i]" alt="Anteprima" class="me-2 preview">
+          <span>{{ image.name }}</span>
+          <button type="button" class="btn btn-danger btn-sm ms-2" (click)="removeImage(i)">Rimuovi</button>
+        </li>
+      </ul>
+      <div *ngIf="imageError" class="invalid-feedback d-block">{{ imageError }}</div>
+      <p class="mt-2">Numero di immagini caricate: <strong>{{ images.length }}</strong></p>
+    </div>
+    <button
+      type="submit"
+      class="btn btn-success me-2"
+      [disabled]="isLoading || form.invalid || images.length === 0 || dateErrors.startDateInvalid || dateErrors.endDateInvalid || travel.travelType === TravelType.NESSUNO">
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <span *ngIf="!isLoading">Invia</span>
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="resetData()" [disabled]="isLoading">Ripristina</button>
+  </form>
+</div>

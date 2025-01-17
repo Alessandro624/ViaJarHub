@@ -1,0 +1,163 @@
+<div class="container my-5">
+  <div class="card p-4 ">
+    <div class="row justify-content-between">
+      <div class="col-6  d-flex align-items-center ">
+        <div *ngIf="profileImageUrl">
+          <img [src]="profileImageUrl" alt="Profile Picture"
+               class="rounded-circle me-4" width="100"
+               height="100"/>
+        </div>
+        <div *ngIf="!profileImageUrl">
+          <i class="fa-solid fa-circle-user fa-5x me-4"></i>
+        </div>
+        <div class="d-flex flex-column">
+          <div class="d-flex align-items-center">
+            <h4 class="mb-1 me-2">{{ user?.firstName }} {{ user?.lastName }}</h4>
+            <button class="btn btn-primary me-2" (click)="openPopup()">
+              Aggiungi
+            </button>
+            <button class="btn btn-primary me-0" (click)="openPopupMakeAdmin()">
+              +Admin
+            </button>
+          </div>
+          <p class="text-muted mb-0">Admin</p>
+          <small class="text-muted">
+            {{ birthdate }}
+          </small>
+        </div>
+      </div>
+      <div class="col-lg-6 col-12 ">
+        <div class="row justify-content-around">
+          <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Viaggi disponibili:</h5>
+            <p class="fs-4">{{ numTravel }}</p></div>
+          <div class="col-5 m-3 card-data"><h5 class="mt-2 fw-bold">Recensioni effettuate:</h5>
+            <p class="fs-4">{{ numrec }}</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-make-admin-modal [isMakeAdminVisible]="isMakeAdminVisible"
+                        (closeMakeAdminPopup)="closeMakeAdminPopup()"></app-make-admin-modal>
+  <div class="modal fade" [ngClass]="{'show': isPopupVisible}"
+       [ngStyle]="{'display': isPopupVisible ? 'block' : 'none'}" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Aggiungi un viaggio</h5>
+          <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body shadow-lg">
+          <app-add-travel (closeModal)="closePopup()"></app-add-travel>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4 mb-3">
+    <div class="col-lg-6 mb-4">
+      <div class="card p-3 mb-2 shadow-sm mostrated">
+        <h5 class="fw-bold  mb-3">Viaggi più votati</h5>
+        <div class="card-data  m-3 mb-2" *ngFor="let travel of mostRated">
+          <a href="../body1/{{travel.id}}" class="ratedLink">
+            <div class="row">
+              <div class="col mx-2">
+                <h5 class="card-title  mt-2 mb-1 fw-bold">{{ travel.destination }}</h5>
+                <div class="mb-2">
+                  <app-star [rating]="getStar(travel.id)"/>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card p-3 shadow-sm balance">
+        <h5 class="fw-bold">Bilancio</h5>
+        <div class="m-3">
+          <div class="row mt-2 justify-content-around">
+            <div class="col-lg-5 mb-4 col-12 mx-2 card-data">
+              <h5 class="card-title mt-2 mb-0 no-wrap fw-bold">Entrate giornaliere:</h5>
+              <p class="mt-2 text-center text-success fs-3 fw-bold">{{ dailyIncome }}$</p>
+            </div>
+            <div class="col-lg-5 mb-4 col-12 mx-2 card-data">
+              <h5 class="card-title mt-2 mb-0 no-wrap fw-bold">Entrate mensili:</h5>
+              <p class="mt-2 text-center text-success fs-3 fw-bold">{{ monthlyIncome }}$</p>
+            </div>
+          </div>
+          <div class="row justify-content-around">
+            <div class="col-lg-5 mb-4 col-12 mx-2 card-data">
+              <h5 class="card-title mt-2 mb-0 no-wrap fw-bold">Entrate annuali:</h5>
+              <p class="mt-2 text-center text-success fs-3 fw-bold">{{ yearlyIncome }}$</p>
+            </div>
+            <div class="col-lg-5 mb-4 col-12 mx-2 card-data">
+              <h5 class="card-title mt-2 mb-0 no-wrap fw-bold">Entrate totali:</h5>
+              <p class="mt-2 text-center text-success fs-3 fw-bold">{{ totalIncome }}$</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row ">
+    <div class="col-xl-6 mt-2 mb-4">
+      <div class="card p-3 shadow-sm rec d-flex flex-column h-100">
+        <div class="row justify-content-between">
+          <div class="col">
+            <h5 class="fw-bold">Ultime recensioni</h5>
+          </div>
+          @if (this.loadBtnless) {
+            <div class="col-2 ">
+              <button (click)="lessReview()" class="btn btn-outline-primary btn-sm">
+                <i class="fa-solid fa-minus "></i>
+              </button>
+            </div>
+          }
+        </div>
+        <div *ngFor="let review of recensioniVisibili"
+             class="review-container flex-grow-1 d-flex flex-column justify-content-center">
+          <app-review [review]="review" (click)="openPopup4(review)"></app-review>
+        </div>
+        @if (this.loadBtnmore) {
+          <div class="row justify-content-end mt-0">
+            <div class="col-2">
+              <button (click)="moreReview()" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-plus fa-sm"></i>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+    <div class="col-xl-6 mt-2 justify-content-center">
+      <div class="card p-3 shadow-sm container-fluid">
+        <div class="container">
+          <h5 class="fw-bold mb-4">Numero prenotati</h5>
+          <div class="d-flex justify-content-between align-items-end histogram">
+            <div *ngFor="let bar of animatedData; let i = index" class="text-center">
+              <div class="bar-container" style="height: 200px;">
+                <div class="bar bg-primary mx-auto" [style.height]="(bar/maxVal  * 100) + '%'"
+                     [attr.title]="'Valore: ' + bar"></div>
+              </div>
+              <small class="d-block mt-2">{{ data[i].label }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" [ngClass]="{'show': isPopupVisible4}"
+         [ngStyle]="{'display': isPopupVisible4 ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Recensione</h5>
+            <button type="button" class="btn-close" (click)="closePopup4()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body shadow-lg ">
+            <app-reviewmodal (closeModal)="closePopup4()" [review]="selectReview"
+                             [isOpen]="isPopupVisible4"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

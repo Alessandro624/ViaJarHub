@@ -1,0 +1,140 @@
+.card-img-top {
+  border-radius: 50%;
+}
+
+/* Tabs style for central content */
+.nav-tabs .nav-link.active {
+  background-color: #f5f5f5;
+  border-bottom: 2px solid #007bff;
+}
+
+.header-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.card {
+  border-radius: 15px;
+  transition: transform 0.5s ease; /* Transizione per l'effetto hover */
+
+}
+
+.card:hover {
+  transform: scale(1.005); /* Aumenta la dimensione della card al passaggio del mouse */
+}
+
+.progress-bar {
+  transition: width 0.5s ease;
+}
+
+
+@media (min-width: 992px) {
+  .mostrated {
+    height: 375px;
+  }
+
+  .balance {
+    height: 375px;
+  }
+}
+
+.ratedLink {
+  text-decoration: none;
+  color: black;
+
+}
+
+.card-data {
+  border: 1px solid #E9E9E9;
+  background-color: #F5F5F5;
+  border-radius: 15px;
+}
+
+.card-date {
+  color: #6c757d; /* Colore disabilitato */
+  font-size: 0.9em;
+
+}
+
+.star {
+  color: #ffcc00;
+}
+
+.edit-btn {
+  display: inline-block; /* Necessario per la transizione */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Mostra il pulsante quando il cursore si trova sulla card */
+.card:hover .edit-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Contenitore dell'istogramma */
+/* Contenitore dell'istogramma */
+.histogram {
+  gap: 10px; /* Spazio tra le colonne */
+}
+
+/* Contenitore della barra */
+.bar-container {
+  display: flex;
+  align-items: flex-end; /* Allinea le barre dal basso */
+  height: 220px; /* Altezza massima del contenitore */
+  width: 100%; /* Larghezza dinamica */
+  max-width: 50px; /* Larghezza massima per le barre su schermi grandi */
+}
+
+/* Barra dell'istogramma */
+.bar {
+  width: 100%; /* Adatta la larghezza al contenitore */
+  background: linear-gradient(135deg, #65A9F0, #0056b3); /* Gradient per effetto visivo */
+  border-radius: 6px; /* Arrotondamento */
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+/* Hover: effetto visivo */
+.bar:hover {
+  transform: scale(1.1); /* Ingrandisce leggermente */
+  background: linear-gradient(135deg, #327ECC, #003f7f);
+}
+
+/* Testo sotto le barre */
+small {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .histogram {
+    gap: 5px; /* Riduce lo spazio tra le colonne */
+  }
+
+  .bar-container {
+    max-width: 30px; /* Barre più strette su schermi piccoli */
+    height: 180px; /* Altezza del contenitore ridotta */
+  }
+}
+
+.modal-body {
+  overflow-y: auto;
+  height: 550px; /*soluzione scroll bar*/
+}
+
+
+.rec {
+  min-height: 332px;
+}
+
+.fa-minus {
+  font-size: 10px;
+}
+
+.fa-plus {
+  font-size: 10px;
+}
