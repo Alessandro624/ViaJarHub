@@ -23,15 +23,14 @@
             <li class="nav-item dropdown">
               <button type="button" class="btn btn-link rounded dropdown-toggle" data-bs-toggle="dropdown"
                       aria-expanded="false">
-                <!--TODO sostituire con immagine profilo utente se presente, altrimenti mostrare icona-->
                 <i class="fa-solid fa-circle-user fa-xl"></i>
               </button>
               <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded p-1" style="width: 200px;">
                 @if (user.authorities[0].authority == UserRole.ADMIN) {
-                  <li class="mb-1"><a class="dropdown-item fw-bold " routerLink="/admin">Admin</a>
+                  <li class="mb-1"><a class="dropdown-item fw-bold " routerLink="/admin">Amministratore</a>
                   </li>
                 } @else {
-                  <li class="mb-1"><a class="dropdown-item fw-bold " routerLink="/client">Client</a>
+                  <li class="mb-1"><a class="dropdown-item fw-bold " routerLink="/client">Profilo</a>
                   </li>
                   <li class="mb-1"><a class="dropdown-item fw-bold" (click)="openPopup()">Contattaci</a>
                   </li>

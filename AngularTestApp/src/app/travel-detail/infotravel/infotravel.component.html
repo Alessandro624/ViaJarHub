@@ -1,44 +1,33 @@
 <div class="row d-flex align-items-center mx-auto">
-  <!-- Colonna 1 -->
   <div class="col-12 col-xl-6 my-3">
     <div class="container mt-2">
-      <!-- Card container -->
       <div class="card shadow-sm p-4">
-        <!-- Rating Section -->
         <div class="text-center">
           <h1 class="display-4">{{ stars }}</h1>
           <div class="d-flex justify-content-center align-items-center mb-2">
-            <!-- Stars -->
             @if (isLoading) {
               <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">Caricamento...</span>
               </div>
             } @else {
               <div class="mb-2 d-flex">
                 <app-star [rating]="stars" [beat]="true"/>
               </div>
             }
-
           </div>
-          <p class="text-muted">({{ reviews.length }} Reviews)</p>
+          <p class="text-muted">({{ reviews.length }} Recensioni)</p>
         </div>
-        <!-- Most Liked Comments Section -->
         <div class="mt-4">
-
           @if (reviews.length == 0) {
             <div class="text-center">
               <strong>Nessuna recensione disponibile</strong>
             </div>
-
           } @else {
             <h5 class="mb-3">Ultime recensioni</h5>
             <div *ngFor="let review of reviews">
-
               <app-review [review]="review" (click)="openPopup(review)"></app-review>
             </div>
           }
-
-
         </div>
       </div>
     </div>
@@ -51,15 +40,12 @@
             <button type="button" class="btn-close" (click)="closePopup()" aria-label="Close"></button>
           </div>
           <div class="modal-body shadow-lg ">
-            <!-- Contenuto del modale -->
             <app-reviewmodal (closeModal)="closePopup()" [review]="selectReview" [isOpen]="isPopupVisible"/>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Colonna 2 -->
   <div class="col-12 col-xl-6 my-3">
     <div class="map-container" *ngIf="travel">
       <gmp-map [center]="center" [zoom]="zoom" map-id="24dfd8a38027bce5">
