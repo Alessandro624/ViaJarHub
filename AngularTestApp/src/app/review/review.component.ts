@@ -1,12 +1,14 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {Review} from '../models/review/review.model';
 import {StarComponent} from '../star/star.component';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-review',
   standalone: true,
   imports: [
-    StarComponent
+    StarComponent,
+    NgIf
   ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.css'
@@ -20,7 +22,7 @@ export class ReviewComponent implements OnInit {
   constructor(private elementRef: ElementRef) {
   }
 
-  // Funzione per verificare se il componente è contenuto in un altro componente
+
   isContainedIn(parentSelector: string): boolean {
     let parent = this.elementRef.nativeElement.parentElement;
     while (parent) {
