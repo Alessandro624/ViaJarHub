@@ -73,7 +73,7 @@ export class UpdateUserComponent implements OnChanges {
         {
           next: () => {
             this.isLoading = false;
-            this._alertService.showAlert(`Form inviato con successo!\nNome: ${this.firstName}\nCognome: ${this.lastName}\nImmagine: ${this.image}`, true);
+            this._alertService.showAlert(`Informazioni modificate con successo`, true);
             this.updateUser();
             this.resetData();
             this.closeModal.emit();

@@ -70,7 +70,7 @@ export class WishlistComponent implements OnInit {
   removeFromWishlist(id: number) {
     this._wishlistService.removeFromWishlist(id).subscribe({
       next: () => {
-        this.alertService.showAlert("Removed", true);
+        this.alertService.showAlert("Viaggio rimosso dalla lista dei desideri con successo", true);
         this.toRemoveTravel = null;
         this.isConfirmVisible = false;
       }

@@ -71,7 +71,7 @@ export class TravelDetailComponent implements OnInit {
   addToWishlist() {
     this._wishlistService.addToWishlist(this.travel!.id).subscribe({
         next: () => {
-          this._alertService.showAlert("Added", true);
+          this._alertService.showAlert("Viaggio aggiunto alla lista dei desideri con successo", true);
         }, error: error => {
           this._alertService.showAlert(error.message, false);
         }
@@ -92,7 +92,7 @@ export class TravelDetailComponent implements OnInit {
   removeFromWishlist() {
     this._wishlistService.removeFromWishlist(this.travel!.id).subscribe({
       next: () => {
-        this._alertService.showAlert("Removed", true);
+        this._alertService.showAlert("Viaggio rimosso dalla lista dei desideri con successo", true);
       }
     });
   }
